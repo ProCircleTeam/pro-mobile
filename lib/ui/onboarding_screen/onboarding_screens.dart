@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/ui/widgets/action_button.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -20,9 +21,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(
+          horizontal: width * .05,
+          vertical: height * .065,
+        ),
         child: PageView(
           controller: _controller,
           onPageChanged: (index) {
@@ -61,38 +69,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     required String description,
   }) {
     final size = MediaQuery.of(context).size;
-  final height = size.height;
+    final height = size.height;
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SvgPicture.asset(image, height: height * .25),
-         SizedBox(height: height * .03 ),
-        CustomText(
-          title,
-          size: 24, weight: FontWeight.bold),
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Text(
-            description,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-        Center(
-          child: SmoothPageIndicator(
-            controller: _controller,
-            count: 3,
-            effect: WormEffect(
-              dotHeight: 12,
-              dotWidth: 12,
-              activeDotColor: Theme.of(context).primaryColor,
+        Column(
+          children: [
+            SizedBox(height: height * .015),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(Icons.arrow_back),
+                CustomText("Skip", weight: FontWeight.bold, size: 16),
+              ],
             ),
-          ),
+            SizedBox(height: height * .055),
+            SvgPicture.asset(image, height: height * .3),
+            SizedBox(height: height * .055),
+            CustomText(title, size: 24, weight: FontWeight.bold),
+            SizedBox(height: height * .005),
+            CustomText(
+              description,
+              textAlign: TextAlign.center,
+              size: 16,
+              height: 1.2,
+            ),
+            SizedBox(height: height * .03),
+            Center(
+              child: SmoothPageIndicator(
+                controller: _controller,
+                count: 3,
+                effect: WormEffect(
+                  dotHeight: 12,
+                  dotWidth: 12,
+                  activeDotColor: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+          ],
         ),
 
-        
+        ActionButton(title: "NEXT", onTap: () {}),
       ],
     );
   }
