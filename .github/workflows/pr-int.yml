@@ -34,7 +34,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: "3.27.3"
+          flutter-version: "3.29.3"
           # ^ If you want to use a specific version of flutter
 
       # Fetches proj dependencies from pub
