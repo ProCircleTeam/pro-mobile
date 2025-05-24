@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
+import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,15 +9,17 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'ProCircle',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const Home(),
+      initialRoute: AppRouter.onboarding,
+      routes: AppRouter().generateRoutes(context),
     );
   }
 }
@@ -25,6 +29,6 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("Welcome to ProCircle")));
+    return Scaffold(body: OnboardingScreen());
   }
 }
