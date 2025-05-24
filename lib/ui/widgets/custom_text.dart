@@ -11,9 +11,7 @@ class CustomText extends StatelessWidget {
   final TextOverflow? overflow;
   final TextDecoration? underline;
   const CustomText(
-    this.title,
-    
-    {
+    this.title, {
     super.key,
     this.size,
     this.space,

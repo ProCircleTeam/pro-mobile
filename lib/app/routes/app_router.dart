@@ -7,6 +7,9 @@ class AppRouter {
   static const onboarding = "/onboarding";
 
   Map<String, WidgetBuilder> generateRoutes(BuildContext context) {
-    return {home: (context) => HomePage(), onboarding: (context) => OnboardingScreen()};
+    return {
+      home: (context) => HomePage(),
+      onboarding: (context) => OnboardingScreen(),
+    };
   }
 }
