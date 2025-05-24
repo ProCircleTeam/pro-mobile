@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
 
 void main() {
@@ -17,6 +18,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const Home(),
+      initialRoute: AppRouter.onboarding,
+      routes: AppRouter().generateRoutes(context),
     );
   }
 }

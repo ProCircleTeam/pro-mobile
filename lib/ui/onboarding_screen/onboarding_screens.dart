@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
@@ -17,7 +18,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
-  bool isLastPage = false;
+  int pageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           controller: _controller,
           onPageChanged: (index) {
             setState(() {
-              isLastPage = index == 2;
+              pageIndex = index;
             });
           },
           children: [
@@ -80,14 +81,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(Icons.arrow_back),
-                CustomText("Skip", weight: FontWeight.bold, size: 16),
+                pageIndex == 0
+                    ? const SizedBox()
+                    : IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                        _controller.previousPage(
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.ease,
+                        );
+                      },
+                    ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, AppRouter.home);
+                  },
+                  child: CustomText("Skip", weight: FontWeight.bold, size: 16),
+                ),
               ],
             ),
             SizedBox(height: height * .055),
             SvgPicture.asset(image, height: height * .3),
             SizedBox(height: height * .055),
-            CustomText(title, size: 24, weight: FontWeight.bold),
+            CustomText(
+              title,
+              size: 22,
+              weight: FontWeight.bold,
+              textAlign: TextAlign.center,
+            ),
             SizedBox(height: height * .005),
             CustomText(
               description,
@@ -110,7 +131,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ],
         ),
 
-        ActionButton(title: "NEXT", onTap: () {}),
+        ActionButton(
+          title: pageIndex < 2 ? "NEXT" : "GET STARTED",
+          onTap: () async {
+            if (pageIndex == 2) {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('onboarding_done', true);
+              Navigator.pushReplacementNamed(context, AppRouter.home);
+            } else {
+              _controller.nextPage(
+                duration: Duration(milliseconds: 500),
+                curve: Curves.ease,
+              );
+            }
+          },
+        ),
       ],
     );
   }
