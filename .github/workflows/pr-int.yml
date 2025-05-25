@@ -76,9 +76,15 @@ jobs:
       - name: Run tests with coverage
         run: |
           flutter test --coverage
+          # Convert coverage to LCOV format
           flutter pub global activate coverage
-          flutter pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
-
+          flutter pub global run coverage:format_coverage \
+            --lcov \
+            --in=coverage \
+            --out=coverage/lcov.info \
+            --packages=.dart_tool/package_config.json \
+            --report-on=lib
+            
       - name: Verify coverage file
         run: |
           ls -la coverage/
