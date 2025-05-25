@@ -1,0 +1,7 @@
+organization=procircleteam
+projectKey=ProCircleTeam_pro-mobile
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.63733
+dashboardUrl=https://sonarcloud.io/dashboard?id=ProCircleTeam_pro-mobile
+ceTaskId=AZcG2QUHsdHqaUmNK6AM
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZcG2QUHsdHqaUmNK6AM

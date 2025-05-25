@@ -46,6 +46,5 @@ jobs:
             -Dsonar.sourceEncoding=UTF-8
             -Dsonar.exclusions=test/**/*_test.mocks.dart,lib/**/*.g.dart
             -Dsonar.dart.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.host.url=http://localhost:900
             -Dsonar.exclusions=**/*.g.dart
             -Dsonar.login=9a172b62d89001bd0748104e111f57eb360a2f6c
