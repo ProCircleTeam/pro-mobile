@@ -71,25 +71,31 @@ jobs:
           flutter-version: '3.29.3'
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          flutter pub global activate coverage
 
-      - name: Run tests with coverage
+      - name: Generate coverage
         run: |
           flutter test --coverage
-          # Convert coverage to LCOV format
-          flutter pub global activate coverage
           flutter pub global run coverage:format_coverage \
             --lcov \
             --in=coverage \
             --out=coverage/lcov.info \
             --packages=.dart_tool/package_config.json \
-            --report-on=lib
-            
-      - name: Verify coverage file
+            --report-on=lib \
+            --base-directory=$(pwd) \
+            --check-ignore
+
+      - name: Verify LCOV file
         run: |
-          ls -la coverage/
-          wc -l coverage/lcov.info
+          echo "LCOV file content:"
+          cat coverage/lcov.info
+          echo "File size:"
+          ls -lh coverage/lcov.info
+          echo "First 10 lines:"
           head -n 10 coverage/lcov.info
+          echo "Last 10 lines:"
           tail -n 10 coverage/lcov.info
 
       - name: SonarQube Scan
@@ -103,7 +109,8 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.sources=lib
             -Dsonar.tests=test
-            -Dsonar.test.inclusions=test/**/*
             -Dsonar.coverageReportPaths=coverage/lcov.info
             -Dsonar.dart.coverage.reportPath=coverage/lcov.info
             -Dsonar.exclusions=**/*.g.dart
+            -Dsonar.cpd.exclusions=**/*.g.dart
+            -Dsonar.sourceEncoding=UTF-8
