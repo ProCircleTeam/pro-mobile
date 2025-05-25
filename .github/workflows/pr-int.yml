@@ -5,7 +5,7 @@ on:
     branches:
       - dev
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened ]
 
 jobs:
   sonarqube:
@@ -40,11 +40,8 @@ jobs:
           args: >
             -Dsonar.projectKey=ProCircleTeam_pro-mobile
             -Dsonar.organization=procircleteam
-            # -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.sources=lib
-            -Dsonar.tests=test
-            -Dsonar.sourceEncoding=UTF-8
-            -Dsonar.exclusions=test/**/*_test.mocks.dart,lib/**/*.g.dart
             -Dsonar.dart.lcov.reportPaths=coverage/lcov.info
             -Dsonar.exclusions=**/*.g.dart
             -Dsonar.login=9a172b62d89001bd0748104e111f57eb360a2f6c
