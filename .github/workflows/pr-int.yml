@@ -47,7 +47,7 @@
 #             -Dsonar.login=9a172b62d89001bd0748104e111f57eb360a2f6c
 
 
-name: Build and Analyze
+name: Analyze and Run test coverage
 
 on:
   push:
