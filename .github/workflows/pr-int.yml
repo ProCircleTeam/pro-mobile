@@ -1,3 +1,52 @@
+# name: Build and Analyze
+
+# on:
+#   push:
+#     branches:
+#       - dev
+#   pull_request:
+#     types: [opened, synchronize, reopened ]
+
+# jobs:
+#   sonarqube:
+#     name: SonarQube
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+
+#       - name: Set up Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: '3.29.3' # or your preferred version
+
+#       - name: Install dependencies
+#         run: flutter pub get
+
+#       - name: Run tests with coverage
+#         run: flutter test --coverage
+      
+#       - name: Check lcov.info
+#         run: |
+#           ls -lh coverage/lcov.info
+#           head -n 20 coverage/lcov.info
+
+#       - name: SonarQube Scan
+#         uses: SonarSource/sonarqube-scan-action@v5
+#         env:
+#           SONAR_TOKEN: 9a172b62d89001bd0748104e111f57eb360a2f6c
+#         with:
+#           args: >
+#             -Dsonar.projectKey=ProCircleTeam_pro-mobile
+#             -Dsonar.organization=procircleteam
+#             -Dsonar.host.url=https://sonarcloud.io
+#             -Dsonar.sources=lib
+#             -Dsonar.dart.lcov.reportPaths=coverage/lcov.info
+#             -Dsonar.exclusions=**/*.g.dart
+#             -Dsonar.login=9a172b62d89001bd0748104e111f57eb360a2f6c
+
+
 name: Build and Analyze
 
 on:
@@ -5,7 +54,7 @@ on:
     branches:
       - dev
   pull_request:
-    types: [opened, synchronize, reopened ]
+    types: [opened, synchronize, reopened]
 
 jobs:
   sonarqube:
@@ -19,18 +68,23 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3' # or your preferred version
+          flutter-version: '3.29.3'
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Run tests with coverage
-        run: flutter test --coverage
-      
-      - name: Check lcov.info
         run: |
-          ls -lh coverage/lcov.info
-          head -n 20 coverage/lcov.info
+          flutter test --coverage
+          flutter pub global activate coverage
+          flutter pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+
+      - name: Verify coverage file
+        run: |
+          ls -la coverage/
+          wc -l coverage/lcov.info
+          head -n 10 coverage/lcov.info
+          tail -n 10 coverage/lcov.info
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
@@ -42,6 +96,8 @@ jobs:
             -Dsonar.organization=procircleteam
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.sources=lib
-            -Dsonar.dart.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.tests=test
+            -Dsonar.test.inclusions=test/**/*
+            -Dsonar.coverageReportPaths=coverage/lcov.info
+            -Dsonar.dart.coverage.reportPath=coverage/lcov.info
             -Dsonar.exclusions=**/*.g.dart
-            -Dsonar.login=9a172b62d89001bd0748104e111f57eb360a2f6c
