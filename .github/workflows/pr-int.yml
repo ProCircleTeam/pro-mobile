@@ -30,7 +30,7 @@ jobs:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: 9a172b62d89001bd0748104e111f57eb360a2f6c
         with:
           args: >
             -Dsonar.projectKey=ProCircleTeam_pro-mobile
