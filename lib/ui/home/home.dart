@@ -18,10 +18,17 @@ class _HomePageState extends State<HomePage> {
           onTap: () {
             Navigator.pushReplacementNamed(context, AppRouter.onboarding);
           },
-          child: CustomText(
-            "Welcome to ProCircle",
-            size: 22,
-            weight: FontWeight.bold,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomText(
+                "Welcome to ProCircle",
+                size: 22,
+                weight: FontWeight.bold,
+              ),
+              SizedBox(height: 15),
+              CustomText("Let's do this together"),
+            ],
           ),
         ),
       ),
