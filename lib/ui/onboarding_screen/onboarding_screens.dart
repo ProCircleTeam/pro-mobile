@@ -137,7 +137,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             if (pageIndex == 2) {
               final prefs = await SharedPreferences.getInstance();
               await prefs.setBool('onboarding_done', true);
-              Navigator.pushReplacementNamed(context, AppRouter.home);
+              Navigator.pushReplacementNamed(context, AppRouter.auth);
             } else {
               _controller.nextPage(
                 duration: Duration(milliseconds: 500),

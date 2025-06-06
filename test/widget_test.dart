@@ -1,30 +1,69 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 
-import 'package:pro_mobile/main.dart';
+class AgreementCheckbox extends StatefulWidget {
+  final bool value;
+  final ValueChanged<bool?> onChanged;
 
-void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  const AgreementCheckbox({
+    Key? key,
+    required this.value,
+    required this.onChanged,
+  }) : super(key: key);
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  @override
+  State<AgreementCheckbox> createState() => _AgreementCheckboxState();
+}
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+class _AgreementCheckboxState extends State<AgreementCheckbox> {
+  final TapGestureRecognizer _termsRecognizer = TapGestureRecognizer();
+  final TapGestureRecognizer _privacyRecognizer = TapGestureRecognizer();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+  @override
+  void dispose() {
+    _termsRecognizer.dispose();
+    _privacyRecognizer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Checkbox(
+          value: widget.value,
+          onChanged: widget.onChanged,
+          activeColor: Colors.blue.shade900,
+        ),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: TextStyle(color: Colors.black87, fontSize: 14),
+              children: [
+                const TextSpan(text: 'I agree to the '),
+                TextSpan(
+                  text: 'terms & conditions',
+                  style: const TextStyle(color: Colors.blue),
+                  recognizer: _termsRecognizer
+                    ..onTap = () {
+                      print('Tapped terms & conditions');
+                    },
+                ),
+                const TextSpan(text: ' and '),
+                TextSpan(
+                  text: 'privacy policy',
+                  style: const TextStyle(color: Colors.blue),
+                  recognizer: _privacyRecognizer
+                    ..onTap = () {
+                      print('Tapped privacy policy');
+                    },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

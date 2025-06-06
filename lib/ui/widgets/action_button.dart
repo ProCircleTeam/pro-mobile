@@ -7,11 +7,13 @@ class ActionButton extends StatelessWidget {
   final Function onTap;
   final bool isLoading;
   final Color? bgColor;
+  final Widget? title2;
   const ActionButton({
     required this.title,
     required this.onTap,
     this.isLoading = false,
     this.bgColor,
+    this.title2,
     super.key,
   });
   @override
@@ -35,7 +37,7 @@ class ActionButton extends StatelessWidget {
                     width: 25,
                     child: CircularProgressIndicator(color: Colors.white),
                   )
-                  : Text(
+                  : title2 ?? Text(
                     title,
                     style: AppTextStyle.medium(color: Colors.white),
                   ),
