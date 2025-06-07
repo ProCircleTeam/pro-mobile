@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pro_mobile/ui/auth/auth.dart';
+import 'package:pro_mobile/ui/auth/signup.dart';
+import 'package:pro_mobile/ui/auth/signin.dart';
 import 'package:pro_mobile/ui/home/home.dart';
 import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
 
@@ -8,13 +9,15 @@ class AppRouter {
 
   Map<String, WidgetBuilder> generateRoutes(BuildContext context) {
     return {
-      auth: (context) => AuthPage(),
+      signUp: (context) => SignUpPage(),
+      signIn: (context) => SignInPage(),
       home: (context) => HomePage(),
       onboarding: (context) => OnboardingScreen(),
     };
   }
 
-  static const auth = "/auth";
+  static const signUp = "/signUp";
+  static const signIn = "/signIn";
   static const home = "/home";
   static const onboarding = "/onboarding";
 }

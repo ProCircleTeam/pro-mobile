@@ -15,6 +15,13 @@ class AuthViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _isSigningIn = false;
+  bool get isSigningIn => _isSigningIn;
+  set isSigninIn(bool val) {
+    _isSigningIn = val;
+    notifyListeners();
+  }
+
   bool _obscurePassword = true;
   bool get obscurePassword => _obscurePassword;
   set obscurePassword(bool val) {
@@ -76,5 +83,23 @@ class AuthViewModel extends BaseViewModel {
       onSuccess("Congratulations !!!");
     });
     isSigninUp = false;
+  }
+
+  Future<void> signIn({
+    required String email,
+    required String password,
+    required Function(String successMessage) onSuccess,
+    required Function(String errorMessage) onError,
+  }) async {
+    isSigninIn = true;
+
+    await Future.delayed(Duration(seconds: 3), () {
+      if (email == "abc@gmail.com" && password == "password123@") {
+        onSuccess("Sign In Success");
+      } else {
+        onError("Invalid login credentials");
+      }
+    });
+    isSigninIn = false;
   }
 }

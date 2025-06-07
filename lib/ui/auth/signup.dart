@@ -14,14 +14,14 @@ import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 import 'package:pro_mobile/ui/widgets/unfocus_widget.dart';
 
-class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final TapGestureRecognizer _termsRecognizer = TapGestureRecognizer();
   final TapGestureRecognizer _privacyRecognizer = TapGestureRecognizer();
 
@@ -292,7 +292,7 @@ class _AuthPageState extends State<AuthPage> {
                                     ),
                                     children: [
                                       TextSpan(
-                                        text: 'Already have account? ',
+                                        text: "Already have an account? ",
                                         style: termsAndConditionTextStyle(null),
                                       ),
                                       TextSpan(
@@ -303,8 +303,9 @@ class _AuthPageState extends State<AuthPage> {
                                         recognizer:
                                             _privacyRecognizer
                                               ..onTap = () {
-                                                print(
-                                                  '===========> Signing up',
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  AppRouter.signIn,
                                                 );
                                               },
                                       ),
