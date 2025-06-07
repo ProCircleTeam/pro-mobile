@@ -1,58 +1,120 @@
-# Note: In a yml each level is padded by 2 spaces
-name: Lint & Test
+# name: Build and Analyze
+
+# on:
+#   push:
+#     branches:
+#       - dev
+#   pull_request:
+#     types: [opened, synchronize, reopened ]
+
+# jobs:
+#   sonarqube:
+#     name: SonarQube
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+
+#       - name: Set up Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: '3.29.3' # or your preferred version
+
+#       - name: Install dependencies
+#         run: flutter pub get
+
+#       - name: Run tests with coverage
+#         run: flutter test --coverage
+      
+#       - name: Check lcov.info
+#         run: |
+#           ls -lh coverage/lcov.info
+#           head -n 20 coverage/lcov.info
+
+#       - name: SonarQube Scan
+#         uses: SonarSource/sonarqube-scan-action@v5
+#         env:
+#           SONAR_TOKEN: 9a172b62d89001bd0748104e111f57eb360a2f6c
+#         with:
+#           args: >
+#             -Dsonar.projectKey=ProCircleTeam_pro-mobile
+#             -Dsonar.organization=procircleteam
+#             -Dsonar.host.url=https://sonarcloud.io
+#             -Dsonar.sources=lib
+#             -Dsonar.dart.lcov.reportPaths=coverage/lcov.info
+#             -Dsonar.exclusions=**/*.g.dart
+#             -Dsonar.login=9a172b62d89001bd0748104e111f57eb360a2f6c
+
+
+name: Analyze and Run test coverage
 
 on:
+  push:
+    branches:
+      - dev
   pull_request:
-    branches: ["dev", "main"]
+    types: [opened, synchronize, reopened]
 
 jobs:
-  android_lint:
-    # The machine, we can also use windows-latest or ubuntu-latest
-    # We are choosing macos-latest because we will be also building for iOS
+  sonarqube:
+    name: SonarQube
     runs-on: ubuntu-latest
-
     steps:
-      # Clones the project on the machine
       - uses: actions/checkout@v4
-
-    #   - name: Create .env file
-    #     run: |
-    #       cat > .env <<EOF
-    #       MIXPANEL_PROJECT_TOKEN=${{ secrets.MIXPANEL_PROJECT_TOKEN }}
-    #       APPSFLYER_KEY_DEV=${{ secrets.APPSFLYER_KEY_DEV }}
-    #       GIGBANC_APP_ID=${{ secrets.GIGBANC_APP_ID }}
-    #       EOF
-
-      # Sets up java 11
-      - uses: actions/setup-java@v4
         with:
-          distribution: "zulu"
-          java-version: "21"
+          fetch-depth: 0
 
-      # Installs flutter and related dependency on this machine
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
-          flutter-version: "3.29.3"
-          # ^ If you want to use a specific version of flutter
+          flutter-version: '3.29.3'
 
-      # Fetches proj dependencies from pub
       - name: Install dependencies
-        run: flutter pub get
-        # ^ If you want to use a specific version of flutter
+        run: |
+          flutter pub get
+          dart pub global activate coverage
 
-      # Verifies if the dart code is formatted well
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
-        # --set-exit-if-changed stops execution if the any code is not well formatted
-        # --output=none prints files which needs to be formatted
+      - name: Generate and Process Coverage
+        run: |
+          flutter test --coverage
+          dart pub global run coverage:format_coverage \
+            --lcov \
+            --in=coverage \
+            --out=coverage/lcov.info \
+            --packages=.dart_tool/package_config.json \
+            --report-on=lib \
+            --base-directory=$(pwd) \
+            --check-ignore
+          sed -i "s|^SF:.*/lib|SF:lib|g" coverage/lcov.info
+          echo "end_of_record" >> coverage/lcov.info
 
-      # Checks for Symantic errors. Can be configured using analysis_options.yaml
-      - name: Analyze project source
-        run: flutter analyze --fatal-warnings
-        # optionally use --fatal-warnings to stop execution if any warnings are found
+      - name: Inspect LCOV file
+        run: |
+          echo "=== LCOV File Content ==="
+          cat coverage/lcov.info
+          echo "=== File Details ==="
+          ls -lh coverage/lcov.info
+          echo "=== First 10 Lines ==="
+          head -n 10 coverage/lcov.info
+          echo "=== Last 10 Lines ==="
+          tail -n 10 coverage/lcov.info
+          echo "=== Line Count ==="
+          wc -l coverage/lcov.info
 
-      # Runs unit test
-      - name: Run tests
-        run: flutter test
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: 9a172b62d89001bd0748104e111f57eb360a2f6c
+        with:
+          args: >
+            -Dsonar.projectKey=ProCircleTeam_pro-mobile
+            -Dsonar.organization=procircleteam
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.sources=lib
+            -Dsonar.tests=test
+            -Dsonar.dart.coverage.reportPath=coverage/lcov.info
+            -Dsonar.exclusions=**/*.g.dart
+            -Dsonar.cpd.exclusions=**/*.g.dart
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.verbose=true
