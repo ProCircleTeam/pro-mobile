@@ -71,7 +71,7 @@ class _GoalListingState extends State<GoalListing> {
             children: [
               CustomText("Progress"),
               CustomText(
-                "${percentageCompletion * 100}%",
+                "${(percentageCompletion * 100).toInt()}%",
                 color: AppColors.primary,
                 weight: FontWeight.bold,
                 size: 15,
