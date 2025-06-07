@@ -10,4 +10,5 @@ class AppColors {
   static Color inputBg = Color(0xffE0E5E9).withOpacity(.5);
   static Color iconColor = Color(0xff6082A0);
   static Color transparentGrey = Color(0xffD9D9D9);
+  static Color tinGrey = Color(0xff635F5F);
 }

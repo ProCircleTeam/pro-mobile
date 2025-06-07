@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/ui/widgets/custom_checkbox_tile.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
+import 'package:pro_mobile/ui/widgets/progress_bar.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 
 class GoalListing extends StatefulWidget {
@@ -79,41 +80,19 @@ class _GoalListingState extends State<GoalListing> {
             ],
           ),
           SpacingWidget(degree: 0.005),
-          Stack(
-            children: [
-              Container(
-                height: size.height * .008,
-                width: progressBarLength,
-                decoration: BoxDecoration(
-                  color: AppColors.transparentGrey,
-                  borderRadius: BorderRadius.circular(size.height * .008),
-                ),
-              ),
-              Container(
-                height: size.height * .008,
-                width: progressBarLength * percentageCompletion,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(size.height * .008),
-                ),
-              ),
-            ],
-          ),
+         ProgressBar(progressBarLength: progressBarLength, percentageCompletion: percentageCompletion),
           SpacingWidget(degree: 0.012),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
                 onTap: () {},
-                child: CustomText(
-                  "See More",
-                  size: 14,
-                  weight: FontWeight.bold,
-                ),
+                child: CustomText("See All", size: 14, weight: FontWeight.bold),
               ),
               SizedBox(),
             ],
           ),
+          SpacingWidget(degree: 0.005),
         ],
       ),
     );
