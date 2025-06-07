@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/ui/auth/auth_view_model.dart';
+import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/form/custom_text_input.dart';
@@ -35,80 +37,245 @@ class _AuthPageState extends State<AuthPage> {
     spaceFormItems() => SpacingWidget(degree: .025);
 
     return Scaffold(
-      body: PaddedContainer(
-        child: UnfocusWidget(
-          child: Container(
-            child: SizedBox(
-              height: size.height,
-              child: Column(
-                children: [
-                  SpacingWidget(degree: .07),
-                  Center(
+      body: BaseView<AuthViewModel>(
+        model: AuthViewModel(),
+        builder:
+            (context, model, _) => PaddedContainer(
+              child: UnfocusWidget(
+                child: Container(
+                  child: SizedBox(
+                    height: size.height,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CustomText(
-                          "Sign Up",
-                          size: 22,
-                          weight: FontWeight.bold,
-                          color: AppColors.appBlack,
-                        ),
-                        SpacingWidget(degree: .004),
-                        CustomText(
-                          "Create a new account",
-                          size: 14,
-                          color: AppColors.captionColor,
-                          weight: FontWeight.w600,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SpacingWidget(degree: .04),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * .01),
-                    child: Form(
-                      child: Column(
-                        children: [
-                          CustomTextInput(
-                            hintText: "Full Name",
-                            icon: Icons.person_2_outlined,
-                          ),
-                          spaceFormItems(),
-                          CustomTextInput(
-                            hintText: "Enter Your Email",
-                            icon: Icons.email_outlined,
-                          ),
-                          spaceFormItems(),
-                          CustomTextInput(
-                            hintText: "Password",
-                            icon: Icons.lock_outline,
-                            trailingIcon: Icons.visibility_off_outlined,
-                          ),
-                          spaceFormItems(),
-                          CustomTextInput(
-                            hintText: "Confirm Password",
-                            icon: Icons.lock_outline,
-                            trailingIcon: Icons.visibility_off_outlined,
-                          ),
-                          SpacingWidget(degree: .01),
-                          Row(
+                        SpacingWidget(degree: .07),
+                        Center(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Theme(
-                                data: Theme.of(context).copyWith(
-                                  checkboxTheme: CheckboxThemeData(
-                                    shape: const CircleBorder(),
-                                    side: BorderSide(color: AppColors.primary),
+                              CustomText(
+                                "Sign Up",
+                                size: 22,
+                                weight: FontWeight.bold,
+                                color: AppColors.appBlack,
+                              ),
+                              SpacingWidget(degree: .004),
+                              CustomText(
+                                "Create a new account",
+                                size: 14,
+                                color: AppColors.captionColor,
+                                weight: FontWeight.w600,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SpacingWidget(degree: .04),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: size.width * .01,
+                          ),
+                          child: Form(
+                            child: Column(
+                              children: [
+                                CustomTextInput(
+                                  hintText: "Full Name",
+                                  icon: Icons.person_2_outlined,
+                                  controller: model.nameController,
+                                ),
+                                spaceFormItems(),
+                                CustomTextInput(
+                                  hintText: "Enter Your Email",
+                                  icon: Icons.email_outlined,
+                                  controller: model.emailController,
+                                ),
+                                spaceFormItems(),
+                                CustomTextInput(
+                                  hintText: "Password",
+                                  icon: Icons.lock_outline,
+                                  obscureText: model.obscurePassword,
+                                  controller: model.passwordController,
+                                  trailingIcon: InkWell(
+                                    onTap: () {
+                                      model.obscurePassword =
+                                          !model.obscurePassword;
+                                    },
+                                    child: Icon(
+                                      model.obscurePassword
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                      color: AppColors.iconColor,
+                                      size: size.width * .05,
+                                    ),
                                   ),
                                 ),
-                                child: Checkbox(
-                                  value: true,
-                                  onChanged: (e) {},
-                                  activeColor: AppColors.primary,
+                                spaceFormItems(),
+                                CustomTextInput(
+                                  hintText: "Confirm Password",
+                                  icon: Icons.lock_outline,
+                                  obscureText: model.obscurePassword,
+                                  controller: model.confirmPasswordController,
+                                  trailingIcon: InkWell(
+                                    onTap: () {
+                                      model.obscurePassword =
+                                          !model.obscurePassword;
+                                    },
+                                    child: Icon(
+                                      model.obscurePassword
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                      color: AppColors.iconColor,
+                                      size: size.width * .05,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: RichText(
+                                SpacingWidget(degree: .01),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Theme(
+                                      data: Theme.of(context).copyWith(
+                                        checkboxTheme: CheckboxThemeData(
+                                          shape: const CircleBorder(),
+                                          side: BorderSide(
+                                            color: AppColors.primary,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Checkbox(
+                                        value:
+                                            model
+                                                .hasAgreedWithTermsAndConditions,
+                                        onChanged: (e) {
+                                          model.hasAgreedWithTermsAndConditions =
+                                              !model
+                                                  .hasAgreedWithTermsAndConditions;
+                                        },
+                                        activeColor: AppColors.primary,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 14,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: 'I agree to the ',
+                                              style: termsAndConditionTextStyle(
+                                                null,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: 'terms & conditions',
+                                              style: termsAndConditionTextStyle(
+                                                AppColors.primary,
+                                              ),
+                                              recognizer:
+                                                  _termsRecognizer
+                                                    ..onTap = () {
+                                                      print(
+                                                        'Tapped terms & conditions',
+                                                      );
+                                                    },
+                                            ),
+                                            TextSpan(
+                                              text: ' and ',
+                                              style: termsAndConditionTextStyle(
+                                                null,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: 'privacy policy',
+                                              style: termsAndConditionTextStyle(
+                                                AppColors.primary,
+                                              ),
+                                              recognizer:
+                                                  _privacyRecognizer
+                                                    ..onTap = () {
+                                                      print(
+                                                        'Tapped privacy policy',
+                                                      );
+                                                    },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                spaceFormItems(),
+                                ActionButton(
+                                  title: "REGISTER",
+                                  isLoading: model.isSigningUp,
+                                  onTap: () {
+                                    if (model.validateSignUp(
+                                      name: model.nameController.text.trim(),
+                                      email: model.emailController.text.trim(),
+                                      password:
+                                          model.passwordController.text.trim(),
+                                      confirmPassword:
+                                          model.confirmPasswordController.text
+                                              .trim(),
+                                      hasAcceptedTermsAndCondition:
+                                          model.hasAgreedWithTermsAndConditions,
+                                      onValidationFail: (e) {
+                                      },
+                                    ))
+                                      model.signUp(() {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRouter.home,
+                                        );
+                                      });
+                                  },
+                                ),
+                                SpacingWidget(degree: .05),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 1,
+                                        color: AppColors.lightBlack,
+                                      ),
+                                    ),
+                                    SpacingWidget(
+                                      degree: 0.05,
+                                      isVertical: false,
+                                    ),
+                                    CustomText(
+                                      "Or continue with",
+                                      color: AppColors.lightBlack,
+                                    ),
+                                    SpacingWidget(
+                                      degree: 0.05,
+                                      isVertical: false,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 1,
+                                        color: AppColors.lightBlack,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SpacingWidget(degree: .05),
+                                ActionButton(
+                                  title: "Google",
+                                  title2: SvgPicture.asset(
+                                    SVGImageUrl.googleLogo,
+                                    height: 18,
+                                  ),
+                                  onTap: () {
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      AppRouter.onboarding,
+                                    );
+                                  },
+                                  bgColor: AppColors.veryLightGrey,
+                                ),
+                                SpacingWidget(degree: .09),
+                                RichText(
                                   text: TextSpan(
                                     style: TextStyle(
                                       color: Colors.black87,
@@ -116,117 +283,35 @@ class _AuthPageState extends State<AuthPage> {
                                     ),
                                     children: [
                                       TextSpan(
-                                        text: 'I agree to the ',
+                                        text: 'Already have account? ',
                                         style: termsAndConditionTextStyle(null),
                                       ),
                                       TextSpan(
-                                        text: 'terms & conditions',
-                                        style: termsAndConditionTextStyle(
-                                          AppColors.primary,
-                                        ),
-                                        recognizer:
-                                            _termsRecognizer
-                                              ..onTap = () {
-                                                print(
-                                                  'Tapped terms & conditions',
-                                                );
-                                              },
-                                      ),
-                                      TextSpan(
-                                        text: ' and ',
-                                        style: termsAndConditionTextStyle(null),
-                                      ),
-                                      TextSpan(
-                                        text: 'privacy policy',
+                                        text: 'Login',
                                         style: termsAndConditionTextStyle(
                                           AppColors.primary,
                                         ),
                                         recognizer:
                                             _privacyRecognizer
                                               ..onTap = () {
-                                                print('Tapped privacy policy');
+                                                print(
+                                                  '===========> Signing up',
+                                                );
                                               },
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          spaceFormItems(),
-                          ActionButton(title: "REGISTER", onTap: () {
-                             Navigator.pushReplacementNamed(context, AppRouter.home);
-                          }),
-                          SpacingWidget(degree: .05),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color: AppColors.lightBlack,
-                                ),
-                              ),
-                              SpacingWidget(degree: 0.05, isVertical: false),
-                              CustomText(
-                                "Or continue with",
-                                color: AppColors.lightBlack,
-                              ),
-                              SpacingWidget(degree: 0.05, isVertical: false),
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color: AppColors.lightBlack,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SpacingWidget(degree: .05),
-                          ActionButton(
-                            title: "Google",
-                            title2: SvgPicture.asset(
-                              SVGImageUrl.googleLogo,
-                              height: 18,
-                            ),
-                            onTap: () {
-                               Navigator.pushReplacementNamed(context, AppRouter.onboarding);
-                            },
-                            bgColor: AppColors.veryLightGrey,
-                          ),
-                          SpacingWidget(degree: .09),
-                          RichText(
-                            text: TextSpan(
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 14,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: 'Already have account? ',
-                                  style: termsAndConditionTextStyle(null),
-                                ),
-                                TextSpan(
-                                  text: 'Login',
-                                  style: termsAndConditionTextStyle(
-                                    AppColors.primary,
-                                  ),
-                                  recognizer:
-                                      _privacyRecognizer
-                                        ..onTap = () {
-                                          print('===========> Signing up');
-                                        },
-                                ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
       ),
     );
   }

@@ -94,7 +94,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, AppRouter.home);
+                    Navigator.pushReplacementNamed(context, AppRouter.auth);
                   },
                   child: CustomText("Skip", weight: FontWeight.bold, size: 16),
                 ),

@@ -6,7 +6,8 @@ class CustomTextInput extends StatelessWidget {
   final TextEditingController? controller;
   final String hintText;
   final IconData icon;
-  final IconData? trailingIcon;
+  final bool obscureText;
+  final Widget? trailingIcon;
   final void Function(String)? onChanged;
 
   const CustomTextInput({
@@ -15,6 +16,7 @@ class CustomTextInput extends StatelessWidget {
     this.hintText = '',
     this.onChanged,
     this.trailingIcon,
+    this.obscureText = false,
     required this.icon,
   }) : super(key: key);
 
@@ -39,6 +41,7 @@ class CustomTextInput extends StatelessWidget {
             child: TextFormField(
               controller: controller,
               onChanged: onChanged,
+              obscureText: obscureText,
               style: TextStyle(
                 color: AppColors.appBlack.withAlpha(180),
                 fontFamily: 'SourceSan3',
@@ -53,12 +56,7 @@ class CustomTextInput extends StatelessWidget {
               ),
             ),
           ),
-          if (trailingIcon != null)
-            Icon(
-              trailingIcon,
-              color: AppColors.iconColor,
-              size: size.width * .05,
-            ),
+          if (trailingIcon != null) trailingIcon!,
         ],
       ),
     );
