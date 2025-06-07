@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 
-class CustomCheckboxTile extends StatelessWidget {
-  final bool isChecked;
-  final ValueChanged<bool?> onChanged;
+class CustomCheckboxTile extends StatefulWidget {
+  final ValueChanged<bool> onChanged;
   final String label;
 
   const CustomCheckboxTile({
-    required this.isChecked,
     required this.onChanged,
     required this.label,
+    super.key,
   });
+
+  @override
+  State<CustomCheckboxTile> createState() => _CustomCheckboxTileState();
+}
+
+class _CustomCheckboxTileState extends State<CustomCheckboxTile> {
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +26,12 @@ class CustomCheckboxTile extends StatelessWidget {
     return Row(
       children: [
         GestureDetector(
-          onTap: () => onChanged(!isChecked),
+          onTap: () {
+            setState(() {
+              isChecked = !isChecked;
+            });
+            widget.onChanged(isChecked);
+          },
           child: Container(
             width: size.width * .06,
             height: size.width * .06,
@@ -30,12 +41,16 @@ class CustomCheckboxTile extends StatelessWidget {
             ),
             child:
                 isChecked
-                    ? Icon(Icons.check, size: size.width * 0.055, color: AppColors.appBlack)
+                    ? Icon(
+                      Icons.check,
+                      size: size.width * 0.055,
+                      color: AppColors.appBlack,
+                    )
                     : null,
           ),
         ),
         SizedBox(width: 12),
-        CustomText(label),
+        CustomText(widget.label),
       ],
     );
   }
