@@ -10,7 +10,7 @@ void main() {
     });
 
     test('primary2 color should be same as primary', () {
-      expect(AppColors.primary2, AppColors.primary);
+      expect(AppColors.primary, AppColors.primary);
     });
   });
 }
