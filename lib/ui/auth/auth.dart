@@ -6,6 +6,7 @@ import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/ui/auth/auth_view_model.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
+import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/form/custom_text_input.dart';
@@ -220,12 +221,20 @@ class _AuthPageState extends State<AuthPage> {
                                       hasAcceptedTermsAndCondition:
                                           model.hasAgreedWithTermsAndConditions,
                                       onValidationFail: (e) {
+                                        AppFlushBar().showError(
+                                          message: e,
+                                          context: context,
+                                        );
                                       },
                                     ))
-                                      model.signUp(() {
+                                      model.signUp((e) {
                                         Navigator.pushReplacementNamed(
                                           context,
                                           AppRouter.home,
+                                        );
+                                        AppFlushBar().showSuccess(
+                                          message: e,
+                                          context: context,
                                         );
                                       });
                                   },

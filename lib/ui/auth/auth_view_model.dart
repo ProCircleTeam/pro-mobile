@@ -69,11 +69,11 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> signUp(Function onSuccess) async {
+  Future<void> signUp(Function(String successMessage) onSuccess) async {
     isSigninUp = true;
 
     await Future.delayed(Duration(seconds: 3), () {
-      onSuccess();
+      onSuccess("Congratulations !!!");
     });
     isSigninUp = false;
   }
