@@ -8,9 +8,11 @@ class ActionButton extends StatelessWidget {
   final bool isLoading;
   final Color? bgColor;
   final Widget? title2;
+  final double? verticalPadding;
   const ActionButton({
     required this.title,
     required this.onTap,
+    this.verticalPadding,
     this.isLoading = false,
     this.bgColor,
     this.title2,
@@ -18,12 +20,14 @@ class ActionButton extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return InkWell(
       onTap: () {
         onTap();
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 16),
         width: double.infinity,
         decoration: BoxDecoration(
           color: bgColor ?? AppColors.primary,
@@ -37,10 +41,11 @@ class ActionButton extends StatelessWidget {
                     width: 25,
                     child: CircularProgressIndicator(color: Colors.white),
                   )
-                  : title2 ?? Text(
-                    title,
-                    style: AppTextStyle.medium(color: Colors.white),
-                  ),
+                  : title2 ??
+                      Text(
+                        title,
+                        style: AppTextStyle.medium(color: Colors.white),
+                      ),
         ),
       ),
     );
