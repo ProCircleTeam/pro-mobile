@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "668739069836",
+    "project_id": "procircle-8a357",
+    "storage_bucket": "procircle-8a357.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668739069836:android:3368904f03538676c698a9",
+        "android_client_info": {
+          "package_name": "com.example.pro_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvvM3dELydSOpjJeXtHTz-mYXh1f8qpoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
