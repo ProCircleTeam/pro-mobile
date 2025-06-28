@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/local/secure_storage.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
+import 'package:pro_mobile/ui/auth/signin.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_listing.dart';
 import 'package:pro_mobile/ui/home/widget.dart/reminders_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/streak_card.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
+import 'package:pro_mobile/ui/widgets/app_text_style.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 import 'package:provider/provider.dart';
@@ -114,7 +117,77 @@ class _HomePageState extends State<HomePage> {
                         verticalPadding: size.height * .013,
                         title: "",
                         title2: Icon(Icons.add, color: Colors.white),
-                        onTap: () {},
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Logout",
+                                          textAlign: TextAlign.start,
+                                          style: AppTextStyle.title(
+                                            fontSize: 22,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 30),
+                                    Text(
+                                      "Are you sure you want to log out?",
+                                      textAlign: TextAlign.center,
+                                      style: AppTextStyle.subTitle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        SizedBox(
+                                          width: 100,
+                                          child: ActionButton(
+                                            title: "Canceal",
+                                            bgColor: AppColors.primary
+                                                .withOpacity(.8),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 100,
+                                          child: ActionButton(
+                                            title: "Continue",
+                                            bgColor: AppColors.red,
+                                            onTap: () async {
+                                              SecureStorageService storage =
+                                                  SecureStorageService();
+                                              await storage.clearAll();
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (context) => SignInPage(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                     SpacingWidget(degree: .05, isVertical: false),

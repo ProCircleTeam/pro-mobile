@@ -11,4 +11,6 @@ class AppColors {
   static Color iconColor = Color(0xff6082A0);
   static Color transparentGrey = Color(0xffD9D9D9);
   static Color tinGrey = Color(0xff635F5F);
+  static Color red = Color(0xff800000);
+
 }
