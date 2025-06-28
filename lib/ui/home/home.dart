@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_listing.dart';
 import 'package:pro_mobile/ui/home/widget.dart/reminders_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/streak_card.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
-import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,11 +37,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    UserModel user = userProvider.user!;
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.only(top: size.height * .03, left: size.width * .035, right: size.width * .035),
+        padding: EdgeInsets.only(
+          top: size.height * .03,
+          left: size.width * .035,
+          right: size.width * .035,
+        ),
         child: SizedBox(
           height: size.height,
           child: Column(
@@ -62,13 +69,13 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      "Hello, Xrole",
+                      "Hello, ${user.username}",
                       size: 16,
                       weight: FontWeight.bold,
                       color: AppColors.appBlack,
                     ),
                     CustomText(
-                      "@winloop",
+                      "@${user.username}",
                       size: 12,
                       weight: FontWeight.bold,
                       color: AppColors.lightBlack,

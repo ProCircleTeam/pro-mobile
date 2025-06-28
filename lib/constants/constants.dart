@@ -6,7 +6,12 @@ class SVGImageUrl {
   static const trophy = "assets/images/svg/trophy.svg";
   static const fire = "assets/images/svg/fire.svg";
 }
+
 class PNGImageUrl {
   static const sampleProfilePix = "assets/images/png/sample-profile-pix.png";
   static const sampleProfilePix2 = "assets/images/png/sample-profile-pix-2.png";
+}
+
+class ErrorText {
+  static const generic = "Something went wrong, please try again later";
 }
