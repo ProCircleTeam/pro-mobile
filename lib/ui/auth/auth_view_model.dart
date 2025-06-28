@@ -1,8 +1,20 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pro_mobile/app/core/failure/failure.dart';
+import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/local/secure_storage.dart';
+import 'package:pro_mobile/data/remote/auth/auth_service.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view_model.dart';
+import 'package:pro_mobile/ui/utils/app_logger.dart';
 import 'package:pro_mobile/ui/utils/form_helper.dart';
 
 class AuthViewModel extends BaseViewModel {
+  final AuthService authService;
+  UserProvider userProvider;
+  AuthViewModel({required this.authService, required this.userProvider});
+
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -85,21 +97,39 @@ class AuthViewModel extends BaseViewModel {
     isSigninUp = false;
   }
 
-  Future<void> signIn({
-    required String email,
+  Future<void> login({
+    required String emailOrUsername,
     required String password,
     required Function(String successMessage) onSuccess,
     required Function(String errorMessage) onError,
   }) async {
-    isSigninIn = true;
+    SecureStorageService storage = SecureStorageService();
+    
+    try {
+      isSigninIn = true;
 
-    await Future.delayed(Duration(seconds: 3), () {
-      if (email == "abc@gmail.com" && password == "password123@") {
-        onSuccess("Sign In Success");
-      } else {
-        onError("Invalid login credentials");
+      Response? res = await authService.login(
+        emailOrUsername: emailOrUsername,
+        password: password,
+      );
+      isSigninIn = false;
+      if (res != null && res.data != null) {
+        UserModel user = UserModel.fromJson(res.data["data"]);
+        userProvider.user = user;
+
+        String token = res.data["data"]["token"];
+        String message = res.data["message"];
+        await storage.write(key: StringConstants.authToken, val: token);
+
+        onSuccess(message);
       }
-    });
-    isSigninIn = false;
+    } on Failure catch (e) {
+      isSigninIn = false;
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+      onError(e.errorMessage);
+    } catch (e) {
+      isSigninIn = false;
+      onError(ErrorText.generic);
+    }
   }
 }

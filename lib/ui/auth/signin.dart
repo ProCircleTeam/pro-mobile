@@ -1,9 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/auth/auth_service.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/auth/auth_view_model.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
@@ -13,6 +16,7 @@ import 'package:pro_mobile/ui/widgets/form/custom_text_input.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 import 'package:pro_mobile/ui/widgets/unfocus_widget.dart';
+import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -34,12 +38,16 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     final size = MediaQuery.of(context).size;
     spaceFormItems() => SpacingWidget(degree: .025);
 
     return Scaffold(
       body: BaseView<AuthViewModel>(
-        model: AuthViewModel(),
+        model: AuthViewModel(
+          authService: sl.get<AuthService>(),
+          userProvider: userProvider,
+        ),
         builder:
             (context, model, _) => PaddedContainer(
               child: UnfocusWidget(
@@ -124,18 +132,23 @@ class _SignInPageState extends State<SignInPage> {
                                   title: "LOGIN",
                                   isLoading: model.isSigningIn,
                                   onTap: () {
-                                    model.signIn(
-                                      email: model.emailController.text.trim(),
+                                    model.login(
+                                      emailOrUsername:
+                                          model.emailController.text.trim(),
                                       password:
                                           model.passwordController.text
                                               .toString(),
-                                      onSuccess: (e) {
+                                      onSuccess: (successMessage) {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRouter.home,
+                                        );
                                         Navigator.pushReplacementNamed(
                                           context,
                                           AppRouter.home,
                                         );
                                         AppFlushBar().showSuccess(
-                                          message: e,
+                                          message: successMessage,
                                           context: context,
                                         );
                                       },
