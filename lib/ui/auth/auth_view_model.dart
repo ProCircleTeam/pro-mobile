@@ -88,13 +88,43 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> signUp(Function(String successMessage) onSuccess) async {
-    isSigninUp = true;
+  Future<void> signUp({
+    required String username,
+    required String email,
+    required String password,
+    required Function(String message) onSuccess,
+    required Function(String errorMessage) onError
+  }) async {
+      SecureStorageService storage = SecureStorageService();
 
-    await Future.delayed(Duration(seconds: 3), () {
-      onSuccess("Congratulations !!!");
-    });
-    isSigninUp = false;
+    try {
+      isSigninUp = true;
+
+      Response? res = await authService.signUp(
+        username: username,
+        email: email,
+        password: password,
+      );
+
+      isSigninUp = false;
+      if (res != null && res.data != null) {
+        UserModel user = UserModel.fromJson(res.data["data"]);
+        userProvider.user = user;
+
+        String token = res.data["data"]["token"];
+        String message = res.data["message"];
+        await storage.write(key: StringConstants.authToken, val: token);
+
+        onSuccess(message);
+      }
+    } on Failure catch (e) {
+      isSigninUp = false;
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+      onError(e.errorMessage);
+    } catch (e) {
+      isSigninUp = false;
+      onError(ErrorText.generic);
+    }
   }
 
   Future<void> login({
@@ -104,7 +134,7 @@ class AuthViewModel extends BaseViewModel {
     required Function(String errorMessage) onError,
   }) async {
     SecureStorageService storage = SecureStorageService();
-    
+
     try {
       isSigninIn = true;
 

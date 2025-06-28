@@ -86,7 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             child: Column(
                               children: [
                                 CustomTextInput(
-                                  hintText: "Full Name",
+                                  hintText: "Username",
                                   icon: Icons.person_2_outlined,
                                   controller: model.nameController,
                                 ),
@@ -218,14 +218,21 @@ class _SignUpPageState extends State<SignUpPage> {
                                   title: "REGISTER",
                                   isLoading: model.isSigningUp,
                                   onTap: () {
+                                    final String userName =
+                                        model.nameController.text.trim();
+                                    final String password =
+                                        model.passwordController.text.trim();
+                                    final String confirmPassword =
+                                        model.confirmPasswordController.text
+                                            .trim();
+                                    final String email =
+                                        model.emailController.text.trim();
+
                                     if (model.validateSignUp(
-                                      name: model.nameController.text.trim(),
-                                      email: model.emailController.text.trim(),
-                                      password:
-                                          model.passwordController.text.trim(),
-                                      confirmPassword:
-                                          model.confirmPasswordController.text
-                                              .trim(),
+                                      name: userName,
+                                      email: email,
+                                      password: password,
+                                      confirmPassword: confirmPassword,
                                       hasAcceptedTermsAndCondition:
                                           model.hasAgreedWithTermsAndConditions,
                                       onValidationFail: (e) {
@@ -234,17 +241,29 @@ class _SignUpPageState extends State<SignUpPage> {
                                           context: context,
                                         );
                                       },
-                                    ))
-                                      model.signUp((e) {
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          AppRouter.home,
-                                        );
-                                        AppFlushBar().showSuccess(
-                                          message: e,
-                                          context: context,
-                                        );
-                                      });
+                                    )) {
+                                      model.signUp(
+                                        email: email,
+                                        password: password,
+                                        username: userName,
+                                        onSuccess: (successMessage) {
+                                          Navigator.pushReplacementNamed(
+                                            context,
+                                            AppRouter.home,
+                                          );
+                                          AppFlushBar().showSuccess(
+                                            message: successMessage,
+                                            context: context,
+                                          );
+                                        },
+                                        onError: (e) {
+                                          AppFlushBar().showError(
+                                            message: e,
+                                            context: context,
+                                          );
+                                        },
+                                      );
+                                    }
                                   },
                                 ),
                                 SpacingWidget(degree: .05),
