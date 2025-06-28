@@ -143,9 +143,6 @@ class _SignInPageState extends State<SignInPage> {
                                           context,
                                           AppRouter.home,
                                         );
-                                        print(
-                                          "=============================================================> xrole",
-                                        );
                                         Navigator.pushReplacementNamed(
                                           context,
                                           AppRouter.home,

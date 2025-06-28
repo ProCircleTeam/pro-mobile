@@ -3,6 +3,7 @@ import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
+import 'package:pro_mobile/ui/onboarding_screen/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const Home(),
+      home: const SplashScreen(),
       initialRoute: AppRouter.onboarding,
       routes: AppRouter().generateRoutes(context),
     );

@@ -15,3 +15,8 @@ class PNGImageUrl {
 class ErrorText {
   static const generic = "Something went wrong, please try again later";
 }
+
+class StringConstants {
+  static const authToken = "auth_token";
+  static const isFirstTimeUser = "is_first_time_user";
+}

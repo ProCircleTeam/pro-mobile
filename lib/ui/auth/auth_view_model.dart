@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pro_mobile/app/core/failure/failure.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/local/secure_storage.dart';
 import 'package:pro_mobile/data/remote/auth/auth_service.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
@@ -102,6 +103,8 @@ class AuthViewModel extends BaseViewModel {
     required Function(String successMessage) onSuccess,
     required Function(String errorMessage) onError,
   }) async {
+    SecureStorageService storage = SecureStorageService();
+    
     try {
       isSigninIn = true;
 
@@ -114,7 +117,11 @@ class AuthViewModel extends BaseViewModel {
         UserModel user = UserModel.fromJson(res.data["data"]);
         userProvider.user = user;
 
-        onSuccess("Sign in Successful");
+        String token = res.data["data"]["token"];
+        String message = res.data["message"];
+        await storage.write(key: StringConstants.authToken, val: token);
+
+        onSuccess(message);
       }
     } on Failure catch (e) {
       isSigninIn = false;

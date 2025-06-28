@@ -20,6 +20,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int pageIndex = 0;
 
+  Future<void> saveFirstTimerVisitation() async {
+    final preference = await SharedPreferences.getInstance();
+    preference.setBool(StringConstants.isFirstTimeUser, false);
+  }
+
+  @override
+  void initState() {
+    saveFirstTimerVisitation();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
