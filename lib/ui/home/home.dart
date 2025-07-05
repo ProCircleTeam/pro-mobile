@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/local/secure_storage.dart';
@@ -117,6 +118,22 @@ class _HomePageState extends State<HomePage> {
                         verticalPadding: size.height * .013,
                         title: "",
                         title2: Icon(Icons.add, color: Colors.white),
+
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRouter.goalsHomePage);
+                        },
+                      ),
+                    ),
+                    SpacingWidget(degree: .05, isVertical: false),
+                    Expanded(
+                      child: ActionButton(
+                        verticalPadding: size.height * .013,
+                        bgColor: AppColors.secondary,
+                        title: "",
+                        title2: Icon(
+                          Icons.task_alt_outlined,
+                          color: Colors.white,
+                        ),
                         onTap: () {
                           showDialog(
                             context: context,
@@ -188,19 +205,6 @@ class _HomePageState extends State<HomePage> {
                             },
                           );
                         },
-                      ),
-                    ),
-                    SpacingWidget(degree: .05, isVertical: false),
-                    Expanded(
-                      child: ActionButton(
-                        verticalPadding: size.height * .013,
-                        title: "",
-                        bgColor: AppColors.secondary,
-                        title2: Icon(
-                          Icons.task_alt_outlined,
-                          color: Colors.white,
-                        ),
-                        onTap: () {},
                       ),
                     ),
                   ],

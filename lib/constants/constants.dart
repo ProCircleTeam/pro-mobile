@@ -5,6 +5,7 @@ class SVGImageUrl {
   static const googleLogo = "assets/images/svg/google-logo.svg";
   static const trophy = "assets/images/svg/trophy.svg";
   static const fire = "assets/images/svg/fire.svg";
+  static const warningIcon = "assets/images/svg/warning_icon.svg";
 }
 
 class PNGImageUrl {

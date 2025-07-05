@@ -12,5 +12,6 @@ class AppColors {
   static Color transparentGrey = Color(0xffD9D9D9);
   static Color tinGrey = Color(0xff635F5F);
   static Color red = Color(0xff800000);
+  static Color lightPrimary = Color(0xffE8F4FF);
 
 }
