@@ -19,6 +19,11 @@ class GoalViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  void deletGoal({required String goal, required int index}) {
+    goals.removeAt(index);
+    notifyListeners();
+  }
+
   List<Color> goalColors = [
     AppColors.goalBorderColor1,
     AppColors.goalBorderColor2,

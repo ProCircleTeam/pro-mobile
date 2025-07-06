@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/data/local/goals_storage.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
@@ -67,44 +68,78 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                           ],
                         ),
                         SizedBox(height: size.height * .014),
+                        Slidable(child: Column(children: [
+                            
+                          ],
+                        )),
                         ...model.goals.map((goal) {
-                          return GestureDetector(
-                            onTap: () {
-                              handleGoalViewingAndEditing(
-                                context: context,
-                                size: size,
-                                formKey: _formKey,
-                                model: model,
-                                goalToEdit: goal,
-                              );
-                            },
-                            child: Column(
+                          return Slidable(
+                            key: ValueKey(goal), // Must be unique
+                            endActionPane: ActionPane(
+                              motion: const ScrollMotion(),
                               children: [
-                                Container(
-                                  width: size.width,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: size.width * .04,
-                                    vertical: size.height * .02,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      left: BorderSide(
-                                        color:
-                                            model.goalColors[random.nextInt(3)],
-                                        width: 5.0,
+                                SlidableAction(
+                                  onPressed: (_) {
+                                    if (goal.isNotEmpty) {
+                                      int goalIndex = model.goals.indexOf(goal);
+                                      model.deletGoal(
+                                        goal: goal,
+                                        index: goalIndex,
+                                      );
+
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(content: Text('Goal Deleted')),
+                                      );
+                                    }
+                                  },
+                                  backgroundColor: Colors.white,
+                                  icon: Icons.delete_outline,
+                                  flex: 2,
+                                ),
+                              ],
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                handleGoalViewingAndEditing(
+                                  context: context,
+                                  size: size,
+                                  formKey: _formKey,
+                                  model: model,
+                                  goalToEdit: goal,
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: size.width,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: size.width * .04,
+                                      vertical: size.height * .02,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        left: BorderSide(
+                                          color:
+                                              model.goalColors[random.nextInt(
+                                                3,
+                                              )],
+                                          width: 5.0,
+                                        ),
+                                        top: goalBorderSide,
+                                        right: goalBorderSide,
+                                        bottom: goalBorderSide,
                                       ),
-                                      top: goalBorderSide,
-                                      right: goalBorderSide,
-                                      bottom: goalBorderSide,
+                                    ),
+                                    child: CustomText(
+                                      goal,
+                                      size: size.height * .016,
                                     ),
                                   ),
-                                  child: CustomText(
-                                    goal,
-                                    size: size.height * .016,
-                                  ),
-                                ),
-                                SizedBox(height: size.height * .017),
-                              ],
+                                  SizedBox(height: size.height * .017),
+                                ],
+                              ),
                             ),
                           );
                         }),
@@ -314,7 +349,7 @@ void handleGoalViewingAndEditing({
                                   message: "Maximum goals reached",
                                   context: context,
                                 );
-                                Future.delayed(Duration(seconds: 1), () {
+                                Future.delayed(Duration(seconds: 4), () {
                                   Navigator.pop(context);
                                 });
                               }
