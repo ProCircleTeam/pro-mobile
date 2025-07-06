@@ -8,7 +8,7 @@ class PaddedContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(padding: EdgeInsets.symmetric(
-      horizontal: size.width * 0.035,
+      horizontal: size.width * 0.05,
       vertical: size.height * 0.03,
     ), child: child);
   }
