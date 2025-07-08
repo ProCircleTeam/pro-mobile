@@ -86,7 +86,7 @@ class _SignInPageState extends State<SignInPage> {
                             child: Column(
                               children: [
                                 CustomTextInput(
-                                  hintText: "Enter Your Email",
+                                  hintText: "Enter Email or Username",
                                   icon: Icons.email_outlined,
                                   controller: model.emailController,
                                 ),

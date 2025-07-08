@@ -28,7 +28,7 @@ class WarningBar extends StatelessWidget {
           Expanded(
             flex: 6,
             child: CustomText(
-              "Note that you will . be paired only with the first goal",
+              "Note that you will be paired only with the first goal",
               weight: FontWeight.bold,
               size: size.height * .013,
             ),

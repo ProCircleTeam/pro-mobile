@@ -352,7 +352,13 @@ void handleGoalViewingAndEditing({
                                 Future.delayed(Duration(seconds: 4), () {
                                   Navigator.pop(context);
                                 });
+                              } else {
+                                 AppFlushBar().showSuccess(
+                                  message: "Goal Added",
+                                  context: context,
+                                );
                               }
+  
                             }
                           }
                         },
