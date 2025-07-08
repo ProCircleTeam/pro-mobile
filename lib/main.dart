@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
+import 'package:pro_mobile/providers/goal_provider.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
 import 'package:pro_mobile/ui/onboarding_screen/splash_screen.dart';
@@ -12,7 +13,10 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => GoalProvider()),
+      ],
       child: const MyApp(),
     ),
   );
