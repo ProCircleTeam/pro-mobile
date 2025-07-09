@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/ui/widgets/custom_checkbox_tile.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
@@ -7,7 +8,12 @@ import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 
 class GoalListing extends StatefulWidget {
   final List<String> goals;
-  const GoalListing({required this.goals, super.key});
+  final bool isFetchingGoals;
+  const GoalListing({
+    required this.goals,
+    required this.isFetchingGoals,
+    super.key,
+  });
 
   @override
   State<GoalListing> createState() => _GoalListingState();
@@ -45,26 +51,44 @@ class _GoalListingState extends State<GoalListing> {
       ),
       child: Column(
         children: [
-          ListView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(0),
-            itemCount: widget.goals.length,
-            itemBuilder: (context, index) {
-              return Column(
+          !widget.isFetchingGoals
+              ? ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(0),
+                itemCount: widget.goals.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      CustomCheckboxTile(
+                        onChanged: (e) {
+                          setState(() {
+                            checkingStore["$index"] = e;
+                          });
+                        },
+                        label: widget.goals[index],
+                      ),
+                      SpacingWidget(degree: 0.012),
+                    ],
+                  );
+                },
+              )
+              : Column(
                 children: [
-                  CustomCheckboxTile(
-                    onChanged: (e) {
-                      setState(() {
-                        checkingStore["$index"] = e;
-                      });
-                    },
-                    label: widget.goals[index],
-                  ),
-                  SpacingWidget(degree: 0.012),
+                  ...List.generate(4, (i) {
+                    return Column(
+                      children: [
+                        SpacingWidget(degree: 0.008),
+                        Container(
+                          color: Colors.grey.withValues(alpha: .5),
+                          width: size.width,
+                          height: 5,
+                        ),
+                        SpacingWidget(degree: 0.008),
+                      ],
+                    );
+                  }),
                 ],
-              );
-            },
-          ),
+              ),
 
           SpacingWidget(degree: 0.005),
           Row(
@@ -80,13 +104,22 @@ class _GoalListingState extends State<GoalListing> {
             ],
           ),
           SpacingWidget(degree: 0.005),
-         ProgressBar(progressBarLength: progressBarLength, percentageCompletion: percentageCompletion),
+          ProgressBar(
+            progressBarLength: progressBarLength,
+            percentageCompletion: percentageCompletion,
+          ),
           SpacingWidget(degree: 0.012),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    AppRouter.goalsHomePage,
+                    arguments: "Data is from database",
+                  );
+                },
                 child: CustomText("See All", size: 14, weight: FontWeight.bold),
               ),
               SizedBox(),

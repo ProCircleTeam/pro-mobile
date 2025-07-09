@@ -2,8 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/data/local/goals_storage.dart';
+import 'package:pro_mobile/data/remote/goal/goal_service.dart';
+import 'package:pro_mobile/providers/goal_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/goals/goal_view_model.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
@@ -13,6 +17,7 @@ import 'package:pro_mobile/ui/widgets/custom_bottom_modal.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/warning_bar.dart';
+import 'package:provider/provider.dart';
 
 class GoalsHomePage extends StatefulWidget {
   const GoalsHomePage({super.key});
@@ -26,6 +31,8 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    GoalProvider goalProvider = Provider.of<GoalProvider>(context);
+
     final size = MediaQuery.of(context).size;
     final goalBorderSide = BorderSide(
       color: Colors.grey.withValues(alpha: .5),
@@ -33,15 +40,25 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
     );
 
     final random = Random();
+    final args = ModalRoute.of(context)!.settings.arguments;
 
     return Scaffold(
       appBar: customAppBer("Upload  Goals"),
       body: BaseView<GoalViewModel>(
-        model: GoalViewModel(),
+        model: GoalViewModel(
+          goalProvider: goalProvider,
+          goalService: sl.get<GoalService>(),
+        ),
         onModelReady: (model) async {
-          await model.init();
+          print("This is the arges ==================> $args");
+          List<String>? goalsFromDatabase =
+              args != null ? goalProvider.goals?.goals : null;
+
+          await model.init(goalsFromDatabase);
         },
         builder: (context, model, _) {
+          bool isGoalFromDataBase = args == null ? false : true;
+
           return PaddedContainer(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,7 +140,7 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                                         left: BorderSide(
                                           color:
                                               model.goalColors[random.nextInt(
-                                                3,
+                                                9,
                                               )],
                                           width: 5.0,
                                         ),
@@ -173,7 +190,11 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                 Column(
                   children: [
                     ActionButton(
-                      title: "Submit",
+                      title: isGoalFromDataBase == false ? "Submit" : "Update",
+                      isLoading:
+                          isGoalFromDataBase == false
+                              ? model.isCreatingGoal
+                              : model.isGoalFromDatabase,
                       onTap:
                           model.goals.isEmpty
                               ? () {
@@ -184,8 +205,53 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                                 );
                               }
                               : () async {
-                                await GoalStorage().clearGoals();
-                                Navigator.pop(context);
+                                if (isGoalFromDataBase) {
+                                    await model.updateGoalsOnServer(
+                                    goalId: 1,
+                                    goals: model.goals,
+                                    onSuccess: (s) async {
+                                      AppFlushBar().showSuccess(
+                                        message: s,
+                                        context: context,
+                                      );
+                                      await GoalStorage().clearGoals();
+                                      Future.delayed(Duration(seconds: 3), () {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRouter.home,
+                                        );
+                                      });
+                                    },
+                                    onError: (e) {
+                                      AppFlushBar().showError(
+                                        message: e,
+                                        context: context,
+                                      );
+                                    },
+                                  );
+                                } else {  await model.createGoalsOnServer(
+                                    goals: model.goals,
+                                    onSuccess: (s) async {
+                                      AppFlushBar().showSuccess(
+                                        message: s,
+                                        context: context,
+                                      );
+                                      await GoalStorage().clearGoals();
+                                      Future.delayed(Duration(seconds: 3), () {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRouter.home,
+                                        );
+                                      });
+                                    },
+                                    onError: (e) {
+                                      AppFlushBar().showError(
+                                        message: e,
+                                        context: context,
+                                      );
+                                    },
+                                  );
+                                }
                               },
                       bgColor:
                           model.goals.isEmpty
@@ -193,6 +259,7 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                               : AppColors.primary,
                     ),
                     SizedBox(height: size.height * 0.015),
+                    if(!isGoalFromDataBase)
                     InkWell(
                       onTap: () async {
                         if (model.goals.isEmpty) {
@@ -262,12 +329,13 @@ void handleGoalViewingAndEditing({
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomText(
-                  "Add Goal",
+                  goalToEdit == null ? "Add Goal" : "Update Goal",
                   weight: FontWeight.bold,
                   size: size.height * .022,
                 ),
                 IconButton(
                   onPressed: () {
+                    model.goalController.clear();
                     Navigator.pop(context);
                   },
                   icon: Icon(Icons.close, size: size.height * .026),
@@ -309,6 +377,7 @@ void handleGoalViewingAndEditing({
                         title: "Cancel",
                         bgColor: AppColors.primary.withValues(alpha: .5),
                         onTap: () {
+                          model.goalController.clear();
                           Navigator.pop(context);
                         },
                       ),
@@ -316,7 +385,7 @@ void handleGoalViewingAndEditing({
                     SizedBox(width: size.width * .15),
                     Expanded(
                       child: ActionButton(
-                        title: "Add",
+                        title: goalToEdit == null ? "Add" : "Update",
                         onTap: () {
                           if (formKey.currentState!.validate()) {
                             String goal = model.goalController.text;
@@ -352,6 +421,11 @@ void handleGoalViewingAndEditing({
                                 Future.delayed(Duration(seconds: 4), () {
                                   Navigator.pop(context);
                                 });
+                              } else {
+                                AppFlushBar().showSuccess(
+                                  message: "Goal Added",
+                                  context: context,
+                                );
                               }
                             }
                           }

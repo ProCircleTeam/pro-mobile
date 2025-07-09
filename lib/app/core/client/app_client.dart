@@ -86,4 +86,42 @@ class AppClient {
       throw Failure("Something went wrong, please try again later");
     }
   }
+
+  Future put(String url, dynamic data, {Map<String, String>? headers}) async {
+    dio.interceptors.add(ProInterceptor());
+
+    AppLogger.log(' put url ============> $url');
+    AppLogger.log(' data: ============> $data');
+    AppLogger.log(' header: ============> $headers');
+    try {
+      Response? response = await dio.put(
+        url,
+        data: data,
+        options: Options(headers: headers),
+      );
+      AppLogger.log("Response $response");
+
+      return response;
+    } on DioException catch (e) {
+      AppLogger.log("response ============> failed ${e.response}");
+
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw Failure(
+          "Looks like your internet is unstable, connection timed out",
+        );
+      }
+
+      if (e.response != null &&
+          e.response?.data != null &&
+          e.response?.data['message'] != null) {
+        throw Failure(e.response?.data['message']);
+      } else {
+        AppLogger.log("Error ================> $e");
+        throw Failure("Something went wrong, please try again later");
+      }
+    } catch (e) {
+      AppLogger.log("catch Error ================> $e");
+      throw Failure("Something went wrong, please try again later");
+    }
+  }
 }
