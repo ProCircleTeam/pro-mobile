@@ -13,7 +13,8 @@ class GoalServiceImpl implements GoalService {
   Future<GoalModel?> createGoal(List<String> goals) async {
     const url = Endpoints.createGoal;
     Map<String, dynamic> data = {"goals": goals};
-    Response res = await appClient.post(url, data);
+    final header = await getAppHeader(isTokenRequired: true);
+    Response res = await appClient.post(url, data, headers: header);
 
     GoalModel goal = GoalModel.fromJson(res.data["data"]);
     return goal;
@@ -36,7 +37,7 @@ class GoalServiceImpl implements GoalService {
   @override
   Future<GoalModel?> getGoalById(int id) async {
     String url = Endpoints.getGoalById(id);
-     final header = await getAppHeader(isTokenRequired: true);
+    final header = await getAppHeader(isTokenRequired: true);
 
     Response? res = await appClient.get(url, headers: header);
     return GoalModel.fromJson(res?.data["data"]);

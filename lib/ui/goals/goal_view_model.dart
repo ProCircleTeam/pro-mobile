@@ -37,12 +37,25 @@ class GoalViewModel extends BaseViewModel {
     AppColors.goalBorderColor1,
     AppColors.goalBorderColor2,
     AppColors.goalBorderColor3,
+    AppColors.goalBorderColor5,
+    AppColors.goalBorderColor6,
+    AppColors.goalBorderColor7,
+    AppColors.goalBorderColor8,
+    AppColors.goalBorderColor9,
+    AppColors.goalBorderColor10,
   ];
 
   bool _isCreatingGoal = false;
   bool get isCreatingGoal => _isCreatingGoal;
   set isCreatingGoal(bool val) {
     _isCreatingGoal = val;
+    notifyListeners();
+  }
+
+  bool _isGoalFromDatabase = false;
+  bool get isGoalFromDatabase => _isGoalFromDatabase;
+  set isGoalFromDatabase(bool val) {
+    _isGoalFromDatabase = val;
     notifyListeners();
   }
 
@@ -60,9 +73,13 @@ class GoalViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  Future<void> init() async {
-    List<String> savedGoals = await GoalStorage().loadGoals();
-    _goals = savedGoals;
+  Future<void> init(List<String>? goals) async {
+    if (goals != null) {
+      _goals = goals;
+    } else {
+      List<String> savedGoals = await GoalStorage().loadGoals();
+      _goals = savedGoals;
+    }
     notifyListeners();
   }
 

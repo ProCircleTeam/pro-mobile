@@ -16,5 +16,11 @@ class AppColors {
   static Color goalBorderColor1 = Color(0xffFFA8A7);
   static Color goalBorderColor2 = Color(0xff8FA7BD);
   static Color goalBorderColor3 = Color(0xff363B4D);
+  static Color goalBorderColor5 = Color(0xff72B01D);
+  static Color goalBorderColor6 = Color(0xffD891A9);
+  static Color goalBorderColor7 = Color(0xff786E92);
+  static Color goalBorderColor8 = Color(0xffEC8BCF);
+  static Color goalBorderColor9 = Color(0xffA97EA3);
+  static Color goalBorderColor10 = Color(0xffABAD9A);
 
 }

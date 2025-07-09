@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/data/local/goals_storage.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
@@ -39,6 +40,7 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
     );
 
     final random = Random();
+    final args = ModalRoute.of(context)!.settings.arguments;
 
     return Scaffold(
       appBar: customAppBer("Upload  Goals"),
@@ -48,9 +50,15 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
           goalService: sl.get<GoalService>(),
         ),
         onModelReady: (model) async {
-          await model.init();
+          print("This is the arges ==================> $args");
+          List<String>? goalsFromDatabase =
+              args != null ? goalProvider.goals?.goals : null;
+
+          await model.init(goalsFromDatabase);
         },
         builder: (context, model, _) {
+          bool isGoalFromDataBase = args == null ? false : true;
+
           return PaddedContainer(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,7 +140,7 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                                         left: BorderSide(
                                           color:
                                               model.goalColors[random.nextInt(
-                                                3,
+                                                9,
                                               )],
                                           width: 5.0,
                                         ),
@@ -182,8 +190,11 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                 Column(
                   children: [
                     ActionButton(
-                      title: "Submit",
-                      isLoading: model.isUpdatingGoal,
+                      title: isGoalFromDataBase == false ? "Submit" : "Update",
+                      isLoading:
+                          isGoalFromDataBase == false
+                              ? model.isCreatingGoal
+                              : model.isGoalFromDatabase,
                       onTap:
                           model.goals.isEmpty
                               ? () {
@@ -194,26 +205,53 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                                 );
                               }
                               : () async {
-                                await model.updateGoalsOnServer(
-                                  goalId: 1,
-                                  goals: model.goals,
-                                  onSuccess: (s) async {
-                                    AppFlushBar().showSuccess(
-                                      message: s,
-                                      context: context,
-                                    );
-                                    await GoalStorage().clearGoals();
-                                    Future.delayed(Duration(seconds: 3), () {
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                  onError: (e) {
-                                    AppFlushBar().showError(
-                                      message: e,
-                                      context: context,
-                                    );
-                                  },
-                                );
+                                if (isGoalFromDataBase) {
+                                    await model.updateGoalsOnServer(
+                                    goalId: 1,
+                                    goals: model.goals,
+                                    onSuccess: (s) async {
+                                      AppFlushBar().showSuccess(
+                                        message: s,
+                                        context: context,
+                                      );
+                                      await GoalStorage().clearGoals();
+                                      Future.delayed(Duration(seconds: 3), () {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRouter.home,
+                                        );
+                                      });
+                                    },
+                                    onError: (e) {
+                                      AppFlushBar().showError(
+                                        message: e,
+                                        context: context,
+                                      );
+                                    },
+                                  );
+                                } else {  await model.createGoalsOnServer(
+                                    goals: model.goals,
+                                    onSuccess: (s) async {
+                                      AppFlushBar().showSuccess(
+                                        message: s,
+                                        context: context,
+                                      );
+                                      await GoalStorage().clearGoals();
+                                      Future.delayed(Duration(seconds: 3), () {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRouter.home,
+                                        );
+                                      });
+                                    },
+                                    onError: (e) {
+                                      AppFlushBar().showError(
+                                        message: e,
+                                        context: context,
+                                      );
+                                    },
+                                  );
+                                }
                               },
                       bgColor:
                           model.goals.isEmpty
@@ -221,6 +259,7 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                               : AppColors.primary,
                     ),
                     SizedBox(height: size.height * 0.015),
+                    if(!isGoalFromDataBase)
                     InkWell(
                       onTap: () async {
                         if (model.goals.isEmpty) {
@@ -290,9 +329,7 @@ void handleGoalViewingAndEditing({
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomText(
-                 goalToEdit == null
-                 ?  "Add Goal"
-                 : "Update Goal",
+                  goalToEdit == null ? "Add Goal" : "Update Goal",
                   weight: FontWeight.bold,
                   size: size.height * .022,
                 ),

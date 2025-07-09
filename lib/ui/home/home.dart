@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                 Navigator.pushNamed(
                                   context,
-                                  AppRouter.goalsHomePage,
+                                  AppRouter.goalsHomePage
                                 );
                               },
                             ),
@@ -261,6 +261,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             SpacingWidget(degree: .01),
                             GoalListing(
+                              isFetchingGoals: model.isGettingGoal,
                               goals: uploadedGoals.length > 2 
                               ? uploadedGoals.take(2).toList()
                               : uploadedGoals,

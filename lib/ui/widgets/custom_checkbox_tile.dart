@@ -50,7 +50,7 @@ class _CustomCheckboxTileState extends State<CustomCheckboxTile> {
           ),
         ),
         SizedBox(width: 12),
-        CustomText(widget.label),
+        Expanded(child: CustomText(widget.label)),
       ],
     );
   }
