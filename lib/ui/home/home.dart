@@ -53,7 +53,9 @@ class _HomePageState extends State<HomePage> {
     UserModel user = userProvider.user!;
     final size = MediaQuery.of(context).size;
 
-    List<String> uploadedGoals = goalProvider.goals?.goals ?? [ "You have no goal set for this week, Kindly create goal to continue"];
+    List<String> uploadedGoals =
+        goalProvider.goals?.goals ??
+        ["You have no goal set for this week, Kindly create goal to continue"];
 
     return Scaffold(
       body: BaseView<HomeViewModel>(
@@ -62,12 +64,9 @@ class _HomePageState extends State<HomePage> {
           goalProvider: goalProvider,
         ),
         onModelReady: (model) {
-          model.getUserWeeklyGoal(
-            goalId: 1,
-            onError: (e) {
-              AppFlushBar().showError(message: e, context: context);
-            },
-          );
+          model.getUserWeeklyGoalByDate((e) {
+            AppFlushBar().showError(message: e, context: context);
+          });
         },
         builder:
             (context, model, _) => Container(
@@ -76,252 +75,261 @@ class _HomePageState extends State<HomePage> {
                 left: size.width * .035,
                 right: size.width * .035,
               ),
-              child: SizedBox(
-                height: size.height,
-                child: Column(
-                  children: [
-                    SpacingWidget(degree: .05),
-                    ListTile(
-                      leading: Container(
-                        height: size.width * .11,
-                        width: size.width * .11,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(
-                            size.width * .055,
-                          ),
-                          image: DecorationImage(
-                            image: AssetImage(PNGImageUrl.sampleProfilePix2),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await model.getUserWeeklyGoalByDate((e) {
+                    AppFlushBar().showError(message: e, context: context);
+                  });
+                },
+                child: SizedBox(
+                  height: size.height,
+                  child: Column(
+                    children: [
+                      SpacingWidget(degree: .05),
+                      ListTile(
+                        leading: Container(
+                          height: size.width * .11,
+                          width: size.width * .11,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(
+                              size.width * .055,
+                            ),
+                            image: DecorationImage(
+                              image: AssetImage(PNGImageUrl.sampleProfilePix2),
+                            ),
                           ),
                         ),
-                      ),
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            "Hello, ${user.username}",
-                            size: 16,
-                            weight: FontWeight.bold,
-                            color: AppColors.appBlack,
-                          ),
-                          CustomText(
-                            "@${user.username}",
-                            size: 12,
-                            weight: FontWeight.bold,
-                            color: AppColors.lightBlack,
-                          ),
-                        ],
-                      ),
-                      trailing: Stack(
-                        children: [
-                          Positioned(
-                            left: 16,
-                            bottom: 15,
-                            child: Container(
-                              height: 10,
-                              width: 10,
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                          ),
-
-                          InkWell(
-                            onTap: () {},
-                            child: Icon(Icons.notifications_none, size: 25),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SpacingWidget(degree: .02),
-                    SizedBox(
-                      width: size.width,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ActionButton(
-                              verticalPadding: size.height * .013,
-                              title: "",
-                              title2: Icon(Icons.add, color: Colors.white),
-
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRouter.goalsHomePage
-                                );
-                              },
-                            ),
-                          ),
-                          SpacingWidget(degree: .05, isVertical: false),
-                          Expanded(
-                            child: ActionButton(
-                              verticalPadding: size.height * .013,
-                              bgColor: AppColors.secondary,
-                              title: "",
-                              title2: Icon(
-                                Icons.task_alt_outlined,
-                                color: Colors.white,
-                              ),
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                "Logout",
-                                                textAlign: TextAlign.start,
-                                                style: AppTextStyle.title(
-                                                  fontSize: 22,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 30),
-                                          Text(
-                                            "Are you sure you want to log out?",
-                                            textAlign: TextAlign.center,
-                                            style: AppTextStyle.subTitle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 20),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              SizedBox(
-                                                width: 100,
-                                                child: ActionButton(
-                                                  title: "Canceal",
-                                                  bgColor: AppColors.primary
-                                                      .withOpacity(.8),
-                                                  onTap: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 100,
-                                                child: ActionButton(
-                                                  title: "Continue",
-                                                  bgColor: AppColors.red,
-                                                  onTap: () async {
-                                                    SecureStorageService
-                                                    storage =
-                                                        SecureStorageService();
-                                                    await storage.clearAll();
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                SignInPage(),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: size.height * .67,
-                      child: SingleChildScrollView(
-                        child: Column(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SpacingWidget(degree: .04),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  "This Week's Goal",
-                                  weight: FontWeight.bold,
-                                  size: 16,
+                            CustomText(
+                              "Hello, ${user.username}",
+                              size: 16,
+                              weight: FontWeight.bold,
+                              color: AppColors.appBlack,
+                            ),
+                            CustomText(
+                              "@${user.username}",
+                              size: 12,
+                              weight: FontWeight.bold,
+                              color: AppColors.lightBlack,
+                            ),
+                          ],
+                        ),
+                        trailing: Stack(
+                          children: [
+                            Positioned(
+                              left: 16,
+                              bottom: 15,
+                              child: Container(
+                                height: 10,
+                                width: 10,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
-                                SizedBox(),
-                              ],
-                            ),
-                            SpacingWidget(degree: .01),
-                            GoalListing(
-                              isFetchingGoals: model.isGettingGoal,
-                              goals: uploadedGoals.length > 2 
-                              ? uploadedGoals.take(2).toList()
-                              : uploadedGoals,
-                            ),
-                            SpacingWidget(degree: .01),
-                            SizedBox(
-                              height: size.height * .175,
-                              child: GridView.count(
-                                crossAxisCount: 2,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.all(size.width * .02),
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                children: [
-                                  AccountabilityPartnerCard(
-                                    noOfGoalsSet: 3,
-                                    completedGoals: 2,
-                                  ),
-                                  StreakCard(),
-                                ],
                               ),
                             ),
-                            SizedBox(
-                              height: size.height * .175,
-                              child: GridView.count(
-                                crossAxisCount: 2,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.all(size.width * .02),
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                children: [RemindersCard(), RemindersCard()],
+
+                            InkWell(
+                              onTap: () {},
+                              child: Icon(Icons.notifications_none, size: 25),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SpacingWidget(degree: .02),
+                      SizedBox(
+                        width: size.width,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ActionButton(
+                                verticalPadding: size.height * .013,
+                                title: "",
+                                title2: Icon(Icons.add, color: Colors.white),
+
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRouter.goalsHomePage,
+                                  );
+                                },
                               ),
                             ),
-                            SizedBox(
-                              height: size.height * .175,
-                              child: GridView.count(
-                                crossAxisCount: 2,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.all(size.width * .02),
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                children: [RemindersCard(), RemindersCard()],
-                              ),
-                            ),
-                            SizedBox(
-                              height: size.height * .175,
-                              child: GridView.count(
-                                crossAxisCount: 2,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.all(size.width * .02),
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                children: [RemindersCard(), RemindersCard()],
+                            SpacingWidget(degree: .05, isVertical: false),
+                            Expanded(
+                              child: ActionButton(
+                                verticalPadding: size.height * .013,
+                                bgColor: AppColors.secondary,
+                                title: "",
+                                title2: Icon(
+                                  Icons.task_alt_outlined,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "Logout",
+                                                  textAlign: TextAlign.start,
+                                                  style: AppTextStyle.title(
+                                                    fontSize: 22,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 30),
+                                            Text(
+                                              "Are you sure you want to log out?",
+                                              textAlign: TextAlign.center,
+                                              style: AppTextStyle.subTitle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 20),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                SizedBox(
+                                                  width: 100,
+                                                  child: ActionButton(
+                                                    title: "Canceal",
+                                                    bgColor: AppColors.primary
+                                                        .withOpacity(.8),
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 100,
+                                                  child: ActionButton(
+                                                    title: "Continue",
+                                                    bgColor: AppColors.red,
+                                                    onTap: () async {
+                                                      SecureStorageService
+                                                      storage =
+                                                          SecureStorageService();
+                                                      await storage.clearAll();
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder:
+                                                              (context) =>
+                                                                  SignInPage(),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: size.height * .67,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SpacingWidget(degree: .04),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomText(
+                                    "This Week's Goal",
+                                    weight: FontWeight.bold,
+                                    size: 16,
+                                  ),
+                                  SizedBox(),
+                                ],
+                              ),
+                              SpacingWidget(degree: .01),
+                              GoalListing(
+                                isFetchingGoals: model.isGettingGoal,
+                                goals:
+                                    uploadedGoals.length > 2
+                                        ? uploadedGoals.take(2).toList()
+                                        : uploadedGoals,
+                              ),
+                              SpacingWidget(degree: .01),
+                              SizedBox(
+                                height: size.height * .175,
+                                child: GridView.count(
+                                  crossAxisCount: 2,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.all(size.width * .02),
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  children: [
+                                    AccountabilityPartnerCard(
+                                      noOfGoalsSet: 3,
+                                      completedGoals: 2,
+                                    ),
+                                    StreakCard(),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: size.height * .175,
+                                child: GridView.count(
+                                  crossAxisCount: 2,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.all(size.width * .02),
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  children: [RemindersCard(), RemindersCard()],
+                                ),
+                              ),
+                              SizedBox(
+                                height: size.height * .175,
+                                child: GridView.count(
+                                  crossAxisCount: 2,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.all(size.width * .02),
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  children: [RemindersCard(), RemindersCard()],
+                                ),
+                              ),
+                              SizedBox(
+                                height: size.height * .175,
+                                child: GridView.count(
+                                  crossAxisCount: 2,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.all(size.width * .02),
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  children: [RemindersCard(), RemindersCard()],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

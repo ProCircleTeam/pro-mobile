@@ -42,4 +42,14 @@ class GoalServiceImpl implements GoalService {
     Response? res = await appClient.get(url, headers: header);
     return GoalModel.fromJson(res?.data["data"]);
   }
+
+  @override
+  Future<GoalModel?> getWeeklyGoalByDate(String date) async {
+    String url = Endpoints.getWeeklyGoalByDate(date);
+
+    final header = await getAppHeader(isTokenRequired: true);
+    Response? res = await appClient.get(url, headers: header);
+    GoalModel? goal = GoalModel.fromJson(res?.data["data"]["goals"][0]);
+    return goal;
+  }
 }

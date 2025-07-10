@@ -5,5 +5,6 @@ class Endpoints {
   static String getUserById(int id) => "$baseUrl/user/$id";
   static const String createGoal = "$baseUrl/goal";
   static String getGoalById(int id) => "$baseUrl/goal/$id";
+  static String getWeeklyGoalByDate(String date) => "$baseUrl/goal?date=$date";
   static String updateGoal(int id) => "$baseUrl/goal/$id";
 }
