@@ -50,7 +50,6 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
           goalService: sl.get<GoalService>(),
         ),
         onModelReady: (model) async {
-          print("This is the arges ==================> $args");
           List<String>? goalsFromDatabase =
               args != null ? goalProvider.goals?.goals : null;
 
@@ -194,7 +193,7 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                       isLoading:
                           isGoalFromDataBase == false
                               ? model.isCreatingGoal
-                              : model.isGoalFromDatabase,
+                              : model.isUpdatingGoal,
                       onTap:
                           model.goals.isEmpty
                               ? () {
