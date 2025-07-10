@@ -206,7 +206,7 @@ class _GoalsHomePageState extends State<GoalsHomePage> {
                               : () async {
                                 if (isGoalFromDataBase) {
                                     await model.updateGoalsOnServer(
-                                    goalId: 1,
+                                    goalId: goalProvider.goals!.id,
                                     goals: model.goals,
                                     onSuccess: (s) async {
                                       AppFlushBar().showSuccess(
