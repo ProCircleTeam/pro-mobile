@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
+import 'package:pro_mobile/ui/events/event_page.dart';
+import 'package:pro_mobile/ui/goals/goals_home.dart';
 import 'package:pro_mobile/ui/home/home.dart';
 import 'package:pro_mobile/ui/settings/settings_page.dart';
 
@@ -15,8 +17,8 @@ class _DashboardState extends State<Dashboard> {
 
   final List<Widget> pages = [
     HomePage(),
-    SettingsPage(title: "Home"),
-    SettingsPage(title: "Events"),
+    EventPage(),
+    SettingsPage(title: "Goals"),
     SettingsPage(title: "Settings"),
   ];
 

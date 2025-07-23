@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                                                 width: 100,
                                                 child: ActionButton(
                                                   title: "Continue",
-                                                  bgColor: AppColors.red,
+                                                  bgColor: AppColors.red2,
                                                   onTap: () async {
                                                     SecureStorageService
                                                     storage =
