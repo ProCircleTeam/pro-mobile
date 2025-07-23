@@ -21,4 +21,6 @@ class StringConstants {
   static const authToken = "auth_token";
   static const userObject = "user_object";
   static const isFirstTimeUser = "is_first_time_user";
+  static const String profileImageUrl = "https://scontent.flos5-3.fna.fbcdn.net/v/t39.30808-6/469524331_1540055199984082_3973845869113443537_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeHSrflZ3cxEMTUgOYKay6tLp8NttrSiJc6nw222tKIlzhVUGevAkm8vNB_pBT9DurH3trzVxGNeMlutLbdOeY6_&_nc_ohc=3S4_A-MNcZ4Q7kNvwHi4JVx&_nc_oc=Adk67YY3_F3Zv8lkuWxrWfouysTP7y6g3kUaztIPrGROBmMdM44piAfYxqCHJuFF6Cc&_nc_zt=23&_nc_ht=scontent.flos5-3.fna&_nc_gid=Rg3TT84-k0uZFkF0XsN51Q&oh=00_AfS7yCNWx11Dj02SRzEGP9s6qxZ3rNJHKauhFXeU1WKfNQ&oe=6886FCF9";
+
 }

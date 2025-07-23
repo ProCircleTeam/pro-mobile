@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/data/local/secure_storage.dart';
 import 'package:pro_mobile/ui/auth/signin.dart';
 import 'package:pro_mobile/ui/settings/widgets/settings_tile.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
-import 'package:pro_mobile/ui/widgets/app_text_style.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 
@@ -31,38 +31,44 @@ class _SettingsPageState extends State<SettingsPage> {
             SettingsTile(
               title: "Profile",
               icon: Icons.person_2_outlined,
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.profile);
+              },
             ),
             SettingsTile(
               title: "Notification",
-              icon: Icons.person_2_outlined,
-              onTap: () {},
+              icon: Icons.notifications_active_outlined,
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.notificationPage);
+              },
             ),
             SettingsTile(
               title: "Change Password",
-              icon: Icons.person_2_outlined,
+              icon: Icons.key_sharp,
               onTap: () {},
             ),
             SettingsTile(
               title: "Help & FAQ",
-              icon: Icons.person_2_outlined,
+              icon: Icons.help_outline_sharp,
               onTap: () {},
             ),
             SettingsTile(
               title: "Delete Account",
-              icon: Icons.person_2_outlined,
+              icon: Icons.delete_outline_rounded,
               onTap: () {},
             ),
             SettingsTile(
               title: "Log out",
-              icon: Icons.person_2_outlined,
+              icon: Icons.logout_outlined,
               onTap: () {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(size.height * .01)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(size.height * .01),
+                        ),
                       ),
                       content: Container(
                         padding: EdgeInsets.symmetric(
