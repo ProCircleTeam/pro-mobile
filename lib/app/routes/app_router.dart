@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pro_mobile/ui/auth/signup.dart';
 import 'package:pro_mobile/ui/auth/signin.dart';
 import 'package:pro_mobile/ui/dashboard/dashboard.dart';
-import 'package:pro_mobile/ui/goals/goals_home.dart';
+import 'package:pro_mobile/ui/goals/create_and_update_goal.dart';
 import 'package:pro_mobile/ui/home/home.dart';
 import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
 
@@ -13,7 +13,7 @@ class AppRouter {
       signIn: (context) => SignInPage(),
       home: (context) => HomePage(),
       dashboard: (context) => Dashboard(),
-      goalsHomePage: (context) => GoalsHomePage(),
+      goalsHomePage: (context) => CreateAndUpdateGoalPage(),
       onboarding: (context) => OnboardingScreen(),
     };
   }

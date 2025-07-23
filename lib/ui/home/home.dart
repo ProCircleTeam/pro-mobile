@@ -153,78 +153,7 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.white,
                               ),
                               onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                "Logout",
-                                                textAlign: TextAlign.start,
-                                                style: AppTextStyle.title(
-                                                  fontSize: 22,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 30),
-                                          Text(
-                                            "Are you sure you want to log out?",
-                                            textAlign: TextAlign.center,
-                                            style: AppTextStyle.subTitle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 20),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              SizedBox(
-                                                width: 100,
-                                                child: ActionButton(
-                                                  title: "Canceal",
-                                                  bgColor: AppColors.primary
-                                                      .withOpacity(.8),
-                                                  onTap: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 100,
-                                                child: ActionButton(
-                                                  title: "Continue",
-                                                  bgColor: AppColors.red2,
-                                                  onTap: () async {
-                                                    SecureStorageService
-                                                    storage =
-                                                        SecureStorageService();
-                                                    await storage.clearAll();
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                SignInPage(),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
+                               
                               },
                             ),
                           ),

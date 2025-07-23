@@ -9,6 +9,9 @@ class ActionButton extends StatelessWidget {
   final Color? bgColor;
   final Widget? title2;
   final double? verticalPadding;
+  final Color? textColor;
+  final Color? borderColor;
+
   const ActionButton({
     required this.title,
     required this.onTap,
@@ -17,11 +20,11 @@ class ActionButton extends StatelessWidget {
     this.bgColor,
     this.title2,
     super.key,
+    this.textColor,
+    this.borderColor,
   });
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return InkWell(
       onTap: () {
         onTap();
@@ -32,19 +35,20 @@ class ActionButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: bgColor ?? AppColors.primary,
           borderRadius: BorderRadius.circular(7),
+          border: borderColor != null ?  Border.all(color: borderColor!) : null
         ),
         child: Center(
           child:
               isLoading
-                  ? const SizedBox(
+                  ? SizedBox(
                     height: 25,
                     width: 25,
-                    child: CircularProgressIndicator(color: Colors.white),
+                    child: CircularProgressIndicator(color: textColor ?? Colors.white),
                   )
                   : title2 ??
                       Text(
                         title,
-                        style: AppTextStyle.medium(color: Colors.white),
+                        style: AppTextStyle.medium(color: textColor ?? Colors.white),
                       ),
         ),
       ),
