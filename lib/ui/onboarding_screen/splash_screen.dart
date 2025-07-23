@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/constants.dart';
-import 'package:pro_mobile/ui/auth/signin.dart';
-import 'package:pro_mobile/ui/home/home.dart';
-import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
+import 'package:pro_mobile/data/local/secure_storage.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final UserProvider userProvider;
+  const SplashScreen({required this.userProvider, super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final SecureStorageService _secureStorageService = SecureStorageService();
 
   @override
   void initState() {
@@ -23,27 +24,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkAuth() async {
-    String? token = await _secureStorage.read(key: StringConstants.authToken);
+    String? token = await _secureStorageService.read(StringConstants.authToken);
+    UserModel? user = await _secureStorageService.getUser();
     final preference = await SharedPreferences.getInstance();
     bool? isFirstTimeUser = preference.getBool(StringConstants.isFirstTimeUser);
 
     if (isFirstTimeUser == null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-      );
-    }
-    // if (token != null && token.isNotEmpty) {
-    //   Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(builder: (_) => const HomePage()),
-    //   );
-    // } 
-    else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const SignInPage()),
-      );
+      Navigator.pushReplacementNamed(context, AppRouter.onboarding);
+    } else if (token != null && token.isNotEmpty && user != null) {
+      widget.userProvider.user = user;
+      Navigator.pushReplacementNamed(context, AppRouter.dashboard);
+    } else {
+      Navigator.pushReplacementNamed(context, AppRouter.signIn);
     }
   }
 

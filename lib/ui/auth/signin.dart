@@ -143,10 +143,6 @@ class _SignInPageState extends State<SignInPage> {
                                           context,
                                           AppRouter.home,
                                         );
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          AppRouter.home,
-                                        );
                                         AppFlushBar().showSuccess(
                                           message: successMessage,
                                           context: context,

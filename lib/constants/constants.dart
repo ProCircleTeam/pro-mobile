@@ -19,5 +19,6 @@ class ErrorText {
 
 class StringConstants {
   static const authToken = "auth_token";
+  static const userObject = "user_object";
   static const isFirstTimeUser = "is_first_time_user";
 }

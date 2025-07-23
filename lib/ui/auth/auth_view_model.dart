@@ -93,9 +93,9 @@ class AuthViewModel extends BaseViewModel {
     required String email,
     required String password,
     required Function(String message) onSuccess,
-    required Function(String errorMessage) onError
+    required Function(String errorMessage) onError,
   }) async {
-      SecureStorageService storage = SecureStorageService();
+    SecureStorageService storage = SecureStorageService();
 
     try {
       isSigninUp = true;
@@ -114,6 +114,7 @@ class AuthViewModel extends BaseViewModel {
         String token = res.data["data"]["token"];
         String message = res.data["message"];
         await storage.write(key: StringConstants.authToken, val: token);
+        await storage.setUser(user);
 
         onSuccess(message);
       }
@@ -150,6 +151,7 @@ class AuthViewModel extends BaseViewModel {
         String token = res.data["data"]["token"];
         String message = res.data["message"];
         await storage.write(key: StringConstants.authToken, val: token);
+        await storage.setUser(user);
 
         onSuccess(message);
       }
