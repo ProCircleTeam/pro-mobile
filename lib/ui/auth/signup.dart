@@ -249,7 +249,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                         onSuccess: (successMessage) {
                                           Navigator.pushReplacementNamed(
                                             context,
-                                            AppRouter.home,
+                                            AppRouter.dashboard,
                                           );
                                           AppFlushBar().showSuccess(
                                             message: successMessage,

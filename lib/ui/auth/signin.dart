@@ -141,7 +141,7 @@ class _SignInPageState extends State<SignInPage> {
                                       onSuccess: (successMessage) {
                                         Navigator.pushReplacementNamed(
                                           context,
-                                          AppRouter.home,
+                                          AppRouter.dashboard,
                                         );
                                         AppFlushBar().showSuccess(
                                           message: successMessage,
