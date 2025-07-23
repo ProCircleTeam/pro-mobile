@@ -27,13 +27,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ProCircle',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const SplashScreen(),
+      home: SplashScreen(userProvider: userProvider),
       initialRoute: AppRouter.onboarding,
       routes: AppRouter().generateRoutes(context),
     );
