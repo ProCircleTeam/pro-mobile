@@ -31,7 +31,9 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
             SettingsTile(
               title: "Professional Info",
               icon: Icons.photo_camera_front_outlined,
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.professionalInfoUpdatePage);
+              },
             ),
             SettingsTile(
               title: "Goals and Interest",

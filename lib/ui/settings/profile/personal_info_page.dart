@@ -1,8 +1,5 @@
 import 'dart:io';
-
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
@@ -171,7 +168,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             );
 
                             if(canSubmit){
-                              
+
                             }
                           },
                         ),

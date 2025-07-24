@@ -25,3 +25,38 @@ class StringConstants {
   static const String sampleProfileImage = "https://cdn.vectorstock.com/i/2000v/54/17/gray-man-placeholder-photo-vector-24005417.avif";
 
 }
+
+
+const List<String> industrySectors = [
+  "Select Industry Sector",
+  'Information Technology (IT)',
+  'Finance & Banking',
+  'Healthcare & Medical Services',
+  'Education & Training',
+  'Manufacturing',
+  'Retail & E-commerce',
+  'Agriculture',
+  'Energy & Utilities',
+  'Transportation & Logistics',
+  'Construction & Real Estate',
+  'Telecommunications',
+  'Media & Entertainment',
+  'Hospitality & Tourism',
+  'Food & Beverage',
+  'Legal Services',
+  'Government & Public Administration',
+  'Nonprofit & NGOs',
+  'Environmental Services',
+  'Automotive',
+  'Aerospace & Defense',
+  'Pharmaceuticals & Biotechnology',
+  'Insurance',
+  'Sports & Recreation',
+  'Arts & Culture',
+  'Research & Development',
+  'Mining & Metals',
+  'Chemicals',
+  'Fashion & Apparel',
+  'Human Resources & Staffing',
+  'Consulting & Business Services',
+];

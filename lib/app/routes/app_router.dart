@@ -7,6 +7,7 @@ import 'package:pro_mobile/ui/home/home.dart';
 import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
 import 'package:pro_mobile/ui/settings/notification/notification_page.dart';
 import 'package:pro_mobile/ui/settings/profile/personal_info_page.dart';
+import 'package:pro_mobile/ui/settings/profile/professional_info_page.dart';
 import 'package:pro_mobile/ui/settings/profile/profile.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_update.dart';
 
@@ -23,6 +24,7 @@ class AppRouter {
       notificationPage: (context) => NotificationPage(),
       profileUpdate: (context) => ProfileUpdate(),
       personalInfoUpdatePage: (context) => PersonalInfoPage(),
+      professionalInfoUpdatePage: (context) => ProfessionalInfoUpdatePage(),
     };
   }
 
@@ -37,5 +39,6 @@ class AppRouter {
   static const notificationPage = "/notification_page";
   static const profileUpdate = "/Profile_update";
   static const personalInfoUpdatePage = "/personal_info_update_page";
+  static const professionalInfoUpdatePage = "/professional_info_update_page";
 }
 
