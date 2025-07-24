@@ -69,9 +69,14 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     SpacingWidget(degree: .05),
                     ListTile(
-                      leading: CircularImageWidget(
-                        imageUrl: StringConstants.profileImageUrl,
-                        size: size.width * .11,
+                      leading: InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRouter.profile);
+                        },
+                        child: CircularNetworkImageWidget(
+                          imageUrl: StringConstants.sampleProfileImage,
+                          size: size.width * .11,
+                        ),
                       ),
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

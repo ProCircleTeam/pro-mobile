@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/ui/settings/widgets/settings_tile.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
@@ -23,7 +24,9 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
             SettingsTile(
               title: "Personal Info",
               icon: Icons.person_2_outlined,
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.personalInfoUpdatePage);
+              },
             ),
             SettingsTile(
               title: "Professional Info",

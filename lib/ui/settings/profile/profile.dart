@@ -35,8 +35,8 @@ class _ProfilePageState extends State<ProfilePage> {
             Center(
               child: Column(
                 children: [
-                  CircularImageWidget(
-                    imageUrl: StringConstants.profileImageUrl,
+                  CircularNetworkImageWidget(
+                    imageUrl: StringConstants.sampleProfileImage,
                     size: size.width * .4,
                   ),
                   SizedBox(height: size.height * .01),

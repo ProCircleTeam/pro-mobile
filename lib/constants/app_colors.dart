@@ -23,5 +23,9 @@ class AppColors {
   static Color goalBorderColor8 = Color(0xffEC8BCF);
   static Color goalBorderColor9 = Color(0xffA97EA3);
   static Color goalBorderColor10 = Color(0xffABAD9A);
+  static Color richBlue = Color(0xFF1F507B);
+  static Color snowWhite = Color(0xFFF6F8FB);
+  static Color softGrey = Color(0xFFCFCFCF);
+
 
 }
