@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/domain/models/time_zone.dart';
 import 'package:pro_mobile/ui/base/base_view_model.dart';
 
 class ProfileViewModel extends BaseViewModel {
@@ -16,7 +17,10 @@ class ProfileViewModel extends BaseViewModel {
   TextEditingController jobTitleController = TextEditingController();
   TextEditingController careerSummaryController = TextEditingController();
   TextEditingController longTermGoalController = TextEditingController();
-  TextEditingController preferredPartnersTraitController = TextEditingController();
+  TextEditingController preferredPartnersTraitController =
+      TextEditingController();
+  TextEditingController availabilityDaysController = TextEditingController();
+  TextEditingController funFactController = TextEditingController();
 
   String initialCountry = 'NG';
   PhoneNumber number = PhoneNumber(isoCode: 'NG');
@@ -25,6 +29,13 @@ class ProfileViewModel extends BaseViewModel {
   String get selectedIndustrySector => _selectedIndustrySector;
   set selectedIndustrySector(String val) {
     _selectedIndustrySector = val;
+    notifyListeners();
+  }
+
+  TimeZoneModel _selectedTimeZone = timeZones[0];
+  TimeZoneModel get selectedTimeZone => _selectedTimeZone;
+  set selectedTimeZone(TimeZoneModel val) {
+    _selectedTimeZone = val;
     notifyListeners();
   }
 
@@ -75,6 +86,7 @@ class ProfileViewModel extends BaseViewModel {
       return true;
     }
   }
+
   bool isPersonalInfoFormValid({
     required String username,
     required String firstName,
@@ -114,7 +126,7 @@ class ProfileViewModel extends BaseViewModel {
     }
   }
 
-   bool isGoalAndInterestFormValid({
+  bool isGoalAndInterestFormValid({
     required String interest,
     required String partnerTrait,
     required String longTermGoal,
@@ -128,11 +140,34 @@ class ProfileViewModel extends BaseViewModel {
       String error = "Pick an interest to continue";
       onError(error);
       return false;
-    }  else if (longTermGoal.length < 8) {
+    } else if (longTermGoal.length < 8) {
       String error = "Long term goal length must be greater than 7";
       onError(error);
       return false;
-    }  else {
+    } else {
+      return true;
+    }
+  }
+
+  bool isEngagementFormValid({
+    required String availableDays,
+    required int timeZone,
+    required String funFact,
+    required Function(String e) onError,
+  }) {
+    if (availableDays.length < 3) {
+      String error = "Kindly enter the days in the week you are available";
+      onError(error);
+      return false;
+    } else if (timeZone == timeZones.first.id) {
+      String error = "Pick a time zone to continue";
+      onError(error);
+      return false;
+    } else if (funFact.length < 3) {
+      String error = "Kindly enter a valid fun fact";
+      onError(error);
+      return false;
+    } else {
       return true;
     }
   }

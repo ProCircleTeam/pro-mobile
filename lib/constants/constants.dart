@@ -1,3 +1,5 @@
+import 'package:pro_mobile/domain/models/time_zone.dart';
+
 class SVGImageUrl {
   static const onboardingImage1 = "assets/images/svg/onboardingImage1.svg";
   static const onboardingImage2 = "assets/images/svg/onboardingImage2.svg";
@@ -26,6 +28,9 @@ class StringConstants {
   static const String sampleProfileImage =
       "https://cdn.vectorstock.com/i/2000v/54/17/gray-man-placeholder-photo-vector-24005417.avif";
 }
+
+List<TimeZoneModel> timeZones =
+    sampleTimeZones.map((e) => TimeZoneModel.fromJson(e)).toList();
 
 const List<String> industrySectors = [
   "Select Industry Sector",
@@ -113,4 +118,10 @@ const List<String> interests = [
   "Relationship & dating tips",
   "Car customization & racing",
   "Watching documentaries & learning stuff",
+];
+
+List<Map<String, dynamic>> sampleTimeZones = [
+  {"id": -1, "name": "Time", "abbreviation": "Select time zone"},
+  {"id": 2, "name": "Central European Time", "abbreviation": "CET"},
+  {"id": 3, "name": "Africa/Brazzaville", "abbreviation": "WAT"},
 ];
