@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/domain/models/time_zone.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
@@ -11,16 +12,14 @@ import 'package:pro_mobile/ui/widgets/form/multiline_text_input.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/unfocus_widget.dart';
 
-class ProfessionalInfoUpdatePage extends StatefulWidget {
-  const ProfessionalInfoUpdatePage({super.key});
+class EngagementPage extends StatefulWidget {
+  const EngagementPage({super.key});
 
   @override
-  State<ProfessionalInfoUpdatePage> createState() =>
-      _ProfessionalInfoUpdatePageState();
+  State<EngagementPage> createState() => _EngagementPageState();
 }
 
-class _ProfessionalInfoUpdatePageState
-    extends State<ProfessionalInfoUpdatePage> {
+class _EngagementPageState extends State<EngagementPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -30,7 +29,7 @@ class _ProfessionalInfoUpdatePageState
     return UnfocusWidget(
       child: Scaffold(
         appBar: AppBar(
-          title: CustomText("Professional Info", weight: FontWeight.bold),
+          title: CustomText("Engagement", weight: FontWeight.bold),
           centerTitle: true,
         ),
         resizeToAvoidBottomInset: true,
@@ -52,28 +51,25 @@ class _ProfessionalInfoUpdatePageState
                               formItemSpace,
                               formItemSpace,
                               CustomTextInput2(
-                                labelText: "Job Title",
-                                controller: model.jobTitleController,
+                                labelText: "Days available",
+                                controller: model.availabilityDaysController,
                               ),
                               formItemSpace,
-                              CustomTextInput2(
-                                labelText: "Years of Experience",
-                                controller: model.yearsOfExperienceController,
-                              ),
-                              formItemSpace,
-                              CustomDropdownInput(
-                                value: model.selectedIndustrySector,
+                              CustomDropdownInput<TimeZoneModel>(
+                                value: model.selectedTimeZone,
                                 items: [
-                                  ...industrySectors.map(
+                                  ...timeZones.map(
                                     (el) => DropdownMenuItem(
                                       value: el,
-                                      child: Text(el),
+                                      child: Text(
+                                        "${el.name} (${el.abbreviation})",
+                                      ),
                                     ),
                                   ),
                                 ],
                                 onChanged: (val) {
                                   if (val != null) {
-                                    model.selectedIndustrySector = val;
+                                    model.selectedTimeZone = val;
                                   }
                                 },
                               ),
@@ -81,7 +77,7 @@ class _ProfessionalInfoUpdatePageState
                               Row(
                                 children: [
                                   CustomText(
-                                    "Work Experience / Career Summary",
+                                    "Fun fact",
                                     size: size.height * 0.016,
                                   ),
                                 ],
@@ -89,7 +85,7 @@ class _ProfessionalInfoUpdatePageState
                               SizedBox(height: size.height * .007),
                               MultilineTextInput(
                                 maxLength: 300,
-                                controller: model.careerSummaryController,
+                                controller: model.funFactController,
                                 maxLines: 3,
                               ),
                             ],
@@ -102,19 +98,24 @@ class _ProfessionalInfoUpdatePageState
                         ActionButton(
                           title: "Update",
                           onTap: () {
-                            String jobTitle = model.jobTitleController.text;
-                            String industrySector =
-                                model.selectedIndustrySector;
-                            String careerSummary =
-                                model.careerSummaryController.text;
-                            String yearsOfExperience =
-                                model.yearsOfExperienceController.text;
+                            String availableDays =
+                                model.availabilityDaysController.text;
+                            TimeZoneModel selectedTimeZone =
+                                model.selectedTimeZone;
+                            String funFact = model.funFactController.text;
 
-                            bool canSubmit = model.isProfessionalInfoFormValid(
-                              jobTitle: jobTitle,
-                              yearsOfExperience: yearsOfExperience,
-                              careerSummary: careerSummary,
-                              industrySector: industrySector,
+                            print(
+                              "partnerTrait ==================> $availableDays",
+                            );
+                            print(
+                              "interest ==================> $selectedTimeZone",
+                            );
+                            print("longTermGoal ==================> $funFact");
+
+                            bool canSubmit = model.isEngagementFormValid(
+                              availableDays: availableDays,
+                              timeZone: selectedTimeZone.id,
+                              funFact: funFact,
                               onError: (e) {
                                 AppFlushBar().showError(
                                   message: e,

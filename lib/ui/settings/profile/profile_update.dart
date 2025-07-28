@@ -38,13 +38,17 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
             SettingsTile(
               title: "Goals and Interest",
               icon: Icons.interests_outlined,
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.goalsAndInterest);
+              },
             ),
             SettingsTile(
               title: "Engagement",
               icon: Icons.energy_savings_leaf_outlined,
               showDivider: false,
-              onTap: () {},
+              onTap: () {
+                  Navigator.pushNamed(context, AppRouter.engagementPage);
+              },
             ),
           ],
         ),
