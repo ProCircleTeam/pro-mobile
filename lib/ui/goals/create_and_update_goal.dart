@@ -217,7 +217,7 @@ class _CreateAndUpdateGoalPageState extends State<CreateAndUpdateGoalPage> {
                                       Future.delayed(Duration(seconds: 3), () {
                                         Navigator.pushReplacementNamed(
                                           context,
-                                          AppRouter.home,
+                                          AppRouter.dashboard,
                                         );
                                       });
                                     },
@@ -239,7 +239,7 @@ class _CreateAndUpdateGoalPageState extends State<CreateAndUpdateGoalPage> {
                                       Future.delayed(Duration(seconds: 3), () {
                                         Navigator.pushReplacementNamed(
                                           context,
-                                          AppRouter.home,
+                                          AppRouter.dashboard,
                                         );
                                       });
                                     },

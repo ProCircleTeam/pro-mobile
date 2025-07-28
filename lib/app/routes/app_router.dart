@@ -6,6 +6,7 @@ import 'package:pro_mobile/ui/goals/create_and_update_goal.dart';
 import 'package:pro_mobile/ui/home/home.dart';
 import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
 import 'package:pro_mobile/ui/settings/notification/notification_page.dart';
+import 'package:pro_mobile/ui/settings/profile/goals_and_interest_page.dart';
 import 'package:pro_mobile/ui/settings/profile/personal_info_page.dart';
 import 'package:pro_mobile/ui/settings/profile/professional_info_page.dart';
 import 'package:pro_mobile/ui/settings/profile/profile.dart';
@@ -25,6 +26,7 @@ class AppRouter {
       profileUpdate: (context) => ProfileUpdate(),
       personalInfoUpdatePage: (context) => PersonalInfoPage(),
       professionalInfoUpdatePage: (context) => ProfessionalInfoUpdatePage(),
+      goalsAndInterest: (context) => GoalsAndInterestPage(),
     };
   }
 
@@ -40,5 +42,6 @@ class AppRouter {
   static const profileUpdate = "/Profile_update";
   static const personalInfoUpdatePage = "/personal_info_update_page";
   static const professionalInfoUpdatePage = "/professional_info_update_page";
+  static const goalsAndInterest = "/goals_and_interest_page";
 }
 

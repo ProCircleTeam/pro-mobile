@@ -15,6 +15,8 @@ class ProfileViewModel extends BaseViewModel {
   TextEditingController yearsOfExperienceController = TextEditingController();
   TextEditingController jobTitleController = TextEditingController();
   TextEditingController careerSummaryController = TextEditingController();
+  TextEditingController longTermGoalController = TextEditingController();
+  TextEditingController preferredPartnersTraitController = TextEditingController();
 
   String initialCountry = 'NG';
   PhoneNumber number = PhoneNumber(isoCode: 'NG');
@@ -23,6 +25,13 @@ class ProfileViewModel extends BaseViewModel {
   String get selectedIndustrySector => _selectedIndustrySector;
   set selectedIndustrySector(String val) {
     _selectedIndustrySector = val;
+    notifyListeners();
+  }
+
+  String _selectedInterest = interests[0];
+  String get selectedInterest => _selectedInterest;
+  set selectedInterest(String val) {
+    _selectedInterest = val;
     notifyListeners();
   }
 
@@ -101,6 +110,29 @@ class ProfileViewModel extends BaseViewModel {
       onError(error);
       return false;
     } else {
+      return true;
+    }
+  }
+
+   bool isGoalAndInterestFormValid({
+    required String interest,
+    required String partnerTrait,
+    required String longTermGoal,
+    required Function(String e) onError,
+  }) {
+    if (partnerTrait.length < 3) {
+      String error = "Kindly enter the traits fo partner you will like to have";
+      onError(error);
+      return false;
+    } else if (interest.length < 3 || interest == interests[0]) {
+      String error = "Pick an interest to continue";
+      onError(error);
+      return false;
+    }  else if (longTermGoal.length < 8) {
+      String error = "Long term goal length must be greater than 7";
+      onError(error);
+      return false;
+    }  else {
       return true;
     }
   }
