@@ -3,12 +3,10 @@ import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
-import 'package:pro_mobile/data/local/secure_storage.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/goal_provider.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
-import 'package:pro_mobile/ui/auth/signin.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/home/home_view_model.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
@@ -17,7 +15,7 @@ import 'package:pro_mobile/ui/home/widget.dart/reminders_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/streak_card.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
-import 'package:pro_mobile/ui/widgets/app_text_style.dart';
+import 'package:pro_mobile/ui/widgets/circular_image_widget.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 import 'package:provider/provider.dart';
@@ -71,17 +69,13 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     SpacingWidget(degree: .05),
                     ListTile(
-                      leading: Container(
-                        height: size.width * .11,
-                        width: size.width * .11,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(
-                            size.width * .055,
-                          ),
-                          image: DecorationImage(
-                            image: AssetImage(PNGImageUrl.sampleProfilePix2),
-                          ),
+                      leading: InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRouter.profile);
+                        },
+                        child: CircularNetworkImageWidget(
+                          imageUrl: StringConstants.sampleProfileImage,
+                          size: size.width * .11,
                         ),
                       ),
                       title: Column(
@@ -117,7 +111,12 @@ class _HomePageState extends State<HomePage> {
                           ),
 
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRouter.notificationPage,
+                              );
+                            },
                             child: Icon(Icons.notifications_none, size: 25),
                           ),
                         ],
@@ -152,9 +151,7 @@ class _HomePageState extends State<HomePage> {
                                 Icons.task_alt_outlined,
                                 color: Colors.white,
                               ),
-                              onTap: () {
-                               
-                              },
+                              onTap: () {},
                             ),
                           ),
                         ],
