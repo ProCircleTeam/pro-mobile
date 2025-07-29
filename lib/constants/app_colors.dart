@@ -26,6 +26,6 @@ class AppColors {
   static Color richBlue = Color(0xFF1F507B);
   static Color snowWhite = Color(0xFFF6F8FB);
   static Color softGrey = Color(0xFFCFCFCF);
-
-
 }
+
+

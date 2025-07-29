@@ -3,10 +3,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/time_zone.dart';
 import 'package:pro_mobile/ui/base/base_view_model.dart';
 
 class ProfileViewModel extends BaseViewModel {
+  final UserService userService;
+  ProfileViewModel(this.userService);
+
   final personalInfoFormKey = GlobalKey<FormState>();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
@@ -52,6 +56,41 @@ class ProfileViewModel extends BaseViewModel {
   set pickedProfileImage(File? val) {
     _pickedProfileImage = val;
 
+    notifyListeners();
+  }
+
+  bool _isPersonalInfoCompleted = false;
+  bool get isPersonalInfoCompleted => _isPersonalInfoCompleted;
+  set isPersonalInfoCompleted(bool val) {
+    _isPersonalInfoCompleted = val;
+    notifyListeners();
+  }
+
+  bool _isProfessionalInfoCompleted = false;
+  bool get isProfessionalInfoCompleted => _isProfessionalInfoCompleted;
+  set isProfessionalInfoCompleted(bool val) {
+    _isProfessionalInfoCompleted = val;
+    notifyListeners();
+  }
+
+  bool _isGoalInfoCompleted = false;
+  bool get isGoalInfoCompleted => _isGoalInfoCompleted;
+  set isGoalInfoCompleted(bool val) {
+    _isGoalInfoCompleted = val;
+    notifyListeners();
+  }
+
+  bool _isEngagementInfoCompleted = false;
+  bool get isEngagementInfoCompleted => _isEngagementInfoCompleted;
+  set isEngagementInfoCompleted(bool val) {
+    _isEngagementInfoCompleted = val;
+    notifyListeners();
+  }
+
+  bool _isFetchingProfileStatus = false;
+  bool get isFetchingProfileStatus => _isFetchingProfileStatus;
+  set isFetchingProfileStatus(bool val) {
+    _isFetchingProfileStatus = val;
     notifyListeners();
   }
 
@@ -170,5 +209,17 @@ class ProfileViewModel extends BaseViewModel {
     } else {
       return true;
     }
+  }
+
+  Future<void> getUserProfileCompletionStatus() async {
+    isFetchingProfileStatus = true;
+    var res = await userService.getUserProfileStatus();
+    print("This is the res ============> $res");
+    isPersonalInfoCompleted = res["personalInfoComplete"];
+    isProfessionalInfoCompleted = res["professionalInfoComplete"];
+    isGoalInfoCompleted = res["goalsInfoComplete"];
+    isEngagementInfoCompleted = res["engagementInfoComplete"];
+
+    isFetchingProfileStatus = false;
   }
 }

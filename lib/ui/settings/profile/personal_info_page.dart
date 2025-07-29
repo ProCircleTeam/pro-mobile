@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
@@ -37,7 +39,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         ),
         resizeToAvoidBottomInset: true,
         body: BaseView<ProfileViewModel>(
-          model: ProfileViewModel(),
+          model: ProfileViewModel(sl.get<UserService>()),
           builder: (context, model, _) {
             return SizedBox(
               height: size.height,
