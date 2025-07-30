@@ -65,4 +65,22 @@ class UserServiceImpl implements UserService {
     Response? res = await appClient.put(url, data, headers: header);
     return res?.data["data"];
   }
+
+  @override
+   Future<void> updateEngagementInfo({
+    required List<String> availabilityDays,
+    required String funFact,
+    required int timeZone,
+  }) async {
+    String url = Endpoints.updateEngagementInfo;
+    Map<String, dynamic> data = {
+      "availabilityDays": availabilityDays,
+      "timeZone": timeZone,
+      "funFact": funFact,
+    };
+
+    final header = await getAppHeader(isTokenRequired: true);
+    Response? res = await appClient.put(url, data, headers: header);
+    return res?.data["data"];
+  }
 }

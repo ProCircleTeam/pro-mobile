@@ -115,6 +115,13 @@ class ProfileViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _isUpdatingEngagementInfo = false;
+  bool get isUpdatingEngagementInfo => _isUpdatingEngagementInfo;
+  set isUpdatingEngagementInfo(bool val) {
+    _isUpdatingEngagementInfo = val;
+    notifyListeners();
+  }
+
   List<TimeZoneModel> supportedTimeZones = [];
 
   bool isProfessionalInfoFormValid({
@@ -326,6 +333,30 @@ class ProfileViewModel extends BaseViewModel {
     } catch (e) {
       onError(ErrorText.generic);
       isUpdatingLongTermGoal = false;
+    }
+  }
+
+  Future<void> updateEngagementInfo({
+    required List<String> availabilityDays,
+    required String funFact,
+    required int timeZone,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isUpdatingEngagementInfo = true;
+
+      await userService.updateEngagementInfo(
+        availabilityDays: availabilityDays,
+        funFact: funFact,
+        timeZone: timeZone,
+      );
+      onSuccess("Goals and Interest updated successfully");
+
+      isUpdatingEngagementInfo = false;
+    } catch (e) {
+      onError(ErrorText.generic);
+      isUpdatingEngagementInfo = false;
     }
   }
 }

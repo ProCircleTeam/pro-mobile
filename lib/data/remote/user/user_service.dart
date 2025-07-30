@@ -13,4 +13,9 @@ abstract class UserService {
     required String longTermGoal,
     required String preferredAccountabilityPartnerTrait,
   });
+  Future<void> updateEngagementInfo({
+    required List<String> availabilityDays,
+    required String funFact,
+    required int timeZone,
+  });
 }
