@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
@@ -33,7 +36,7 @@ class _GoalsAndInterestPageState extends State<GoalsAndInterestPage> {
         ),
         resizeToAvoidBottomInset: true,
         body: BaseView<ProfileViewModel>(
-          model: ProfileViewModel(),
+          model: ProfileViewModel(sl.get<UserService>()),
           builder: (context, model, _) {
             return SizedBox(
               height: size.height,
@@ -95,20 +98,13 @@ class _GoalsAndInterestPageState extends State<GoalsAndInterestPage> {
                       children: [
                         ActionButton(
                           title: "Update",
+                          isLoading: model.isUpdatingLongTermGoal,
                           onTap: () {
                             String partnerTrait =
                                 model.preferredPartnersTraitController.text;
                             String interest = model.selectedInterest;
                             String longTermGoal =
                                 model.longTermGoalController.text;
-
-                            print(
-                              "partnerTrait ==================> $partnerTrait",
-                            );
-                            print("interest ==================> $interest");
-                            print(
-                              "longTermGoal ==================> $longTermGoal",
-                            );
 
                             bool canSubmit = model.isGoalAndInterestFormValid(
                               interest: interest,
@@ -122,7 +118,34 @@ class _GoalsAndInterestPageState extends State<GoalsAndInterestPage> {
                               },
                             );
 
-                            if (canSubmit) {}
+                            if (canSubmit) {
+                              model.updateLongTermGoal(
+                                addAreaOfInterests: [3],
+                                removeAreaOfInterests: [],
+                                longTermGoal: longTermGoal,
+                                preferredAccountabilityPartnerTrait:
+                                    partnerTrait,
+                                onSuccess: (msg) {
+                                  AppFlushBar().showSuccess(
+                                    message: msg,
+                                    context: context,
+                                  );
+                                  Future.delayed(Duration(seconds: 3), () {
+                                    Navigator.pop(context);
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      AppRouter.profileUpdate,
+                                    );
+                                  });
+                                },
+                                onError: (e) {
+                                  AppFlushBar().showError(
+                                    message: e,
+                                    context: context,
+                                  );
+                                },
+                              );
+                            }
                           },
                         ),
 

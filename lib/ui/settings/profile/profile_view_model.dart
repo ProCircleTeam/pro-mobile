@@ -3,10 +3,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/time_zone.dart';
 import 'package:pro_mobile/ui/base/base_view_model.dart';
 
 class ProfileViewModel extends BaseViewModel {
+  final UserService userService;
+  ProfileViewModel(this.userService);
+
   final personalInfoFormKey = GlobalKey<FormState>();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
@@ -55,6 +59,78 @@ class ProfileViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _isPersonalInfoCompleted = false;
+  bool get isPersonalInfoCompleted => _isPersonalInfoCompleted;
+  set isPersonalInfoCompleted(bool val) {
+    _isPersonalInfoCompleted = val;
+    notifyListeners();
+  }
+
+  bool _isProfessionalInfoCompleted = false;
+  bool get isProfessionalInfoCompleted => _isProfessionalInfoCompleted;
+  set isProfessionalInfoCompleted(bool val) {
+    _isProfessionalInfoCompleted = val;
+    notifyListeners();
+  }
+
+  bool _isGoalInfoCompleted = false;
+  bool get isGoalInfoCompleted => _isGoalInfoCompleted;
+  set isGoalInfoCompleted(bool val) {
+    _isGoalInfoCompleted = val;
+    notifyListeners();
+  }
+
+  bool _isEngagementInfoCompleted = false;
+  bool get isEngagementInfoCompleted => _isEngagementInfoCompleted;
+  set isEngagementInfoCompleted(bool val) {
+    _isEngagementInfoCompleted = val;
+    notifyListeners();
+  }
+
+  bool _isFetchingProfileStatus = false;
+  bool get isFetchingProfileStatus => _isFetchingProfileStatus;
+  set isFetchingProfileStatus(bool val) {
+    _isFetchingProfileStatus = val;
+    notifyListeners();
+  }
+
+  bool _isFetchingTimeZones = false;
+  bool get isFetchingTimeZones => _isFetchingTimeZones;
+  set isFetchingTimeZones(bool val) {
+    _isFetchingTimeZones = val;
+    notifyListeners();
+  }
+
+  bool _isUpdatingPersonalInfo = false;
+  bool get isUpdatingPersonalInfo => _isUpdatingPersonalInfo;
+  set isUpdatingPersonalInfo(bool val) {
+    _isUpdatingPersonalInfo = val;
+    notifyListeners();
+  }
+
+  bool _isUpdatingProfessionalInfo = false;
+  bool get isUpdatingProfessionalInfo => _isUpdatingProfessionalInfo;
+  set isUpdatingProfessionalInfo(bool val) {
+    _isUpdatingProfessionalInfo = val;
+    notifyListeners();
+  }
+
+  bool _isUpdatingLongTermGoal = false;
+  bool get isUpdatingLongTermGoal => _isUpdatingLongTermGoal;
+  set isUpdatingLongTermGoal(bool val) {
+    _isUpdatingLongTermGoal = val;
+    notifyListeners();
+  }
+
+  bool _isUpdatingEngagementInfo = false;
+  bool get isUpdatingEngagementInfo => _isUpdatingEngagementInfo;
+  set isUpdatingEngagementInfo(bool val) {
+    _isUpdatingEngagementInfo = val;
+    notifyListeners();
+  }
+
+  List<TimeZoneModel> supportedTimeZones = [];
+
   bool isProfessionalInfoFormValid({
     required String jobTitle,
     required String yearsOfExperience,
@@ -66,8 +142,8 @@ class ProfileViewModel extends BaseViewModel {
       String error = "jobTitle length must be greater than 2";
       onError(error);
       return false;
-    } else if (yearsOfExperience.isEmpty) {
-      String error = "Kindly provide your years of experience";
+    } else if (int.tryParse(yearsOfExperience) == null) {
+      String error = "Invalid years of experience";
       onError(error);
       return false;
     } else if (industrySector.length < 3) {
@@ -169,6 +245,155 @@ class ProfileViewModel extends BaseViewModel {
       return false;
     } else {
       return true;
+    }
+  }
+
+  Future<void> getUserProfileCompletionStatus(
+    Function(String e) onError,
+  ) async {
+    try {
+      isFetchingProfileStatus = true;
+
+      var res = await userService.getUserProfileStatus();
+      isPersonalInfoCompleted = res["personalInfoComplete"];
+      isProfessionalInfoCompleted = res["professionalInfoComplete"];
+      isGoalInfoCompleted = res["goalsInfoComplete"];
+      isEngagementInfoCompleted = res["engagementInfoComplete"];
+
+      isFetchingProfileStatus = false;
+    } catch (e) {
+      isFetchingProfileStatus = false;
+      onError(ErrorText.generic);
+    }
+  }
+
+  Future<void> getSupportedTimeZones(Function(String e) onError) async {
+    try {
+      isFetchingTimeZones = true;
+      var res = await userService.getSupportedTimeZones();
+
+      supportedTimeZones =
+          res.map((el) {
+            return TimeZoneModel.fromJson(el);
+          }).toList();
+      supportedTimeZones = [...timeZones, ...supportedTimeZones];
+
+      isFetchingTimeZones = false;
+    } catch (e) {
+      isFetchingTimeZones = false;
+      print("Error fetching Time zone ==========================> $e");
+      onError(ErrorText.generic);
+    }
+  }
+
+  Future<void> updatePersonalInfo({
+    required String username,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String bio,
+    required File profilePhoto,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isUpdatingPersonalInfo = true;
+
+      await userService.updatePersonalInfo(
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        bio: bio,
+        profilePhoto: profilePhoto,
+      );
+      onSuccess("Personal info added successfully");
+
+      isUpdatingPersonalInfo = false;
+    } catch (e) {
+      onError(ErrorText.generic);
+      isUpdatingPersonalInfo = false;
+    }
+  }
+
+  Future<void> updateProfessionalInfo({
+    required String careerSummary,
+    required int industrySectorId,
+    required String jobTitle,
+    required int yearsOfExperience,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isUpdatingProfessionalInfo = true;
+
+      var res = await userService.updateUserProfessionalInfo(
+        jobTitle: jobTitle,
+        careerSummary: careerSummary,
+        industrySectorId: industrySectorId,
+        yearsOfExperience: yearsOfExperience,
+      );
+      onSuccess("Professional info added successfully");
+
+      print("This is the response ======================> $res");
+
+      isUpdatingProfessionalInfo = false;
+    } catch (e) {
+      onError(ErrorText.generic);
+      isUpdatingProfessionalInfo = false;
+    }
+  }
+
+  Future<void> updateLongTermGoal({
+    required List<int> addAreaOfInterests,
+    required List<int> removeAreaOfInterests,
+    required String longTermGoal,
+    required String preferredAccountabilityPartnerTrait,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isUpdatingLongTermGoal = true;
+
+      var res = await userService.updateLongTermGoal(
+        addAreaOfInterests: addAreaOfInterests,
+        removeAreaOfInterests: removeAreaOfInterests,
+        longTermGoal: longTermGoal,
+        preferredAccountabilityPartnerTrait:
+            preferredAccountabilityPartnerTrait,
+      );
+      onSuccess("Goals and Interest updated successfully");
+
+      print("This is the response ======================> $res");
+
+      isUpdatingLongTermGoal = false;
+    } catch (e) {
+      onError(ErrorText.generic);
+      isUpdatingLongTermGoal = false;
+    }
+  }
+
+  Future<void> updateEngagementInfo({
+    required List<String> availabilityDays,
+    required String funFact,
+    required int timeZone,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isUpdatingEngagementInfo = true;
+
+      await userService.updateEngagementInfo(
+        availabilityDays: availabilityDays,
+        funFact: funFact,
+        timeZone: timeZone,
+      );
+      onSuccess("Goals and Interest updated successfully");
+
+      isUpdatingEngagementInfo = false;
+    } catch (e) {
+      onError(ErrorText.generic);
+      isUpdatingEngagementInfo = false;
     }
   }
 }

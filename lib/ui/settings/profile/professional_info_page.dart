@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
@@ -35,7 +38,7 @@ class _ProfessionalInfoUpdatePageState
         ),
         resizeToAvoidBottomInset: true,
         body: BaseView<ProfileViewModel>(
-          model: ProfileViewModel(),
+          model: ProfileViewModel(sl.get<UserService>()),
           builder: (context, model, _) {
             return SizedBox(
               height: size.height,
@@ -101,6 +104,7 @@ class _ProfessionalInfoUpdatePageState
                       children: [
                         ActionButton(
                           title: "Update",
+                          isLoading: model.isUpdatingProfessionalInfo,
                           onTap: () {
                             String jobTitle = model.jobTitleController.text;
                             String industrySector =
@@ -123,7 +127,33 @@ class _ProfessionalInfoUpdatePageState
                               },
                             );
 
-                            if (canSubmit) {}
+                            if (canSubmit) {
+                              model.updateProfessionalInfo(
+                                careerSummary: careerSummary,
+                                industrySectorId: 3,
+                                jobTitle: jobTitle,
+                                yearsOfExperience: int.parse(yearsOfExperience),
+                                onSuccess: (msg) {
+                                  AppFlushBar().showSuccess(
+                                    message: msg,
+                                    context: context,
+                                  );
+                                  Future.delayed(Duration(seconds: 3), () {
+                                    Navigator.pop(context);
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      AppRouter.profileUpdate,
+                                    );
+                                  });
+                                },
+                                onError: (e) {
+                                  AppFlushBar().showError(
+                                    message: e,
+                                    context: context,
+                                  );
+                                },
+                              );
+                            }
                           },
                         ),
 

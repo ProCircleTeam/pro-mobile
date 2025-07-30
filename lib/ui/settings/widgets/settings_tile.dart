@@ -8,12 +8,14 @@ class SettingsTile extends StatelessWidget {
   final IconData icon;
   final Function onTap;
   final bool showDivider;
+  final Widget? trailingWidget;
   const SettingsTile({
     required this.title,
     required this.icon,
     required this.onTap,
     this.showDivider = true,
-    super.key
+    this.trailingWidget,
+    super.key,
   });
 
   @override
@@ -23,19 +25,22 @@ class SettingsTile extends StatelessWidget {
       children: [
         ListTile(
           leading: Icon(icon, color: AppColors.appBlack.withValues(alpha: .5)),
-          title: CustomText(title, size: size.height * .018,),
-          trailing: Icon(
+          title: CustomText(title, size: size.height * .018),
+          trailing: trailingWidget ?? Icon(
             Icons.arrow_forward_ios,
             size: 18,
             color: AppColors.appBlack.withValues(alpha: .5),
           ),
           onTap: () => onTap(),
         ),
-        if(showDivider)
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: size.width * .03, vertical: size.height * .00),
-          child: FadedStroke(),
-        ),
+        if (showDivider)
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: size.width * .03,
+              vertical: size.height * .00,
+            ),
+            child: FadedStroke(),
+          ),
       ],
     );
   }

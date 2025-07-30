@@ -5,6 +5,7 @@ class CustomDropdownInput<T> extends StatelessWidget {
   final String? labelText;
   final String? helperText;
   final T? value;
+  final Widget? icon;
   final List<DropdownMenuItem<T>> items;
   final void Function(T?)? onChanged;
 
@@ -14,6 +15,7 @@ class CustomDropdownInput<T> extends StatelessWidget {
     required this.value,
     required this.items,
     required this.onChanged,
+    this.icon,
     super.key,
   });
 
@@ -22,6 +24,7 @@ class CustomDropdownInput<T> extends StatelessWidget {
     return DropdownButtonFormField<T>(
       value: value,
       items: items,
+      icon: icon,
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: labelText,

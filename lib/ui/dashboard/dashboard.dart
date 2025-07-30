@@ -49,7 +49,7 @@ class _DashboardState extends State<Dashboard> {
           BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_box_outlined),
-            label: 'Add Goals',
+            label: 'Goals',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_outlined),
