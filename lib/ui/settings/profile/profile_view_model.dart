@@ -94,6 +94,13 @@ class ProfileViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _isFetchingTimeZones = false;
+  bool get isFetchingTimeZones => _isFetchingTimeZones;
+  set isFetchingTimeZones(bool val) {
+    _isFetchingTimeZones = val;
+    notifyListeners();
+  }
+
   bool _isUpdatingProfessionalInfo = false;
   bool get isUpdatingProfessionalInfo => _isUpdatingProfessionalInfo;
   set isUpdatingProfessionalInfo(bool val) {
@@ -107,6 +114,8 @@ class ProfileViewModel extends BaseViewModel {
     _isUpdatingLongTermGoal = val;
     notifyListeners();
   }
+
+  List<TimeZoneModel> supportedTimeZones = [];
 
   bool isProfessionalInfoFormValid({
     required String jobTitle,
@@ -239,6 +248,26 @@ class ProfileViewModel extends BaseViewModel {
 
       isFetchingProfileStatus = false;
     } catch (e) {
+      isFetchingProfileStatus = false;
+      onError(ErrorText.generic);
+    }
+  }
+
+  Future<void> getSupportedTimeZones(Function(String e) onError) async {
+    try {
+      isFetchingTimeZones = true;
+      var res = await userService.getSupportedTimeZones();
+
+      supportedTimeZones =
+          res.map((el) {
+            return TimeZoneModel.fromJson(el);
+          }).toList();
+      supportedTimeZones = [...timeZones, ...supportedTimeZones];
+
+      isFetchingTimeZones = false;
+    } catch (e) {
+      isFetchingTimeZones = false;
+      print("Error fetching Time zone ==========================> $e");
       onError(ErrorText.generic);
     }
   }
@@ -272,7 +301,7 @@ class ProfileViewModel extends BaseViewModel {
   }
 
   Future<void> updateLongTermGoal({
-   required List<int> addAreaOfInterests,
+    required List<int> addAreaOfInterests,
     required List<int> removeAreaOfInterests,
     required String longTermGoal,
     required String preferredAccountabilityPartnerTrait,
@@ -286,7 +315,8 @@ class ProfileViewModel extends BaseViewModel {
         addAreaOfInterests: addAreaOfInterests,
         removeAreaOfInterests: removeAreaOfInterests,
         longTermGoal: longTermGoal,
-        preferredAccountabilityPartnerTrait: preferredAccountabilityPartnerTrait,
+        preferredAccountabilityPartnerTrait:
+            preferredAccountabilityPartnerTrait,
       );
       onSuccess("Goals and Interest updated successfully");
 

@@ -18,6 +18,15 @@ class UserServiceImpl implements UserService {
   }
 
   @override
+  Future<List> getSupportedTimeZones() async {
+    String url = Endpoints.getSupportedTimeZones;
+
+    final header = await getAppHeader(isTokenRequired: true);
+    Response? res = await appClient.get(url, headers: header);
+    return res?.data["data"];
+  }
+
+  @override
   Future<Map<String, dynamic>> updateUserProfessionalInfo({
     required String careerSummary,
     required int industrySectorId,

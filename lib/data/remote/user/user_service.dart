@@ -1,4 +1,5 @@
 abstract class UserService {
+  Future<List> getSupportedTimeZones();
   Future<Map<String, dynamic>> getUserProfileStatus();
   Future<Map<String, dynamic>> updateUserProfessionalInfo({
     required String careerSummary,

@@ -8,6 +8,10 @@ class Endpoints {
   static String getWeeklyGoalByDate(String date) => "$baseUrl/goal?date=$date";
   static String updateGoal(int id) => "$baseUrl/goal/$id";
   static String getUserProfileStatus = "$baseUrl/user/profile/status";
-  static String updateProfessionalInfo = "$baseUrl/user/profile/professional-info/update";
+  static String updateProfessionalInfo =
+      "$baseUrl/user/profile/professional-info/update";
   static String updateLongTermGoal = "$baseUrl/user/profile/goal-info/update";
+  static String updateEngagementInfo =
+      "$baseUrl/user/profile/engagement-info/update";
+  static String getSupportedTimeZones = "$baseUrl/user/search/timezone";
 }

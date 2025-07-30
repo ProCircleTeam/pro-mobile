@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/time_zone.dart';
@@ -27,6 +28,7 @@ class _EngagementPageState extends State<EngagementPage> {
     final size = MediaQuery.of(context).size;
     final viewInsets = MediaQuery.of(context).viewInsets;
     Widget formItemSpace = SizedBox(height: size.height * .02);
+    final iconWidth = size.width * .027;
 
     return UnfocusWidget(
       child: Scaffold(
@@ -37,6 +39,10 @@ class _EngagementPageState extends State<EngagementPage> {
         resizeToAvoidBottomInset: true,
         body: BaseView<ProfileViewModel>(
           model: ProfileViewModel(sl.get<UserService>()),
+          onModelReady:
+              (model) => model.getSupportedTimeZones((e) {
+                AppFlushBar().showError(message: e, context: context);
+              }),
           builder: (context, model, _) {
             return SizedBox(
               height: size.height,
@@ -59,8 +65,19 @@ class _EngagementPageState extends State<EngagementPage> {
                               formItemSpace,
                               CustomDropdownInput<TimeZoneModel>(
                                 value: model.selectedTimeZone,
+                                icon:
+                                    model.isFetchingTimeZones
+                                        ? SizedBox(
+                                          width: iconWidth,
+                                          height: iconWidth,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: AppColors.richBlue,
+                                          ),
+                                        )
+                                        : null,
                                 items: [
-                                  ...timeZones.map(
+                                  ...model.supportedTimeZones.map(
                                     (el) => DropdownMenuItem(
                                       value: el,
                                       child: Text(

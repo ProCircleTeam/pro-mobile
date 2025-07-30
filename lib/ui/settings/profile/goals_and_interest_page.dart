@@ -125,7 +125,7 @@ class _GoalsAndInterestPageState extends State<GoalsAndInterestPage> {
                                 longTermGoal: longTermGoal,
                                 preferredAccountabilityPartnerTrait:
                                     partnerTrait,
-                                 onSuccess: (msg) {
+                                onSuccess: (msg) {
                                   AppFlushBar().showSuccess(
                                     message: msg,
                                     context: context,
