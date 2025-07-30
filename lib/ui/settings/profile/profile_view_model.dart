@@ -94,6 +94,20 @@ class ProfileViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _isUpdatingProfessionalInfo = false;
+  bool get isUpdatingProfessionalInfo => _isUpdatingProfessionalInfo;
+  set isUpdatingProfessionalInfo(bool val) {
+    _isUpdatingProfessionalInfo = val;
+    notifyListeners();
+  }
+
+  bool _isUpdatingLongTermGoal = false;
+  bool get isUpdatingLongTermGoal => _isUpdatingLongTermGoal;
+  set isUpdatingLongTermGoal(bool val) {
+    _isUpdatingLongTermGoal = val;
+    notifyListeners();
+  }
+
   bool isProfessionalInfoFormValid({
     required String jobTitle,
     required String yearsOfExperience,
@@ -105,8 +119,8 @@ class ProfileViewModel extends BaseViewModel {
       String error = "jobTitle length must be greater than 2";
       onError(error);
       return false;
-    } else if (yearsOfExperience.isEmpty) {
-      String error = "Kindly provide your years of experience";
+    } else if (int.tryParse(yearsOfExperience) == null) {
+      String error = "Invalid years of experience";
       onError(error);
       return false;
     } else if (industrySector.length < 3) {
@@ -211,15 +225,77 @@ class ProfileViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> getUserProfileCompletionStatus() async {
-    isFetchingProfileStatus = true;
-    var res = await userService.getUserProfileStatus();
-    print("This is the res ============> $res");
-    isPersonalInfoCompleted = res["personalInfoComplete"];
-    isProfessionalInfoCompleted = res["professionalInfoComplete"];
-    isGoalInfoCompleted = res["goalsInfoComplete"];
-    isEngagementInfoCompleted = res["engagementInfoComplete"];
+  Future<void> getUserProfileCompletionStatus(
+    Function(String e) onError,
+  ) async {
+    try {
+      isFetchingProfileStatus = true;
 
-    isFetchingProfileStatus = false;
+      var res = await userService.getUserProfileStatus();
+      isPersonalInfoCompleted = res["personalInfoComplete"];
+      isProfessionalInfoCompleted = res["professionalInfoComplete"];
+      isGoalInfoCompleted = res["goalsInfoComplete"];
+      isEngagementInfoCompleted = res["engagementInfoComplete"];
+
+      isFetchingProfileStatus = false;
+    } catch (e) {
+      onError(ErrorText.generic);
+    }
+  }
+
+  Future<void> updateProfessionalInfo({
+    required String careerSummary,
+    required int industrySectorId,
+    required String jobTitle,
+    required int yearsOfExperience,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isUpdatingProfessionalInfo = true;
+
+      var res = await userService.updateUserProfessionalInfo(
+        jobTitle: jobTitle,
+        careerSummary: careerSummary,
+        industrySectorId: industrySectorId,
+        yearsOfExperience: yearsOfExperience,
+      );
+      onSuccess("Professional info added successfully");
+
+      print("This is the response ======================> $res");
+
+      isUpdatingProfessionalInfo = false;
+    } catch (e) {
+      onError(ErrorText.generic);
+      isUpdatingProfessionalInfo = false;
+    }
+  }
+
+  Future<void> updateLongTermGoal({
+   required List<int> addAreaOfInterests,
+    required List<int> removeAreaOfInterests,
+    required String longTermGoal,
+    required String preferredAccountabilityPartnerTrait,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isUpdatingLongTermGoal = true;
+
+      var res = await userService.updateLongTermGoal(
+        addAreaOfInterests: addAreaOfInterests,
+        removeAreaOfInterests: removeAreaOfInterests,
+        longTermGoal: longTermGoal,
+        preferredAccountabilityPartnerTrait: preferredAccountabilityPartnerTrait,
+      );
+      onSuccess("Goals and Interest updated successfully");
+
+      print("This is the response ======================> $res");
+
+      isUpdatingLongTermGoal = false;
+    } catch (e) {
+      onError(ErrorText.generic);
+      isUpdatingLongTermGoal = false;
+    }
   }
 }

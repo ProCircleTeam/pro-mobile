@@ -6,6 +6,7 @@ import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/settings/widgets/settings_tile.dart';
+import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 
@@ -28,7 +29,10 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
       ),
       body: BaseView<ProfileViewModel>(
         model: ProfileViewModel(sl.get<UserService>()),
-        onModelReady: (model) => model.getUserProfileCompletionStatus(),
+        onModelReady:
+            (model) => model.getUserProfileCompletionStatus((e) {
+              AppFlushBar().showError(message: e, context: context);
+            }),
         builder: (context, model, _) {
           return PaddedContainer(
             child: Column(
