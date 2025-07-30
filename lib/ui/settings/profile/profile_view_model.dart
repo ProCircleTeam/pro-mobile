@@ -101,6 +101,13 @@ class ProfileViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _isUpdatingPersonalInfo = false;
+  bool get isUpdatingPersonalInfo => _isUpdatingPersonalInfo;
+  set isUpdatingPersonalInfo(bool val) {
+    _isUpdatingPersonalInfo = val;
+    notifyListeners();
+  }
+
   bool _isUpdatingProfessionalInfo = false;
   bool get isUpdatingProfessionalInfo => _isUpdatingProfessionalInfo;
   set isUpdatingProfessionalInfo(bool val) {
@@ -276,6 +283,36 @@ class ProfileViewModel extends BaseViewModel {
       isFetchingTimeZones = false;
       print("Error fetching Time zone ==========================> $e");
       onError(ErrorText.generic);
+    }
+  }
+
+  Future<void> updatePersonalInfo({
+    required String username,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String bio,
+    required File profilePhoto,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isUpdatingPersonalInfo = true;
+
+      await userService.updatePersonalInfo(
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        bio: bio,
+        profilePhoto: profilePhoto,
+      );
+      onSuccess("Personal info added successfully");
+
+      isUpdatingPersonalInfo = false;
+    } catch (e) {
+      onError(ErrorText.generic);
+      isUpdatingPersonalInfo = false;
     }
   }
 

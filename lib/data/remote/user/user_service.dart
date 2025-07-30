@@ -1,3 +1,5 @@
+import 'dart:io';
+
 abstract class UserService {
   Future<List> getSupportedTimeZones();
   Future<Map<String, dynamic>> getUserProfileStatus();
@@ -17,5 +19,13 @@ abstract class UserService {
     required List<String> availabilityDays,
     required String funFact,
     required int timeZone,
+  });
+  Future<void> updatePersonalInfo({
+    required String username,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String bio,
+    required File profilePhoto,
   });
 }

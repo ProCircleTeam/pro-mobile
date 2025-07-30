@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
@@ -145,6 +146,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                       children: [
                         ActionButton(
                           title: "Update",
+                          isLoading: model.isUpdatingPersonalInfo,
                           onTap: () {
                             String username = model.usernameController.text;
                             String firstName = model.firstNameController.text;
@@ -169,8 +171,34 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               },
                             );
 
-                            if(canSubmit){
-
+                            if (canSubmit) {
+                              model.updatePersonalInfo(
+                                username: username,
+                                firstName: firstName,
+                                lastName: lastName,
+                                phone: phoneNumber,
+                                bio: bio,
+                                profilePhoto: profilePics!,
+                                onSuccess: (msg) {
+                                  AppFlushBar().showSuccess(
+                                    message: msg,
+                                    context: context,
+                                  );
+                                  Future.delayed(Duration(seconds: 3), () {
+                                    Navigator.pop(context);
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      AppRouter.profileUpdate,
+                                    );
+                                  });
+                                },
+                                onError: (e) {
+                                  AppFlushBar().showError(
+                                    message: e,
+                                    context: context,
+                                  );
+                                },
+                              );
                             }
                           },
                         ),

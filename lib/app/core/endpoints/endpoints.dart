@@ -11,6 +11,7 @@ class Endpoints {
   static String updateProfessionalInfo =
       "$baseUrl/user/profile/professional-info/update";
   static String updateLongTermGoal = "$baseUrl/user/profile/goal-info/update";
+  static String updatePersonalInfo = "$baseUrl/user/profile/personal-info/update";
   static String updateEngagementInfo =
       "$baseUrl/user/profile/engagement-info/update";
   static String getSupportedTimeZones = "$baseUrl/user/search/timezone";

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:pro_mobile/app/core/client/app_client.dart';
 import 'package:pro_mobile/app/core/client/header.dart';
@@ -58,7 +60,8 @@ class UserServiceImpl implements UserService {
       "addAreaOfInterests": addAreaOfInterests,
       "removeAreaOfInterests": removeAreaOfInterests,
       "longTermGoal": longTermGoal,
-      "preferredAccountabilityPartnerTrait": preferredAccountabilityPartnerTrait,
+      "preferredAccountabilityPartnerTrait":
+          preferredAccountabilityPartnerTrait,
     };
 
     final header = await getAppHeader(isTokenRequired: true);
@@ -67,7 +70,7 @@ class UserServiceImpl implements UserService {
   }
 
   @override
-   Future<void> updateEngagementInfo({
+  Future<void> updateEngagementInfo({
     required List<String> availabilityDays,
     required String funFact,
     required int timeZone,
@@ -82,5 +85,39 @@ class UserServiceImpl implements UserService {
     final header = await getAppHeader(isTokenRequired: true);
     Response? res = await appClient.put(url, data, headers: header);
     return res?.data["data"];
+  }
+
+  @override
+  Future<void> updatePersonalInfo({
+    required String username,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String bio,
+    required File profilePhoto,
+  }) async {
+    String url = Endpoints.updatePersonalInfo;
+    Dio dio = Dio();
+
+    final formData = FormData.fromMap({
+      'username': username,
+      'firstName': firstName,
+      'lastName': lastName,
+      'phone': phone,
+      'bio': bio,
+      'profilePhoto': await MultipartFile.fromFile(
+        profilePhoto.path,
+        filename: profilePhoto.path.split('/').last,
+      ),
+    });
+
+    final header = await getAppHeader(isTokenRequired: true);
+    header['Content-Type'] = 'multipart/form-data';
+    Response? res = await dio.put(
+      url,
+      data: formData,
+      options: Options(headers: header),
+    );
+    return res.data["data"];
   }
 }
