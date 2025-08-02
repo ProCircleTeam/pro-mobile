@@ -1,19 +1,36 @@
 import 'package:pro_mobile/app/core/failure/failure.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
+import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/goal_model.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/goal_provider.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view_model.dart';
 
 class HomeViewModel extends BaseViewModel {
   final GoalService goalService;
+  final UserService userService;
   final GoalProvider goalProvider;
-  HomeViewModel({required this.goalService, required this.goalProvider});
+  final UserProvider userProvider;
+  HomeViewModel({
+    required this.goalService,
+    required this.userService,
+    required this.userProvider,
+    required this.goalProvider,
+  });
 
   bool _isGettingGoal = false;
   bool get isGettingGoal => _isGettingGoal;
   set isGettingGoal(bool val) {
     _isGettingGoal = val;
+    notifyListeners();
+  }
+
+  bool _isGettingPartner = false;
+  bool get isGettingPartner => _isGettingPartner;
+  set isGettingPartner(bool val) {
+    _isGettingPartner = val;
     notifyListeners();
   }
 
@@ -24,6 +41,29 @@ class HomeViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  Future<void> getPartner({
+    required int partnerId,
+    required Function(String e) onError,
+  }) async {
+    try {
+       isGettingPartner = true;
+      UserModel? partner = await userService.getUserById(partnerId);
+
+      if (partner != null) {
+        userProvider.partner = partner;
+      } else {
+        throw Failure("Unable to fetch this week's paired partner");
+      }
+      isGettingPartner = false;
+    } on Failure catch (e) {
+       isGettingPartner = false;
+      onError(e.errorMessage);
+    } catch (e) {
+       isGettingPartner = false;
+      onError(ErrorText.generic);
+    }
+  }
+
   Future<void> getUserWeeklyGoal({
     required int goalId,
     required Function(String e) onError,
@@ -32,7 +72,6 @@ class HomeViewModel extends BaseViewModel {
       GoalModel? goal = await goalService.getGoalById(goalId);
       if (goal != null) {
         goalProvider.goals = goal;
-        print("This is the weekly goals ======================> ");
       } else {
         throw Failure("Unable to fetch goals");
       }

@@ -4,6 +4,7 @@ import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
+import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/goal_provider.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
@@ -43,12 +44,21 @@ class _HomePageState extends State<HomePage> {
       body: BaseView<HomeViewModel>(
         model: HomeViewModel(
           goalService: sl.get<GoalService>(),
+          userService: sl.get<UserService>(),
           goalProvider: goalProvider,
+          userProvider: userProvider,
         ),
-        onModelReady: (model) {
-          model.getUserWeeklyGoalByDate((e) {
+        onModelReady: (model) async {
+          await model.getUserWeeklyGoalByDate((e) {
             AppFlushBar().showError(message: e, context: context);
           });
+
+          await model.getPartner(
+            partnerId: 1,
+            onError: (e) {
+              AppFlushBar().showError(message: e, context: context);
+            },
+          );
         },
         builder: (context, model, _) {
           return Container(
@@ -62,6 +72,12 @@ class _HomePageState extends State<HomePage> {
                 await model.getUserWeeklyGoalByDate((e) {
                   AppFlushBar().showError(message: e, context: context);
                 });
+                await model.getPartner(
+                  partnerId: 1,
+                  onError: (e) {
+                    AppFlushBar().showError(message: e, context: context);
+                  },
+                );
               },
               child: SizedBox(
                 height: size.height,
@@ -74,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                           Navigator.pushNamed(context, AppRouter.profile);
                         },
                         child: CircularNetworkImageWidget(
-                          imageUrl: StringConstants.sampleProfileImage,
+                          imageUrl: user.profilePhoto ?? StringConstants.sampleProfileImage,
                           size: size.width * .11,
                         ),
                       ),

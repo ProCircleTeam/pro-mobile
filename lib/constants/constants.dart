@@ -37,7 +37,7 @@ const List<String> industrySectors = [
   'Information Technology (IT)',
   'Finance & Banking',
   'Healthcare & Medical Services',
-  'Education & Training',
+  'Education',
   'Manufacturing',
   'Retail & E-commerce',
   'Agriculture',

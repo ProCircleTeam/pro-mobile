@@ -3,12 +3,14 @@ import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/settings/widgets/settings_tile.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
+import 'package:provider/provider.dart';
 
 class ProfileUpdate extends StatefulWidget {
   const ProfileUpdate({super.key});
@@ -20,6 +22,7 @@ class ProfileUpdate extends StatefulWidget {
 class _ProfileUpdateState extends State<ProfileUpdate> {
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     final size = MediaQuery.of(context).size;
     final iconWidth = size.width * .027;
 
@@ -29,11 +32,20 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
       ),
       body: BaseView<ProfileViewModel>(
         model: ProfileViewModel(sl.get<UserService>()),
-        onModelReady:
-            (model) => model.getUserProfileCompletionStatus((e) {
+        onModelReady: (model) async {
+          await model.getUserProfileCompletionStatus((e) {
+            AppFlushBar().showError(message: e, context: context);
+          });
+          await model.syncUserProfile(
+            userProvider: userProvider,
+            onError: (e) {
               AppFlushBar().showError(message: e, context: context);
-            }),
+            },
+          );
+        },
         builder: (context, model, _) {
+          bool isGettingProfileInfoRead = model.isFetchingProfileStatus || model.isSyncingUserProfile ? true :false;
+
           return PaddedContainer(
             child: Column(
               children: [
@@ -41,7 +53,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                   title: "Personal Info",
                   icon: Icons.person_2_outlined,
                   trailingWidget:
-                      model.isFetchingProfileStatus
+                      isGettingProfileInfoRead
                           ? SizedBox(
                             width: iconWidth,
                             height: iconWidth,
@@ -57,7 +69,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                           )
                           : null,
                   onTap: () {
-                    if (!model.isFetchingProfileStatus) {
+                    if (!isGettingProfileInfoRead) {
                       Navigator.pushNamed(
                         context,
                         AppRouter.personalInfoUpdatePage,
@@ -69,7 +81,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                   title: "Professional Info",
                   icon: Icons.photo_camera_front_outlined,
                   trailingWidget:
-                      model.isFetchingProfileStatus
+                      isGettingProfileInfoRead
                           ? SizedBox(
                             width: iconWidth,
                             height: iconWidth,
@@ -85,7 +97,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                           )
                           : null,
                   onTap: () {
-                    if (!model.isFetchingProfileStatus) {
+                    if (!isGettingProfileInfoRead) {
                       Navigator.pushNamed(
                         context,
                         AppRouter.professionalInfoUpdatePage,
@@ -97,7 +109,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                   title: "Goals and Interest",
                   icon: Icons.interests_outlined,
                   trailingWidget:
-                      model.isFetchingProfileStatus
+                      isGettingProfileInfoRead
                           ? SizedBox(
                             width: iconWidth,
                             height: iconWidth,
@@ -113,7 +125,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                           )
                           : null,
                   onTap: () {
-                    if (!model.isFetchingProfileStatus) {
+                    if (!isGettingProfileInfoRead) {
                       Navigator.pushNamed(context, AppRouter.goalsAndInterest);
                     }
                   },
@@ -122,7 +134,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                   title: "Engagement",
                   icon: Icons.energy_savings_leaf_outlined,
                   trailingWidget:
-                      model.isFetchingProfileStatus
+                      isGettingProfileInfoRead
                           ? SizedBox(
                             width: iconWidth,
                             height: iconWidth,
@@ -139,7 +151,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                           : null,
                   showDivider: false,
                   onTap: () {
-                    if (!model.isFetchingProfileStatus) {
+                    if (!isGettingProfileInfoRead) {
                       Navigator.pushNamed(context, AppRouter.engagementPage);
                     }
                   },

@@ -3,6 +3,8 @@ import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
@@ -13,6 +15,7 @@ import 'package:pro_mobile/ui/widgets/form/custom_text_input_2.dart';
 import 'package:pro_mobile/ui/widgets/form/multiline_text_input.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/unfocus_widget.dart';
+import 'package:provider/provider.dart';
 
 class ProfessionalInfoUpdatePage extends StatefulWidget {
   const ProfessionalInfoUpdatePage({super.key});
@@ -26,6 +29,8 @@ class _ProfessionalInfoUpdatePageState
     extends State<ProfessionalInfoUpdatePage> {
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    UserModel? user = userProvider.user;
     final size = MediaQuery.of(context).size;
     final viewInsets = MediaQuery.of(context).viewInsets;
     Widget formItemSpace = SizedBox(height: size.height * .02);
@@ -39,6 +44,16 @@ class _ProfessionalInfoUpdatePageState
         resizeToAvoidBottomInset: true,
         body: BaseView<ProfileViewModel>(
           model: ProfileViewModel(sl.get<UserService>()),
+          onModelReady: (model) {
+            model.jobTitleController.text = user?.jobTitle ?? "";
+            model.yearsOfExperienceController.text =
+                "${user?.yearsOfExperience ?? ""}";
+            String? sector = user?.industrySector?.name;
+            model.selectedIndustrySector =
+                sector == null || sector.isEmpty ? industrySectors[0] : sector;
+            model.careerSummaryController.text = user?.careerSummary ?? "";
+
+          },
           builder: (context, model, _) {
             return SizedBox(
               height: size.height,

@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:pro_mobile/app/core/failure/failure.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/time_zone.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/ui/base/base_view_model.dart';
 
 class ProfileViewModel extends BaseViewModel {
@@ -129,6 +131,13 @@ class ProfileViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _isSyncingUserProfile = false;
+  bool get isSyncingUserProfile => _isSyncingUserProfile;
+  set isSyncingUserProfile(bool val) {
+    _isSyncingUserProfile = val;
+    notifyListeners();
+  }
+
   List<TimeZoneModel> supportedTimeZones = [];
 
   bool isProfessionalInfoFormValid({
@@ -170,6 +179,7 @@ class ProfileViewModel extends BaseViewModel {
     required String phoneNumber,
     required String bio,
     required File? image,
+    required String? existingProfileImage,
     required Function(String e) onError,
   }) {
     if (username.length < 3) {
@@ -193,7 +203,7 @@ class ProfileViewModel extends BaseViewModel {
       onError(error);
       return false;
     }
-    if (image == null) {
+    if (existingProfileImage == null && image == null) {
       String error = "Kindly select profile image to proceed";
       onError(error);
       return false;
@@ -292,7 +302,7 @@ class ProfileViewModel extends BaseViewModel {
     required String lastName,
     required String phone,
     required String bio,
-    required File profilePhoto,
+    required File? profilePhoto,
     required Function(String e) onSuccess,
     required Function(String e) onError,
   }) async {
@@ -394,6 +404,33 @@ class ProfileViewModel extends BaseViewModel {
     } catch (e) {
       onError(ErrorText.generic);
       isUpdatingEngagementInfo = false;
+    }
+  }
+
+  Future<void> syncUserProfile({
+    required Function(String e) onError,
+    required dynamic userProvider,
+  }) async {
+    try {
+      isSyncingUserProfile = true;
+      UserModel? user = await userService.getUserById(userProvider.user.id);
+
+      if (user != null) {
+        userProvider.user = user;
+        print("This is success ============================> ");
+      } else {
+         print("Error here ============================> ");
+        throw Failure("Unable to sync user profile");
+      }
+      isSyncingUserProfile = false;
+    } on Failure catch (e) {
+      isSyncingUserProfile = false;
+      onError(e.errorMessage);
+       print("Another Error ============================> ");
+    } catch (e) {
+      isSyncingUserProfile = false;
+      onError(ErrorText.generic);
+       print("Final Error ============================> $e");
     }
   }
 }
