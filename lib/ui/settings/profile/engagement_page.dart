@@ -4,6 +4,8 @@ import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/time_zone.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
@@ -14,6 +16,7 @@ import 'package:pro_mobile/ui/widgets/form/custom_text_input_2.dart';
 import 'package:pro_mobile/ui/widgets/form/multiline_text_input.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/unfocus_widget.dart';
+import 'package:provider/provider.dart';
 
 class EngagementPage extends StatefulWidget {
   const EngagementPage({super.key});
@@ -29,6 +32,8 @@ class _EngagementPageState extends State<EngagementPage> {
     final viewInsets = MediaQuery.of(context).viewInsets;
     Widget formItemSpace = SizedBox(height: size.height * .02);
     final iconWidth = size.width * .027;
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    UserModel? user = userProvider.user;
 
     return UnfocusWidget(
       child: Scaffold(
@@ -39,10 +44,15 @@ class _EngagementPageState extends State<EngagementPage> {
         resizeToAvoidBottomInset: true,
         body: BaseView<ProfileViewModel>(
           model: ProfileViewModel(sl.get<UserService>()),
-          onModelReady:
-              (model) => model.getSupportedTimeZones((e) {
-                AppFlushBar().showError(message: e, context: context);
-              }),
+          onModelReady: (model) {
+            model.availabilityDaysController.text =
+                user?.availabilityDays?[0] ?? "";
+            model.funFactController.text =
+                user?.funFact ?? "";
+            model.getSupportedTimeZones((e) {
+              AppFlushBar().showError(message: e, context: context);
+            });
+          },
           builder: (context, model, _) {
             return SizedBox(
               height: size.height,

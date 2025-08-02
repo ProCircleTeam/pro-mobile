@@ -1,3 +1,5 @@
+import 'package:pro_mobile/domain/models/time_zone.dart';
+
 class UserModel {
   final int id;
   final String email;
@@ -12,14 +14,13 @@ class UserModel {
   final int? yearsOfExperience;
   final String? longTermGoal;
   final String? preferredAccountabilityPartnerTrait;
-  final String? availabilityDays;
+  final List<String>? availabilityDays;
   final String? funFact;
   final String? careerSummary;
   final int? industrySectorId;
   final IndustrySector? industrySector;
-  final List<AreaOfInterest> areasOfInterests;
-  final String? timezone;
-
+  final List<AreaOfInterest>? areasOfInterests;
+  final TimeZoneModel? timezone;
   UserModel({
     required this.id,
     required this.email,
@@ -59,18 +60,21 @@ class UserModel {
       longTermGoal: json['long_term_goal'],
       preferredAccountabilityPartnerTrait:
           json['preferred_accountability_partner_trait'],
-      availabilityDays: json['availability_days'],
+      availabilityDays: json['availability_days'] != null ? (json['availability_days'] as List<dynamic>).map<String>((el){
+        return el.toString();
+      }).toList() : [],
       funFact: json['fun_fact'],
       careerSummary: json['career_summary'],
       industrySectorId: json['industry_sector_id'],
       industrySector: IndustrySector.fromJson(json['industry_sector']),
       areasOfInterests:
           json['areaOfInterests'] != null
-              ? json['areaOfInterests'].map((el) {
+              ? (json['areaOfInterests'] as List<dynamic>).map((el) {
                 return AreaOfInterest.fromJson(el);
-              })
+              }).toList() 
               : [],
-      timezone: json['timezone'],
+      timezone:
+          json['timezone'] != null ? TimeZoneModel.fromJson(json['timezone']) : null,
     );
   }
 
