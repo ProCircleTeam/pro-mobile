@@ -17,19 +17,19 @@ class UserModel {
   final String? careerSummary;
   final int? industrySectorId;
   final IndustrySector? industrySector;
-  final List<dynamic> areaOfInterests;
+  final List<AreaOfInterest> areasOfInterests;
   final String? timezone;
 
   UserModel({
     required this.id,
     required this.email,
     required this.type,
-     this.phoneNumber,
-     this.username,
-     this.firstName,
-   this.lastName,
-     this.profilePhoto,
-     this.bio,
+    this.phoneNumber,
+    this.username,
+    this.firstName,
+    this.lastName,
+    this.profilePhoto,
+    this.bio,
     this.jobTitle,
     this.yearsOfExperience,
     this.longTermGoal,
@@ -39,7 +39,7 @@ class UserModel {
     this.careerSummary,
     this.industrySectorId,
     this.industrySector,
-    required this.areaOfInterests,
+    required this.areasOfInterests,
     this.timezone,
   });
 
@@ -57,13 +57,19 @@ class UserModel {
       jobTitle: json['job_title'],
       yearsOfExperience: json['years_of_experience'],
       longTermGoal: json['long_term_goal'],
-      preferredAccountabilityPartnerTrait: json['preferred_accountability_partner_trait'],
+      preferredAccountabilityPartnerTrait:
+          json['preferred_accountability_partner_trait'],
       availabilityDays: json['availability_days'],
       funFact: json['fun_fact'],
       careerSummary: json['career_summary'],
       industrySectorId: json['industry_sector_id'],
       industrySector: IndustrySector.fromJson(json['industry_sector']),
-      areaOfInterests: json['areaOfInterests'] ?? [],
+      areasOfInterests:
+          json['areaOfInterests'] != null
+              ? json['areaOfInterests'].map((el) {
+                return AreaOfInterest.fromJson(el);
+              })
+              : [],
       timezone: json['timezone'],
     );
   }
@@ -82,18 +88,18 @@ class UserModel {
       'job_title': jobTitle,
       'years_of_experience': yearsOfExperience,
       'long_term_goal': longTermGoal,
-      'preferred_accountability_partner_trait': preferredAccountabilityPartnerTrait,
+      'preferred_accountability_partner_trait':
+          preferredAccountabilityPartnerTrait,
       'availability_days': availabilityDays,
       'fun_fact': funFact,
       'career_summary': careerSummary,
       'industry_sector_id': industrySectorId,
       'industry_sector': industrySector,
-      'areaOfInterests': areaOfInterests,
+      'areaOfInterests': areasOfInterests,
       'timezone': timezone,
     };
   }
 }
-
 
 class IndustrySector {
   final int id;
@@ -102,16 +108,25 @@ class IndustrySector {
   IndustrySector({required this.id, required this.name});
 
   factory IndustrySector.fromJson(Map<String, dynamic> json) {
-    return IndustrySector(
-      id: json['id'],
-      name: json['name'],
-    );
+    return IndustrySector(id: json['id'], name: json['name']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-    };
+    return {'id': id, 'name': name};
+  }
+}
+
+class AreaOfInterest {
+  final int id;
+  final String name;
+
+  AreaOfInterest({required this.id, required this.name});
+
+  factory AreaOfInterest.fromJson(Map<String, dynamic> json) {
+    return AreaOfInterest(id: json['id'], name: json['name']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'name': name};
   }
 }
