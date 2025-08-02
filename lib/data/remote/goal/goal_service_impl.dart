@@ -49,6 +49,7 @@ class GoalServiceImpl implements GoalService {
 
     final header = await getAppHeader(isTokenRequired: true);
     Response? res = await appClient.get(url, headers: header);
+    print("Goals res ======> $res");
     GoalModel? goal = GoalModel.fromJson(res?.data["data"]["goals"][0]);
     return goal;
   }

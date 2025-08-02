@@ -5,6 +5,8 @@ import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
@@ -17,6 +19,7 @@ import 'package:pro_mobile/ui/widgets/form/multiline_text_input.dart';
 import 'package:pro_mobile/ui/widgets/form/phone_number_input.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/unfocus_widget.dart';
+import 'package:provider/provider.dart';
 
 class PersonalInfoPage extends StatefulWidget {
   const PersonalInfoPage({super.key});
@@ -31,6 +34,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     final size = MediaQuery.of(context).size;
     final viewInsets = MediaQuery.of(context).viewInsets;
     Widget formItemSpace = SizedBox(height: size.height * .02);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    UserModel? user = userProvider.user;
 
     return UnfocusWidget(
       child: Scaffold(
@@ -41,6 +46,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         resizeToAvoidBottomInset: true,
         body: BaseView<ProfileViewModel>(
           model: ProfileViewModel(sl.get<UserService>()),
+          onModelReady: (model) {
+            model.usernameController.text = user?.username ?? "";
+            model.firstNameController.text = user?.firstName ?? "";
+            model.lastNameController.text = user?.lastName ?? "";
+            model.phoneNumberController.text = user?.phoneNumber ?? "";
+            model.bioController.text = user?.bio ?? "";
+          },
           builder: (context, model, _) {
             return SizedBox(
               height: size.height,
@@ -64,6 +76,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                         )
                                         : CircularNetworkImageWidget(
                                           imageUrl:
+                                              userProvider.user?.profilePhoto ??
                                               StringConstants
                                                   .sampleProfileImage,
                                           size: size.width * .3,
@@ -162,6 +175,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               lastName: lastName,
                               phoneNumber: phoneNumber,
                               bio: bio,
+                              existingProfileImage: user?.profilePhoto,
                               image: profilePics,
                               onError: (e) {
                                 AppFlushBar().showError(
@@ -172,13 +186,14 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             );
 
                             if (canSubmit) {
+                            
                               model.updatePersonalInfo(
                                 username: username,
                                 firstName: firstName,
                                 lastName: lastName,
                                 phone: phoneNumber,
                                 bio: bio,
-                                profilePhoto: profilePics!,
+                                profilePhoto: profilePics,
                                 onSuccess: (msg) {
                                   AppFlushBar().showSuccess(
                                     message: msg,

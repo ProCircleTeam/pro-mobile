@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:pro_mobile/domain/models/user_model.dart';
+
 abstract class UserService {
   Future<List> getSupportedTimeZones();
+  Future<UserModel?> getUserById(int id);
   Future<Map<String, dynamic>> getUserProfileStatus();
   Future<Map<String, dynamic>> updateUserProfessionalInfo({
     required String careerSummary,
@@ -26,6 +29,6 @@ abstract class UserService {
     required String lastName,
     required String phone,
     required String bio,
-    required File profilePhoto,
+    required File? profilePhoto,
   });
 }

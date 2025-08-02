@@ -8,4 +8,11 @@ class UserProvider extends ChangeNotifier {
     _user = val;
     notifyListeners();
   }
+
+  UserModel? _partner;
+  UserModel? get partner => _partner;
+  set partner(UserModel? val) {
+    _partner = val;
+    notifyListeners();
+  }
 }

@@ -143,6 +143,8 @@ class AuthViewModel extends BaseViewModel {
         emailOrUsername: emailOrUsername,
         password: password,
       );
+
+      print("The master ========================> ${res?.data["data"]}");
       isSigninIn = false;
       if (res != null && res.data != null) {
         UserModel user = UserModel.fromJson(res.data["data"]);
@@ -162,6 +164,7 @@ class AuthViewModel extends BaseViewModel {
     } catch (e) {
       isSigninIn = false;
       onError(ErrorText.generic);
+      AppLogger.log("Error ==================> $e");
     }
   }
 }

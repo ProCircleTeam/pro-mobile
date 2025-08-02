@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
+import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/widgets/circular_image_widget.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -16,6 +19,9 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    UserModel? user = userProvider.user;
+
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: PaddedContainer(
@@ -36,17 +42,17 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: [
                   CircularNetworkImageWidget(
-                    imageUrl: StringConstants.sampleProfileImage,
+                    imageUrl: user?.profilePhoto ?? StringConstants.sampleProfileImage,
                     size: size.width * .4,
                   ),
                   SizedBox(height: size.height * .01),
                   CustomText(
-                    "Xrole Diamond",
+                    "${user?.firstName ?? ""} ${user?.lastName ?? ""}",
                     size: size.height * .023,
                     weight: FontWeight.bold,
                   ),
                   CustomText(
-                    "Software Engineer",
+                    user?.jobTitle ?? "",
                     size: size.height * .020,
                     color: AppColors.appBlack.withValues(alpha: 1),
                   ),
@@ -59,10 +65,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 Column(children: [TitleText(title: "About Me")]),
               ],
             ),
-            CustomText(
-              "I build seamless modern technologies for web and mobile platforms. I’m based in Lagos and I love coffee.",
-              size: size.height * .016,
-              height: 1.5,
+            Row(
+              children: [
+                CustomText(
+                  user?.bio ?? "",
+                  size: size.height * .016,
+                  height: 1.5,
+                ),
+              ],
             ),
             SizedBox(height: size.height * .03),
             Row(

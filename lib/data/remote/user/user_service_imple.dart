@@ -5,6 +5,7 @@ import 'package:pro_mobile/app/core/client/app_client.dart';
 import 'package:pro_mobile/app/core/client/header.dart';
 import 'package:pro_mobile/app/core/endpoints/endpoints.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
 
 class UserServiceImpl implements UserService {
   final AppClient appClient;
@@ -17,6 +18,16 @@ class UserServiceImpl implements UserService {
     final header = await getAppHeader(isTokenRequired: true);
     Response? res = await appClient.get(url, headers: header);
     return res?.data["data"];
+  }
+
+  @override
+  Future<UserModel?> getUserById(int id) async {
+    String url = Endpoints.getUserById(id);
+
+    final header = await getAppHeader(isTokenRequired: true);
+    Response? res = await appClient.get(url, headers: header);
+    var resData = res?.data["data"];
+    return UserModel.fromJson(resData);
   }
 
   @override
@@ -94,7 +105,7 @@ class UserServiceImpl implements UserService {
     required String lastName,
     required String phone,
     required String bio,
-    required File profilePhoto,
+    required File? profilePhoto,
   }) async {
     String url = Endpoints.updatePersonalInfo;
     Dio dio = Dio();
@@ -105,6 +116,7 @@ class UserServiceImpl implements UserService {
       'lastName': lastName,
       'phone': phone,
       'bio': bio,
+      if(profilePhoto != null)
       'profilePhoto': await MultipartFile.fromFile(
         profilePhoto.path,
         filename: profilePhoto.path.split('/').last,
