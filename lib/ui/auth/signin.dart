@@ -117,7 +117,12 @@ class _SignInPageState extends State<SignInPage> {
                                   children: [
                                     SizedBox(),
                                     InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          AppRouter.forgotPasswordPage,
+                                        );
+                                      },
                                       child: CustomText(
                                         "Forgot Password?",
                                         size: 14,

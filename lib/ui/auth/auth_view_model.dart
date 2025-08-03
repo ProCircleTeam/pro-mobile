@@ -41,6 +41,13 @@ class AuthViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _initiatingForgotPasswordProcess = false;
+  bool get initiatingForgotPasswordProcess => _initiatingForgotPasswordProcess;
+  set initiatingForgotPasswordProcess(bool val) {
+    _initiatingForgotPasswordProcess = val;
+    notifyListeners();
+  }
+
   bool _hasAgreedWithTermsAndConditions = false;
   bool get hasAgreedWithTermsAndConditions => _hasAgreedWithTermsAndConditions;
   set hasAgreedWithTermsAndConditions(bool val) {
@@ -163,6 +170,50 @@ class AuthViewModel extends BaseViewModel {
       onError(e.errorMessage);
     } catch (e) {
       isSigninIn = false;
+      onError(ErrorText.generic);
+      AppLogger.log("Error ==================> $e");
+    }
+  }
+
+  Future<void> initiateForgotPasswordProcess({
+    required String email,
+    required Function(String successMessage) onSuccess,
+    required Function(String errorMessage) onError,
+  }) async {
+    try {
+      String? validateEmailError = FormHelper().validateEmail(email);
+
+      if (validateEmailError != null) {
+        onError(validateEmailError);
+        return;
+      }
+
+      initiatingForgotPasswordProcess = true;
+
+      // Response? res = await authService.login(
+      //   emailOrUsername: emailOrUsername,
+      //   password: password,
+      // );
+
+      // print("The master ========================> ${res?.data["data"]}");
+      initiatingForgotPasswordProcess = false;
+      // if (res != null && res.data != null) {
+      //   UserModel user = UserModel.fromJson(res.data["data"]);
+      //   userProvider.user = user;
+
+      //   String token = res.data["data"]["token"];
+      //   String message = res.data["message"];
+      //   await storage.write(key: StringConstants.authToken, val: token);
+      //   await storage.setUser(user);
+
+        onSuccess("OTP Sent");
+      // }
+    } on Failure catch (e) {
+      initiatingForgotPasswordProcess = false;
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+      onError(e.errorMessage);
+    } catch (e) {
+      initiatingForgotPasswordProcess = false;
       onError(ErrorText.generic);
       AppLogger.log("Error ==================> $e");
     }
