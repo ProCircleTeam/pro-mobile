@@ -4,9 +4,10 @@ import 'package:pro_mobile/ui/utils/enum/goals_enum.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
 import 'package:pro_mobile/ui/widgets/custom_checkbox_tile.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
+import 'package:pro_mobile/ui/widgets/progress_bar.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 
-class GoalModalContent extends StatelessWidget {
+class GoalModalContent extends StatefulWidget {
   final String title;
   final GoalStatusEnum status;
   final List<String> goals;
@@ -21,8 +22,28 @@ class GoalModalContent extends StatelessWidget {
   });
 
   @override
+  State<GoalModalContent> createState() => _GoalModalContentState();
+}
+
+class _GoalModalContentState extends State<GoalModalContent> {
+  Map<String, bool> checkingStore = {};
+
+  @override
+  void initState() {
+    for (int i = 0; i < widget.goals.length; i++) {
+      checkingStore["$i"] = false;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    double progressBarLength = size.width * .85;
+    int noOfCompletedGoals =
+        checkingStore.values.where(((val) => val == true)).length;
+    double percentageCompletion =
+        noOfCompletedGoals / checkingStore.values.length;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -30,15 +51,46 @@ class GoalModalContent extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomText(title, weight: FontWeight.bold, size: size.height * .02),
-            IconButton(
-              icon: Icon(Icons.edit_outlined),
-              onPressed: () => onEditGoal(),
-              color: AppColors.appBlack.withOpacity(0.5),
+            CustomText(
+              widget.title,
+              weight: FontWeight.bold,
+              size: size.height * .02,
             ),
+            widget.status == GoalStatusEnum.inProgress
+                ? SizedBox()
+                : IconButton(
+                  icon: Icon(Icons.edit_outlined),
+                  onPressed: () => widget.onEditGoal(),
+                  color: AppColors.appBlack.withValues(alpha: 0.5),
+                ),
           ],
         ),
         SizedBox(height: size.height * .02),
+        SpacingWidget(degree: 0.005),
+
+        if (widget.status == GoalStatusEnum.inProgress)
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText("Progress"),
+                  CustomText(
+                    "${(percentageCompletion * 100).toInt()}%",
+                    color: AppColors.primary,
+                    weight: FontWeight.bold,
+                    size: 15,
+                  ),
+                ],
+              ),
+              SpacingWidget(degree: 0.005),
+              ProgressBar(
+                progressBarLength: progressBarLength,
+                percentageCompletion: percentageCompletion,
+              ),
+              SpacingWidget(degree: 0.012),
+            ],
+          ),
 
         Container(
           padding: EdgeInsets.symmetric(
@@ -51,10 +103,19 @@ class GoalModalContent extends StatelessWidget {
           ),
           child: Column(
             children: [
-              ...goals.map((el) {
+              ...widget.goals.map((el) {
                 return Column(
                   children: [
-                    CustomCheckboxTile(onChanged: (e) {}, label: goals[0]),
+                    CustomCheckboxTile(
+                      onChanged: (e) {
+                        if (widget.status == GoalStatusEnum.inProgress) {
+                          setState(() {
+                            checkingStore["${widget.goals.indexOf(el)}"] = e;
+                          });
+                        }
+                      },
+                      label: widget.goals[0],
+                    ),
                     SizedBox(height: size.height * .017),
                   ],
                 );
@@ -64,8 +125,13 @@ class GoalModalContent extends StatelessWidget {
         ),
 
         SizedBox(height: size.height * .02),
-        if (status == GoalStatusEnum.inProgress)
-          ActionButton(title: "Mark as completed", onTap: () {}),
+        if (widget.status == GoalStatusEnum.inProgress)
+          ActionButton(
+            title: "Mark as completed",
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
       ],
     );
   }

@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     List<String> uploadedGoals =
         goalProvider.goals?.goals ??
         ["You have no goal set for this week, Kindly create goal to continue"];
+    GoalStatusEnum status = GoalStatusEnum.inProgress;
 
     return Scaffold(
       body: BaseView<HomeViewModel>(
@@ -202,51 +203,6 @@ class _HomePageState extends State<HomePage> {
                                       ? uploadedGoals.take(2).toList()
                                       : uploadedGoals,
                               onSeeAllTap: () {
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (context) {
-                                //     return AlertDialog(
-                                //       contentPadding: EdgeInsets.all(
-                                //         size.width * .035,
-                                //       ),
-                                //       shape: RoundedRectangleBorder(
-                                //         borderRadius: BorderRadius.all(
-                                //           Radius.circular(size.height * .01),
-                                //         ),
-                                //       ),
-                                //       content: ConstrainedBox(
-                                //         constraints: BoxConstraints(
-                                //           maxHeight:
-                                //               size.height *
-                                //               0.7,
-
-                                //           maxWidth:
-                                //               size.width * 0.9,
-                                //         ),
-                                //         child: Container(
-                                //           padding: EdgeInsets.symmetric(
-                                //             vertical: size.height * 0.005,
-                                //           ),
-                                //           child: GoalModalContent(
-                                //             status: GoalStatusEnum.pending,
-                                //             goals: uploadedGoals,
-                                //             title: "Goal 01",
-                                //             onEditGoal: () {
-                                //               Navigator.pop(context);
-                                //               Navigator.pushNamed(
-                                //                 context,
-                                //                 AppRouter.goalsHomePage,
-                                //                 arguments:
-                                //                     "Data is from database",
-                                //               );
-                                //             },
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     );
-                                //   },
-                                // );
-
                                 showDialog(
                                   context: context,
                                   builder: (context) {
@@ -267,9 +223,9 @@ class _HomePageState extends State<HomePage> {
                                           maxWidth: size.width * 0.9,
                                         ),
                                         child: GoalModalContent(
-                                          status: GoalStatusEnum.pending,
+                                          status: status,
                                           goals: uploadedGoals,
-                                          title: "Goal 01",
+                                          title: status == GoalStatusEnum.inProgress ? "This Week's Goal" : "Goal 01",
                                           onEditGoal: () {
                                             Navigator.pop(context);
                                             Navigator.pushNamed(
