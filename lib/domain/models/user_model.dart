@@ -66,7 +66,7 @@ class UserModel {
       funFact: json['fun_fact'],
       careerSummary: json['career_summary'],
       industrySectorId: json['industry_sector_id'],
-      industrySector: IndustrySector.fromJson(json['industry_sector']),
+      industrySector: json['industry_sector'] != null ? IndustrySector.fromJson(json['industry_sector']) : null,
       areasOfInterests:
           json['areaOfInterests'] != null
               ? (json['areaOfInterests'] as List<dynamic>).map((el) {

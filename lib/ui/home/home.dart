@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
           });
 
           await model.getPartner(
-            partnerId: 1,
+            partnerId: 9,
             onError: (e) {
               AppFlushBar().showError(message: e, context: context);
             },
@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                   AppFlushBar().showError(message: e, context: context);
                 });
                 await model.getPartner(
-                  partnerId: 1,
+                  partnerId: 9,
                   onError: (e) {
                     AppFlushBar().showError(message: e, context: context);
                   },
@@ -211,6 +211,7 @@ class _HomePageState extends State<HomePage> {
                                   AccountabilityPartnerCard(
                                     noOfGoalsSet: 3,
                                     completedGoals: 2,
+                                    onTap: () => Navigator.pushNamed(context, AppRouter.partnerProfilePage),
                                   ),
                                   StreakCard(),
                                 ],
@@ -224,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                                 padding: EdgeInsets.all(size.width * .02),
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
-                                children: [RemindersCard(), RemindersCard()],
+                                children: [RemindersCard(onTap: (){}), RemindersCard(onTap: (){})],
                               ),
                             ),
                             SizedBox(
@@ -235,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                                 padding: EdgeInsets.all(size.width * .02),
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
-                                children: [RemindersCard(), RemindersCard()],
+                                children: [RemindersCard(onTap: (){}), RemindersCard(onTap: (){})],
                               ),
                             ),
                             SizedBox(
@@ -246,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                                 padding: EdgeInsets.all(size.width * .02),
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
-                                children: [RemindersCard(), RemindersCard()],
+                                children: [RemindersCard(onTap: (){}), RemindersCard(onTap: (){})],
                               ),
                             ),
                           ],

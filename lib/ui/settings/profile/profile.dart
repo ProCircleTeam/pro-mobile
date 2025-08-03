@@ -67,10 +67,12 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             Row(
               children: [
-                CustomText(
-                  user?.bio ?? "",
-                  size: size.height * .016,
-                  height: 1.5,
+                Expanded(
+                  child: CustomText(
+                    user?.bio ?? "",
+                    size: size.height * .016,
+                    height: 1.5,
+                  ),
                 ),
               ],
             ),
