@@ -8,6 +8,7 @@ import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
 import 'package:pro_mobile/ui/settings/notification/notification_page.dart';
 import 'package:pro_mobile/ui/settings/profile/engagement_page.dart';
 import 'package:pro_mobile/ui/settings/profile/goals_and_interest_page.dart';
+import 'package:pro_mobile/ui/settings/profile/partner_profile_page.dart';
 import 'package:pro_mobile/ui/settings/profile/personal_info_page.dart';
 import 'package:pro_mobile/ui/settings/profile/professional_info_page.dart';
 import 'package:pro_mobile/ui/settings/profile/profile.dart';
@@ -29,6 +30,7 @@ class AppRouter {
       professionalInfoUpdatePage: (context) => ProfessionalInfoUpdatePage(),
       goalsAndInterest: (context) => GoalsAndInterestPage(),
       engagementPage: (context) => EngagementPage(),
+      partnerProfilePage: (context) => PartnerProfilePage(),
     };
   }
 
@@ -46,5 +48,6 @@ class AppRouter {
   static const professionalInfoUpdatePage = "/professional_info_update_page";
   static const goalsAndInterest = "/goals_and_interest_page";
   static const engagementPage = "/engagement_page";
+  static const partnerProfilePage = "/partner_page";
 }
 
