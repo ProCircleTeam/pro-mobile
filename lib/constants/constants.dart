@@ -8,6 +8,8 @@ class SVGImageUrl {
   static const trophy = "assets/images/svg/trophy.svg";
   static const fire = "assets/images/svg/fire.svg";
   static const warningIcon = "assets/images/svg/warning_icon.svg";
+  static const emptyHome = "assets/images/svg/empty-home.svg";
+  static const emptyNotification = "assets/images/svg/empty-notification.svg";
 }
 
 class PNGImageUrl {

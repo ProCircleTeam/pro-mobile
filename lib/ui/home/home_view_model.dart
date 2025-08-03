@@ -46,7 +46,7 @@ class HomeViewModel extends BaseViewModel {
     required Function(String e) onError,
   }) async {
     try {
-       isGettingPartner = true;
+      isGettingPartner = true;
       UserModel? partner = await userService.getUserById(partnerId);
 
       if (partner != null) {
@@ -56,10 +56,10 @@ class HomeViewModel extends BaseViewModel {
       }
       isGettingPartner = false;
     } on Failure catch (e) {
-       isGettingPartner = false;
+      isGettingPartner = false;
       onError(e.errorMessage);
     } catch (e) {
-       isGettingPartner = false;
+      isGettingPartner = false;
       onError(ErrorText.generic);
     }
   }
