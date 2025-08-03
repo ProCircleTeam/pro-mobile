@@ -172,7 +172,13 @@ class _HomePageState extends State<HomePage> {
                                 Icons.task_alt_outlined,
                                 color: Colors.white,
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRouter.goalsHomePage,
+                                  arguments: "Data is from database",
+                                );
+                              },
                             ),
                           ),
                         ],
@@ -225,7 +231,11 @@ class _HomePageState extends State<HomePage> {
                                         child: GoalModalContent(
                                           status: status,
                                           goals: uploadedGoals,
-                                          title: status == GoalStatusEnum.inProgress ? "This Week's Goal" : "Goal 01",
+                                          title:
+                                              status ==
+                                                      GoalStatusEnum.inProgress
+                                                  ? "This Week's Goal"
+                                                  : "Goal 01",
                                           onEditGoal: () {
                                             Navigator.pop(context);
                                             Navigator.pushNamed(
