@@ -60,21 +60,29 @@ class UserModel {
       longTermGoal: json['long_term_goal'],
       preferredAccountabilityPartnerTrait:
           json['preferred_accountability_partner_trait'],
-      availabilityDays: json['availability_days'] != null ? (json['availability_days'] as List<dynamic>).map<String>((el){
-        return el.toString();
-      }).toList() : [],
+      availabilityDays:
+          json['availability_days'] != null
+              ? (json['availability_days'] as List<dynamic>).map<String>((el) {
+                return el.toString();
+              }).toList()
+              : [],
       funFact: json['fun_fact'],
       careerSummary: json['career_summary'],
       industrySectorId: json['industry_sector_id'],
-      industrySector: json['industry_sector'] != null ? IndustrySector.fromJson(json['industry_sector']) : null,
+      industrySector:
+          json['industry_sector'] != null
+              ? IndustrySector.fromJson(json['industry_sector'])
+              : null,
       areasOfInterests:
           json['areaOfInterests'] != null
               ? (json['areaOfInterests'] as List<dynamic>).map((el) {
                 return AreaOfInterest.fromJson(el);
-              }).toList() 
+              }).toList()
               : [],
       timezone:
-          json['timezone'] != null ? TimeZoneModel.fromJson(json['timezone']) : null,
+          json['timezone'] != null
+              ? TimeZoneModel.fromJson(json['timezone'])
+              : null,
     );
   }
 

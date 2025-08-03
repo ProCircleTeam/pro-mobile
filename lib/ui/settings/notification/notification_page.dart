@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -11,11 +13,21 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: CustomText("Notification", weight: FontWeight.bold),
       ),
-      body: Center(child: CustomText("No current notification yet", size: 24,),),
+      body:  Column(
+        children: [
+          SizedBox(height: size.height * .2),
+          SizedBox(
+            height: size.height * .15,
+            child: SvgPicture.asset(SVGImageUrl.emptyNotification)),
+          Center(child: CustomText("No notifications yet!", size: size.height * .018)),
+        ],
+      ),
     );
   }
 }

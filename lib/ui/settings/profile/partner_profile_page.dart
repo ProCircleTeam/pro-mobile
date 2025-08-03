@@ -94,13 +94,15 @@ class _PartnerProfilePageState extends State<PartnerProfilePage> {
                                       height: size.width * .022,
                                       width: size.width * .022,
                                       decoration: BoxDecoration(
-                                        color: AppColors.appBlack.withValues(alpha: .7),
+                                        color: AppColors.appBlack.withValues(
+                                          alpha: .7,
+                                        ),
                                         borderRadius: BorderRadius.circular(
                                           size.width * .011,
                                         ),
                                       ),
                                     ),
-SizedBox(width: size.width * .02),
+                                    SizedBox(width: size.width * .02),
                                     CustomText(
                                       "${partner?.yearsOfExperience ?? ""} Years Experience",
                                       size: size.height * .0170,

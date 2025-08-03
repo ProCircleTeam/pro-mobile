@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/ui/widgets/custom_checkbox_tile.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
@@ -9,9 +8,11 @@ import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 class GoalListing extends StatefulWidget {
   final List<String> goals;
   final bool isFetchingGoals;
+  final Function onSeeAllTap;
   const GoalListing({
     required this.goals,
     required this.isFetchingGoals,
+    required this.onSeeAllTap,
     super.key,
   });
 
@@ -114,11 +115,7 @@ class _GoalListingState extends State<GoalListing> {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    AppRouter.goalsHomePage,
-                    arguments: "Data is from database",
-                  );
+                  widget.onSeeAllTap();
                 },
                 child: CustomText("See All", size: 14, weight: FontWeight.bold),
               ),

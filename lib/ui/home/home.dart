@@ -9,11 +9,13 @@ import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/goal_provider.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
+import 'package:pro_mobile/ui/home/goal_modal_content.dart';
 import 'package:pro_mobile/ui/home/home_view_model.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_listing.dart';
 import 'package:pro_mobile/ui/home/widget.dart/reminders_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/streak_card.dart';
+import 'package:pro_mobile/ui/utils/enum/goals_enum.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
 import 'package:pro_mobile/ui/widgets/circular_image_widget.dart';
@@ -39,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     List<String> uploadedGoals =
         goalProvider.goals?.goals ??
         ["You have no goal set for this week, Kindly create goal to continue"];
+    GoalStatusEnum status = GoalStatusEnum.inProgress;
 
     return Scaffold(
       body: BaseView<HomeViewModel>(
@@ -90,7 +93,9 @@ class _HomePageState extends State<HomePage> {
                           Navigator.pushNamed(context, AppRouter.profile);
                         },
                         child: CircularNetworkImageWidget(
-                          imageUrl: user.profilePhoto ?? StringConstants.sampleProfileImage,
+                          imageUrl:
+                              user.profilePhoto ??
+                              StringConstants.sampleProfileImage,
                           size: size.width * .11,
                         ),
                       ),
@@ -197,6 +202,45 @@ class _HomePageState extends State<HomePage> {
                                   uploadedGoals.length > 2
                                       ? uploadedGoals.take(2).toList()
                                       : uploadedGoals,
+                              onSeeAllTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    final size = MediaQuery.of(context).size;
+
+                                    return AlertDialog(
+                                      contentPadding: EdgeInsets.all(
+                                        size.width * .035,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(size.height * .01),
+                                        ),
+                                      ),
+                                      content: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxHeight: size.height * 0.7,
+                                          maxWidth: size.width * 0.9,
+                                        ),
+                                        child: GoalModalContent(
+                                          status: status,
+                                          goals: uploadedGoals,
+                                          title: status == GoalStatusEnum.inProgress ? "This Week's Goal" : "Goal 01",
+                                          onEditGoal: () {
+                                            Navigator.pop(context);
+                                            Navigator.pushNamed(
+                                              context,
+                                              AppRouter.goalsHomePage,
+                                              arguments:
+                                                  "Data is from database",
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                             ),
                             SpacingWidget(degree: .01),
                             SizedBox(
@@ -211,7 +255,11 @@ class _HomePageState extends State<HomePage> {
                                   AccountabilityPartnerCard(
                                     noOfGoalsSet: 3,
                                     completedGoals: 2,
-                                    onTap: () => Navigator.pushNamed(context, AppRouter.partnerProfilePage),
+                                    onTap:
+                                        () => Navigator.pushNamed(
+                                          context,
+                                          AppRouter.partnerProfilePage,
+                                        ),
                                   ),
                                   StreakCard(),
                                 ],
@@ -225,7 +273,10 @@ class _HomePageState extends State<HomePage> {
                                 padding: EdgeInsets.all(size.width * .02),
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
-                                children: [RemindersCard(onTap: (){}), RemindersCard(onTap: (){})],
+                                children: [
+                                  RemindersCard(onTap: () {}),
+                                  RemindersCard(onTap: () {}),
+                                ],
                               ),
                             ),
                             SizedBox(
@@ -236,7 +287,10 @@ class _HomePageState extends State<HomePage> {
                                 padding: EdgeInsets.all(size.width * .02),
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
-                                children: [RemindersCard(onTap: (){}), RemindersCard(onTap: (){})],
+                                children: [
+                                  RemindersCard(onTap: () {}),
+                                  RemindersCard(onTap: () {}),
+                                ],
                               ),
                             ),
                             SizedBox(
@@ -247,7 +301,10 @@ class _HomePageState extends State<HomePage> {
                                 padding: EdgeInsets.all(size.width * .02),
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
-                                children: [RemindersCard(onTap: (){}), RemindersCard(onTap: (){})],
+                                children: [
+                                  RemindersCard(onTap: () {}),
+                                  RemindersCard(onTap: () {}),
+                                ],
                               ),
                             ),
                           ],
