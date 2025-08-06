@@ -86,25 +86,26 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           title: "Reset",
                           isLoading: model.initiatingForgotPasswordProcess,
                           onTap: () {
-                            model.initiateForgotPasswordProcess(
-                              email: model.emailController.text,
-                              onSuccess: (e) {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRouter.otpVerificationPage,
-                                );
-                                AppFlushBar().showSuccess(
-                                  message: e,
-                                  context: context,
-                                );
-                              },
-                              onError: (e) {
-                                AppFlushBar().showError(
-                                  message: e,
-                                  context: context,
-                                );
-                              },
-                            );
+                            Navigator.pushNamed(context, AppRouter.successPage);
+                            // model.initiateForgotPasswordProcess(
+                            //   email: model.emailController.text,
+                            //   onSuccess: (e) {
+                            //     Navigator.pushNamed(
+                            //       context,
+                            //       AppRouter.otpVerificationPage,
+                            //     );
+                            //     AppFlushBar().showSuccess(
+                            //       message: e,
+                            //       context: context,
+                            //     );
+                            //   },
+                            //   onError: (e) {
+                            //     AppFlushBar().showError(
+                            //       message: e,
+                            //       context: context,
+                            //     );
+                            //   },
+                            // );
                           },
                         ),
 

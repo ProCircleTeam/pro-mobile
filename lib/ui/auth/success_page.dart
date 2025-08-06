@@ -13,14 +13,14 @@ import 'package:pro_mobile/ui/widgets/form/custom_text_input_2.dart';
 import 'package:pro_mobile/ui/widgets/unfocus_widget.dart';
 import 'package:provider/provider.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+class SuccessPage extends StatefulWidget {
+  const SuccessPage({super.key});
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  State<SuccessPage> createState() => _SuccessPageState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+class _SuccessPageState extends State<SuccessPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -30,14 +30,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     return UnfocusWidget(
       child: Scaffold(
-        appBar: AppBar(
-          title: CustomText(
-            "Forgot Password",
-            weight: FontWeight.bold,
-            color: AppColors.appBlack,
-          ),
-          centerTitle: true,
-        ),
         resizeToAvoidBottomInset: true,
         body: BaseView<AuthViewModel>(
           model: AuthViewModel(
@@ -57,48 +49,38 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomText(
-                      "Enter your email to receive an OTP.",
-                      size: size.height * .018,
-                    ),
-                    Expanded(
-                      child: Form(
-                        child: Column(
-                          children: [
-                            formItemSpace,
-                            CustomTextInput2(
-                              labelText: "Email",
-                              controller: model.emailController,
+                    SizedBox(),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: size.height * .14,
+                          width: size.height * .14,
+                          decoration: BoxDecoration(
+                            color: Colors.green[700],
+                            borderRadius: BorderRadius.circular(
+                              size.height * .07,
                             ),
-                          ],
+                          ),
+                          child: Icon(Icons.check, color: Colors.white, size: size.height * .09,),
                         ),
-                      ),
+                        formItemSpace,
+                        formItemSpace,
+                        CustomText("Successful", weight: FontWeight.bold, color: AppColors.appBlack, size: size.height * .026,),
+                        formItemSpace,
+                        CustomText("Your password has been changed \nsuccessfully", color: AppColors.appBlack, size: size.height * .018, textAlign: TextAlign.center,),
+                      ],
                     ),
+
                     Column(
                       children: [
                         ActionButton(
-                          title: "Continue",
+                          title: "Back to Login ",
                           isLoading: model.initiatingForgotPasswordProcess,
                           onTap: () {
-                            model.initiateForgotPasswordProcess(
-                              email: model.emailController.text,
-                              onSuccess: (e) {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRouter.otpVerificationPage,
-                                );
-                                AppFlushBar().showSuccess(
-                                  message: e,
-                                  context: context,
-                                );
-                              },
-                              onError: (e) {
-                                AppFlushBar().showError(
-                                  message: e,
-                                  context: context,
-                                );
-                              },
-                            );
+                           Navigator.pushNamedAndRemoveUntil(context, AppRouter.signIn, (Route<dynamic> route) => false);
+
                           },
                         ),
 
