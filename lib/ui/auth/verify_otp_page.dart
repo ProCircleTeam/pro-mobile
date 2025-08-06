@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/data/remote/auth/auth_service.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
@@ -156,20 +157,9 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
                           title: "Verify",
                           isLoading: model.initiatingForgotPasswordProcess,
                           onTap: () {
-                            model.initiateForgotPasswordProcess(
-                              email: model.emailController.text,
-                              onSuccess: (e) {
-                                AppFlushBar().showSuccess(
-                                  message: e,
-                                  context: context,
-                                );
-                              },
-                              onError: (e) {
-                                AppFlushBar().showError(
-                                  message: e,
-                                  context: context,
-                                );
-                              },
+                           Navigator.pushNamed(
+                              context,
+                              AppRouter.resetPasswordPage,
                             );
                           },
                         ),
