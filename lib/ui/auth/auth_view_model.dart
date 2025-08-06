@@ -29,6 +29,13 @@ class AuthViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  String _resetPasswordOtp = "";
+  String get resetPasswordOtp => _resetPasswordOtp;
+  set resetPasswordOtp(String val) {
+    _resetPasswordOtp = val;
+    notifyListeners();
+  }
+
   bool _isSigningUp = false;
   bool get isSigningUp => _isSigningUp;
   set isSigninUp(bool val) {
@@ -61,6 +68,13 @@ class AuthViewModel extends BaseViewModel {
   bool get initiatingForgotPasswordProcess => _initiatingForgotPasswordProcess;
   set initiatingForgotPasswordProcess(bool val) {
     _initiatingForgotPasswordProcess = val;
+    notifyListeners();
+  }
+
+  bool _isResettingPassword = false;
+  bool get isResettingPassword => _isResettingPassword;
+  set isResettingPassword(bool val) {
+    _isResettingPassword = val;
     notifyListeners();
   }
 
@@ -110,8 +124,6 @@ class AuthViewModel extends BaseViewModel {
       return true;
     }
   }
-
-
 
   Future<void> signUp({
     required String username,
@@ -207,31 +219,42 @@ class AuthViewModel extends BaseViewModel {
       }
 
       initiatingForgotPasswordProcess = true;
-
-      // Response? res = await authService.login(
-      //   emailOrUsername: emailOrUsername,
-      //   password: password,
-      // );
-
-      // print("The master ========================> ${res?.data["data"]}");
+      await authService.requestOtp(email);
       initiatingForgotPasswordProcess = false;
-      // if (res != null && res.data != null) {
-      //   UserModel user = UserModel.fromJson(res.data["data"]);
-      //   userProvider.user = user;
-
-      //   String token = res.data["data"]["token"];
-      //   String message = res.data["message"];
-      //   await storage.write(key: StringConstants.authToken, val: token);
-      //   await storage.setUser(user);
-
-      onSuccess("OTP Sent");
-      // }
+      onSuccess("Password Request successful");
     } on Failure catch (e) {
       initiatingForgotPasswordProcess = false;
       AppLogger.log("Error ==================> ${e.errorMessage}");
       onError(e.errorMessage);
     } catch (e) {
       initiatingForgotPasswordProcess = false;
+      onError(ErrorText.generic);
+      AppLogger.log("Error ==================> $e");
+    }
+  }
+
+  Future<void> resetPassword({
+    required String email,
+    required String password,
+    required String otp,
+    required Function(String successMessage) onSuccess,
+    required Function(String errorMessage) onError,
+  }) async {
+    try {
+      isResettingPassword = true;
+      await authService.resetPassword(
+        otp: otp,
+        email: email,
+        password: password,
+      );
+      isResettingPassword = false;
+      onSuccess("Reset password success");
+    } on Failure catch (e) {
+      isResettingPassword = false;
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+      onError(e.errorMessage);
+    } catch (e) {
+      isResettingPassword = false;
       onError(ErrorText.generic);
       AppLogger.log("Error ==================> $e");
     }

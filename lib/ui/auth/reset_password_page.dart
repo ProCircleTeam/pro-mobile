@@ -28,6 +28,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     Widget formItemSpace = SizedBox(height: size.height * .02);
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
+    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    String otp = args["otp"];
+    String email = args["email"];
+
     return UnfocusWidget(
       child: Scaffold(
         appBar: AppBar(
@@ -69,12 +73,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             formItemSpace,
                             CustomTextInput2(
                               labelText: "New Password",
-                              controller: model.emailController,
+                              controller: model.passwordController,
                             ),
                             formItemSpace,
                             CustomTextInput2(
                               labelText: "Confirm new password",
-                              controller: model.emailController,
+                              controller: model.confirmPasswordController,
                             ),
                           ],
                         ),
@@ -84,28 +88,41 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       children: [
                         ActionButton(
                           title: "Reset",
-                          isLoading: model.initiatingForgotPasswordProcess,
+                          isLoading: model.isResettingPassword,
                           onTap: () {
-                            Navigator.pushNamed(context, AppRouter.successPage);
-                            // model.initiateForgotPasswordProcess(
-                            //   email: model.emailController.text,
-                            //   onSuccess: (e) {
-                            //     Navigator.pushNamed(
-                            //       context,
-                            //       AppRouter.otpVerificationPage,
-                            //     );
-                            //     AppFlushBar().showSuccess(
-                            //       message: e,
-                            //       context: context,
-                            //     );
-                            //   },
-                            //   onError: (e) {
-                            //     AppFlushBar().showError(
-                            //       message: e,
-                            //       context: context,
-                            //     );
-                            //   },
-                            // );
+                            String password = model.passwordController.text;
+                            String confirmPassword =
+                                model.confirmPasswordController.text;
+                            if (password.length < 5) {
+                              AppFlushBar().showError(
+                                message:
+                                    "Password length must be greater than 5",
+                                context: context,
+                              );
+                            } else if (password != confirmPassword) {
+                              AppFlushBar().showError(
+                                message: "Passwords do not match!",
+                                context: context,
+                              );
+                            } else {
+                              model.resetPassword(
+                                otp: otp,
+                                email: email,
+                                password: model.passwordController.text,
+                                onSuccess: (e) {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRouter.successPage,
+                                  );
+                                },
+                                onError: (e) {
+                                  AppFlushBar().showError(
+                                    message: e,
+                                    context: context,
+                                  );
+                                },
+                              );
+                            }
                           },
                         ),
 

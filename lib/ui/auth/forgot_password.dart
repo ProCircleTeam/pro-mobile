@@ -86,6 +86,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                 Navigator.pushNamed(
                                   context,
                                   AppRouter.otpVerificationPage,
+                                  arguments: {"email": model.emailController.text}
                                 );
                                 AppFlushBar().showSuccess(
                                   message: e,

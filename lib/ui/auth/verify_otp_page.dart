@@ -44,6 +44,8 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
     final viewInsets = MediaQuery.of(context).viewInsets;
     Widget formItemSpace = SizedBox(height: size.height * .02);
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    String email = args["email"];
 
     return UnfocusWidget(
       child: Scaffold(
@@ -94,7 +96,9 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
                                 child: PinCodeTextField(
                                   appContext: context,
                                   length: 6,
-                                  onChanged: (value) {},
+                                  onChanged: (value) {
+                                    model.resetPasswordOtp = value;
+                                  },
                                   onCompleted: (value) {
                                     print("OTP entered: $value");
                                   },
@@ -103,13 +107,16 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
                                     borderRadius: BorderRadius.circular(5),
                                     fieldHeight: size.width * .12,
                                     fieldWidth: size.width * .1,
-                                    activeFillColor: AppColors.grey.withValues(alpha: .02),
-                                    activeColor: AppColors.grey ,
+                                    activeFillColor: AppColors.grey.withValues(
+                                      alpha: .02,
+                                    ),
+                                    activeColor: AppColors.grey,
                                     selectedFillColor: Colors.white,
-                                    inactiveColor: AppColors.grey ,
-                                    selectedColor: AppColors.grey ,
-                                    disabledColor: AppColors.grey ,
-                                    inactiveFillColor: AppColors.grey.withValues(alpha: .02),
+                                    inactiveColor: AppColors.grey,
+                                    selectedColor: AppColors.grey,
+                                    disabledColor: AppColors.grey,
+                                    inactiveFillColor: AppColors.grey
+                                        .withValues(alpha: .02),
                                   ),
                                   keyboardType: TextInputType.number,
                                   animationType: AnimationType.fade,
@@ -119,7 +126,10 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
                             ),
                             formItemSpace,
                             formItemSpace,
-                            CustomText(" ${count < 10 ? 0 : ""}$count : 00", size: size.height * .018),
+                            CustomText(
+                              " ${count < 10 ? 0 : ""}$count : 00",
+                              size: size.height * .018,
+                            ),
                             formItemSpace,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -157,10 +167,18 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
                           title: "Verify",
                           isLoading: model.initiatingForgotPasswordProcess,
                           onTap: () {
-                           Navigator.pushNamed(
-                              context,
-                              AppRouter.resetPasswordPage,
-                            );
+                            model.resetPasswordOtp.length < 6
+                                ? () {
+                                  AppFlushBar().showError(
+                                    message: "Incomplete OTP",
+                                    context: context,
+                                  );
+                                }
+                                : Navigator.pushNamed(
+                                  context,
+                                  AppRouter.resetPasswordPage,
+                                  arguments: {"otp": model.resetPasswordOtp, "email": email},
+                                );
                           },
                         ),
 
