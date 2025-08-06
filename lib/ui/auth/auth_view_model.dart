@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pro_mobile/app/core/failure/failure.dart';
@@ -20,10 +22,24 @@ class AuthViewModel extends BaseViewModel {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  int _countDownTimer = 60;
+  int get countDownTimer => _countDownTimer;
+  set countDownTimer(int val) {
+    _countDownTimer = val;
+    notifyListeners();
+  }
+
   bool _isSigningUp = false;
   bool get isSigningUp => _isSigningUp;
   set isSigninUp(bool val) {
     _isSigningUp = val;
+    notifyListeners();
+  }
+
+  bool _isCanResendCode = false;
+  bool get isCanResendCode => _isCanResendCode;
+  set isCanResendCode(bool val) {
+    _isCanResendCode = val;
     notifyListeners();
   }
 
@@ -94,6 +110,8 @@ class AuthViewModel extends BaseViewModel {
       return true;
     }
   }
+
+
 
   Future<void> signUp({
     required String username,
@@ -206,7 +224,7 @@ class AuthViewModel extends BaseViewModel {
       //   await storage.write(key: StringConstants.authToken, val: token);
       //   await storage.setUser(user);
 
-        onSuccess("OTP Sent");
+      onSuccess("OTP Sent");
       // }
     } on Failure catch (e) {
       initiatingForgotPasswordProcess = false;

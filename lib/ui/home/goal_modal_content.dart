@@ -114,7 +114,7 @@ class _GoalModalContentState extends State<GoalModalContent> {
                           });
                         }
                       },
-                      label: widget.goals[0],
+                      label: el,
                     ),
                     SizedBox(height: size.height * .017),
                   ],

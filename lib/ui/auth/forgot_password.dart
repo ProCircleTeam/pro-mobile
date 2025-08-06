@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/data/remote/auth/auth_service.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
@@ -83,6 +84,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             model.initiateForgotPasswordProcess(
                               email: model.emailController.text,
                               onSuccess: (e) {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRouter.otpVerificationPage,
+                                );
                                 AppFlushBar().showSuccess(
                                   message: e,
                                   context: context,

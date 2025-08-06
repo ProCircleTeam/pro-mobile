@@ -5,6 +5,7 @@ class AppColors {
   static Color secondary = Color(0xffD1B532);
   static Color appBlack = Color(0xff313131);
   static Color lightBlack = Color(0xff626262);
+  static Color grey = Color(0xffCFCFCF);
   static Color veryLightGrey = Color(0xff0C0D0C).withOpacity(.05);
   static Color captionColor = Color(0xff939393);
   static Color inputBg = Color(0xffE0E5E9).withOpacity(.5);
