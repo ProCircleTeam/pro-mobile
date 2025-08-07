@@ -38,7 +38,6 @@ jobs:
             --base-directory=$(pwd) \
             --check-ignore
           sed -i "s|^SF:.*/lib|SF:lib|g" coverage/lcov.info
-          echo "end_of_record" >> coverage/lcov.info
 
       - name: Generate HTML Coverage Report
         run: |
