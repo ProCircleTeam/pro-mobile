@@ -42,7 +42,7 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: 3d539b15-e100-4724-abd7-5c339d87522c
+          token: fa52e716-894f-4125-92d0-675bf16e9374
     
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
