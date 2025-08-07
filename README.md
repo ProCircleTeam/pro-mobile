@@ -1,6 +1,6 @@
 # Coverage
 
-[![codecov](https://codecov.io/gh/procircleteam/pro-mobile/branch/dev/graph/badge.svg)](https://codecov.io/gh/procircleteam/pro-mobile)
+[![codecov](https://codecov.io/gh/ProCircleTeam/pro-mobile/branch/dev/graph/badge.svg)](https://codecov.io/gh/ProCircleTeam/pro-mobile)
 
 
 ## Getting Started
