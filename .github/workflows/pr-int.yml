@@ -1,52 +1,3 @@
-# name: Build and Analyze
-
-# on:
-#   push:
-#     branches:
-#       - dev
-#   pull_request:
-#     types: [opened, synchronize, reopened ]
-
-# jobs:
-#   sonarqube:
-#     name: SonarQube
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#         with:
-#           fetch-depth: 0
-
-#       - name: Set up Flutter
-#         uses: subosito/flutter-action@v2
-#         with:
-#           flutter-version: '3.29.3' # or your preferred version
-
-#       - name: Install dependencies
-#         run: flutter pub get
-
-#       - name: Run tests with coverage
-#         run: flutter test --coverage
-      
-#       - name: Check lcov.info
-#         run: |
-#           ls -lh coverage/lcov.info
-#           head -n 20 coverage/lcov.info
-
-#       - name: SonarQube Scan
-#         uses: SonarSource/sonarqube-scan-action@v5
-#         env:
-#           SONAR_TOKEN: 9a172b62d89001bd0748104e111f57eb360a2f6c
-#         with:
-#           args: >
-#             -Dsonar.projectKey=ProCircleTeam_pro-mobile
-#             -Dsonar.organization=procircleteam
-#             -Dsonar.host.url=https://sonarcloud.io
-#             -Dsonar.sources=lib
-#             -Dsonar.dart.lcov.reportPaths=coverage/lcov.info
-#             -Dsonar.exclusions=**/*.g.dart
-#             -Dsonar.login=9a172b62d89001bd0748104e111f57eb360a2f6c
-
-
 name: Analyze and Run test coverage
 
 on:
@@ -88,6 +39,17 @@ jobs:
             --check-ignore
           sed -i "s|^SF:.*/lib|SF:lib|g" coverage/lcov.info
           echo "end_of_record" >> coverage/lcov.info
+
+      - name: Generate HTML Coverage Report
+        run: |
+          sudo apt-get update && sudo apt-get install -y lcov
+          genhtml coverage/lcov.info -o coverage/html
+
+      - name: Upload HTML Report as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-html-report
+          path: coverage/html
 
       - name: Inspect LCOV file
         run: |
