@@ -1,6 +1,7 @@
-# pro_mobile
+# Coverage
 
-A new Flutter project.
+[![codecov](https://codecov.io/gh/procircleteam/pro-mobile/branch/dev/graph/badge.svg)](https://codecov.io/gh/procircleteam/pro-mobile)
+
 
 ## Getting Started
 
