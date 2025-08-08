@@ -1,6 +1,7 @@
 # Coverage
 
-[![codecov](https://codecov.io/gh/ProCircleTeam/pro-mobile/branch/dev/graph/badge.svg)](https://codecov.io/gh/ProCircleTeam/pro-mobile)
+![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)
+Coverage report: https://xrole.github.io/procircle-code-cove/coverage/html/index.html
 
 
 ## Getting Started
