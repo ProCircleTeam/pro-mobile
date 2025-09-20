@@ -169,4 +169,7 @@ class AuthViewModel extends BaseViewModel {
       AppLogger.log("Error ==================> $e");
     }
   }
+
+
+
 }

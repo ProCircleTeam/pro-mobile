@@ -1,27 +1,19 @@
-// class OAuth {
-//   Future<void> signInWithGoogle() async {
-//     final GoogleSignIn _googleSignIn = GoogleSignIn(
-//       scopes: ["email", "profile"],
-//     );
+import 'dart:async';
 
-//     try {
-//       final googleUser = await _googleSignIn.signIn();
-//       if (googleUser == null) return;
+import 'package:google_sign_in/google_sign_in.dart';
 
-//       final auth = await googleUser.authentication;
+class OAuth {
+  Future<void> signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn.instance;
 
-//       print("Access Token: ${auth.accessToken}");
-//     print("ID Token: ${auth.idToken}");
-
-//     // Send ID token to backend for verification
-//     // Example:
-//     // final response = await http.post(
-//     //   Uri.parse("https://your-backend.com/api/auth/google"),
-//     //   body: {"id_token": auth.idToken},
-//     // );
-
-//     } catch (e) {
-//       print("Error signin in with Google =============> $e");
-//     }
-//   }
-// }
+    try {
+      final auth = await googleSignIn.authenticate();
+      print("Token ==================> ${auth.authentication.idToken}");
+      print("display name ==================> ${auth.displayName}");
+      print("photo url ==================> ${auth.photoUrl}");
+      print("email ==================> ${auth.email}");
+    } catch (e) {
+      print("Error signin in with google ===============> $e");
+    }
+  }
+}
