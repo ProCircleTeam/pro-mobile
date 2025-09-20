@@ -31,12 +31,14 @@ class AuthServiceImpl implements AuthService {
     required String username,
     required String email,
     required String password,
+    required bool agreeToTermsAndConditions,
   }) async {
     const String url = Endpoints.signUp;
     Map<String, dynamic> data = {
       "username": username,
       "email": email,
       "password": password,
+      "agreeToTermsAndConditions": agreeToTermsAndConditions,
     };
 
     Response res = await appClient.post(url, data);
