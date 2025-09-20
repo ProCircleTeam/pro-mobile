@@ -92,6 +92,7 @@ class AuthViewModel extends BaseViewModel {
     required String username,
     required String email,
     required String password,
+    required bool agreeToTermsAndConditions,
     required Function(String message) onSuccess,
     required Function(String errorMessage) onError,
   }) async {
@@ -104,6 +105,7 @@ class AuthViewModel extends BaseViewModel {
         username: username,
         email: email,
         password: password,
+        agreeToTermsAndConditions: agreeToTermsAndConditions,
       );
 
       isSigninUp = false;
@@ -167,4 +169,7 @@ class AuthViewModel extends BaseViewModel {
       AppLogger.log("Error ==================> $e");
     }
   }
+
+
+
 }

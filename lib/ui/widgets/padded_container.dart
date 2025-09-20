@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class PaddedContainer extends StatelessWidget {
   final Widget child;
-  PaddedContainer({required this.child, super.key});
+  const PaddedContainer({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {

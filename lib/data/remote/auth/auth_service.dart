@@ -5,6 +5,7 @@ abstract class AuthService {
     required String username,
     required String email,
     required String password,
+    required bool agreeToTermsAndConditions, 
   });
   Future<Response?> login({
     required String emailOrUsername,
