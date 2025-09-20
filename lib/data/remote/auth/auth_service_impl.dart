@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:pro_mobile/app/core/client/app_client.dart';
 import 'package:pro_mobile/app/core/endpoints/endpoints.dart';
 import 'package:pro_mobile/data/remote/auth/auth_service.dart';
-import 'package:pro_mobile/domain/models/goal_model.dart';
 import 'package:pro_mobile/ui/utils/app_logger.dart';
 
 class AuthServiceImpl implements AuthService {

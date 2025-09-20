@@ -49,7 +49,7 @@ class _EngagementPageState extends State<EngagementPage> {
               if (user?.availabilityDays != null &&
                   user?.availabilityDays?[0] != null &&
                   user!.availabilityDays![0].isNotEmpty) {
-                return user!.availabilityDays![0];
+                return user.availabilityDays![0];
               }else {
               return "";
               }
