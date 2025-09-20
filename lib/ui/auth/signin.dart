@@ -193,11 +193,8 @@ class _SignInPageState extends State<SignInPage> {
                                     SVGImageUrl.googleLogo,
                                     height: 18,
                                   ),
-                                  onTap: () {
-                                    Navigator.pushReplacementNamed(
-                                      context,
-                                      AppRouter.onboarding,
-                                    );
+                                  onTap: () async {
+                                    await model.signInWithGoogle();
                                   },
                                   bgColor: AppColors.veryLightGrey,
                                 ),

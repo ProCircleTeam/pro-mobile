@@ -170,6 +170,18 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
+  Future<void> signInWithGoogle() async {
+    try {
+      final auth = await authService.signInWithGoogle();
+      AppLogger.log("Display name  ==================> ${auth.displayName}");
+      AppLogger.log("email  ==================> ${auth.email}");
+      AppLogger.log("token  ==================> ${auth.authentication.idToken}");
+      AppLogger.log("image url  ==================> ${auth.photoUrl}");
+      AppLogger.log("id  ==================> ${auth.id}");
 
 
+    } catch (e) {
+      AppLogger.log("Google sign in error  ==================> $e");
+    }
+  }
 }

@@ -49,5 +49,20 @@
 	<string>Need camera access</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need photo library access</string>
+
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>com.googleusercontent.apps.668739069836-bo1kvcdm6eaj7c8b1gfgs8tsjqaj6gbf</string>
+		</array>
+		</dict>
+	</array>
+
+	<key>GIDClientID</key>
+	<string>668739069836-bo1kvcdm6eaj7c8b1gfgs8tsjqaj6gbf.apps.googleusercontent.com</string>
 </dict>
 </plist>
