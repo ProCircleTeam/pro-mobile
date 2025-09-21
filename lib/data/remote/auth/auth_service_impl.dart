@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pro_mobile/app/core/client/app_client.dart';
@@ -8,6 +10,7 @@ import 'package:pro_mobile/ui/utils/app_logger.dart';
 class AuthServiceImpl implements AuthService {
   final AppClient appClient;
   AuthServiceImpl(this.appClient);
+  final _googleSignIn = GoogleSignIn.instance;
 
   @override
   Future<Response?> login({
@@ -27,9 +30,10 @@ class AuthServiceImpl implements AuthService {
   }
 
   @override
-  Future<GoogleSignInAccount> signInWithGoogle() async {
+  Future<GoogleSignInAccount?> signInWithGoogle() async {
     GoogleSignIn googleSignIn = GoogleSignIn.instance;
-    return googleSignIn.authenticate();
+    await _googleSignIn.initialize();
+    return await googleSignIn.authenticate(scopeHint: ['email']);
   }
 
   @override

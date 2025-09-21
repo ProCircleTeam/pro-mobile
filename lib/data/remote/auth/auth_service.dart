@@ -12,5 +12,5 @@ abstract class AuthService {
     required String emailOrUsername,
     required String password,
   });
-  Future<GoogleSignInAccount> signInWithGoogle();
+  Future<GoogleSignInAccount?> signInWithGoogle();
 }
