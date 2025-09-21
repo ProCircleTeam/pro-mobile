@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pro_mobile/app/core/client/app_client.dart';
 import 'package:pro_mobile/app/core/endpoints/endpoints.dart';
 import 'package:pro_mobile/data/remote/auth/auth_service.dart';
@@ -23,6 +26,14 @@ class AuthServiceImpl implements AuthService {
     Response res = await appClient.post(url, data);
     AppLogger.log("===========================> signIn result ==> $res");
     return res;
+  }
+
+  @override
+  Future<GoogleSignInAccount?> signInWithGoogle() async {
+    GoogleSignIn googleSignIn = GoogleSignIn.instance;
+    await googleSignIn.initialize(
+    );
+    return await googleSignIn.authenticate(scopeHint: ['email']);
   }
 
   @override

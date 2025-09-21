@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthService {
   Future<Response?> signUp({
@@ -11,4 +12,5 @@ abstract class AuthService {
     required String emailOrUsername,
     required String password,
   });
+  Future<GoogleSignInAccount?> signInWithGoogle();
 }
