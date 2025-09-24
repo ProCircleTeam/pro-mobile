@@ -302,11 +302,25 @@ class _SignUpPageState extends State<SignUpPage> {
                                   SVGImageUrl.googleLogo,
                                   height: 18,
                                 ),
-                                onTap: () {
-                                  Navigator.pushReplacementNamed(
-                                    context,
-                                    AppRouter.onboarding,
-                                  );
+                                onTap: () async {
+                                    await model.signInWithGoogle(
+                                      onSuccess: (successMessage) {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRouter.dashboard,
+                                        );
+                                        AppFlushBar().showSuccess(
+                                          message: successMessage,
+                                          context: context,
+                                        );
+                                      },
+                                      onError: (e) {
+                                        AppFlushBar().showError(
+                                          message: e,
+                                          context: context,
+                                        );
+                                      }
+                                    );
                                 },
                                 bgColor: AppColors.veryLightGrey,
                               ),
