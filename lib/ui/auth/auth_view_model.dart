@@ -175,7 +175,7 @@ class AuthViewModel extends BaseViewModel {
       final auth = await authService.signInWithGoogle();
       AppLogger.log("Display name  ==================> ${auth?.displayName}");
       AppLogger.log("email  ==================> ${auth?.email}");
-      AppLogger.log("token  ==================> ${auth?.authentication.idToken}");
+      AppLogger.log(" \n id token  ==================> ${auth?.authentication.idToken} \n");
       AppLogger.log("image url  ==================> ${auth?.photoUrl}");
       AppLogger.log("id  ==================> ${auth?.id}");
 

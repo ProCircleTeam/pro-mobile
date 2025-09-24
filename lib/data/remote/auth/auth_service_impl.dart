@@ -30,9 +30,11 @@ class AuthServiceImpl implements AuthService {
 
   @override
   Future<GoogleSignInAccount?> signInWithGoogle() async {
+    String serverClientId = "668739069836-gbdack0q2hdisf17q8i5rqhua42qtems.apps.googleusercontent.com";
     GoogleSignIn googleSignIn = GoogleSignIn.instance;
-    await googleSignIn.initialize(
+    await googleSignIn.initialize( serverClientId: serverClientId
     );
+    
     return await googleSignIn.authenticate(scopeHint: ['email']);
   }
 
