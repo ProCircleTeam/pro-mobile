@@ -6,6 +6,7 @@ import 'package:pro_mobile/app/core/client/app_client.dart';
 import 'package:pro_mobile/app/core/endpoints/endpoints.dart';
 import 'package:pro_mobile/data/remote/auth/auth_service.dart';
 import 'package:pro_mobile/ui/utils/app_logger.dart';
+import 'package:pro_mobile/ui/utils/helper.dart';
 
 class AuthServiceImpl implements AuthService {
   final AppClient appClient;
@@ -29,13 +30,27 @@ class AuthServiceImpl implements AuthService {
   }
 
   @override
-  Future<GoogleSignInAccount?> signInWithGoogle() async {
-    String serverClientId = "668739069836-gbdack0q2hdisf17q8i5rqhua42qtems.apps.googleusercontent.com";
+  Future<Response?> signInWithGoogle() async {
+    String serverClientId =
+        "668739069836-gbdack0q2hdisf17q8i5rqhua42qtems.apps.googleusercontent.com";
+    String url = Endpoints.signInWithGoogle;
     GoogleSignIn googleSignIn = GoogleSignIn.instance;
-    await googleSignIn.initialize( serverClientId: serverClientId
+    await googleSignIn.initialize(serverClientId: serverClientId);
+
+    GoogleSignInAccount account = await googleSignIn.authenticate(
+      scopeHint: ['email'],
     );
-    
-    return await googleSignIn.authenticate(scopeHint: ['email']);
+    String idToken = account.authentication.idToken ?? "";
+      Helper().printFull("idToken =========================> $idToken");
+
+
+    Map<String, dynamic> data = {"idToken": idToken};
+
+    Response res = await appClient.post(url, data);
+    AppLogger.log(
+      "===========================> Google sign in Success ==> $res",
+    );
+    return res;
   }
 
   @override

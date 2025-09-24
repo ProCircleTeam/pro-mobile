@@ -34,6 +34,13 @@ class AuthViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _isSigningInWithGoogle = false;
+  bool get isSigningInWithGoogle => _isSigningInWithGoogle;
+  set isSigningInWithGoogle(bool val) {
+    _isSigningInWithGoogle = val;
+    notifyListeners();
+  }
+
   bool _obscurePassword = true;
   bool get obscurePassword => _obscurePassword;
   set obscurePassword(bool val) {
@@ -170,19 +177,37 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<void> signInWithGoogle({
+    required Function(String successMessage) onSuccess,
+    required Function(String errorMessage) onError,
+  }) async {
+    SecureStorageService storage = SecureStorageService();
+
     try {
-      final auth = await authService.signInWithGoogle();
-      AppLogger.log("Display name  ==================> ${auth?.displayName}");
-      AppLogger.log("email  ==================> ${auth?.email}");
-      AppLogger.log(" \n id token  ==================> ${auth?.authentication.idToken} \n");
-      AppLogger.log("image url  ==================> ${auth?.photoUrl}");
-      AppLogger.log("id  ==================> ${auth?.id}");
+      isSigningInWithGoogle = true;
+      final res = await authService.signInWithGoogle();
+      isSigningInWithGoogle = false;
 
+      isSigninIn = false;
+      if (res != null && res.data != null) {
+        UserModel user = UserModel.fromJson(res.data["data"]);
+        userProvider.user = user;
 
-    } catch (e, s) {
-      AppLogger.log("Google sign in error  ==================> $e");
-      AppLogger.log("Stack trace  ==================> $s");
+        String token = res.data["data"]["token"];
+        String message = res.data["message"];
+        await storage.write(key: StringConstants.authToken, val: token);
+        await storage.setUser(user);
+
+        onSuccess(message);
+      }
+    } on Failure catch (e) {
+      isSigningInWithGoogle = false;
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+      onError(e.errorMessage);
+    } catch (e) {
+      isSigningInWithGoogle = false;
+      onError(ErrorText.generic);
+      AppLogger.log("Error ==================> $e");
     }
   }
 }
