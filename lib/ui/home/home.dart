@@ -52,9 +52,7 @@ class _HomePageState extends State<HomePage> {
           userProvider: userProvider,
         ),
         onModelReady: (model) async {
-          await model.getUserWeeklyGoalByDate((e) {
-            AppFlushBar().showError(message: e, context: context);
-          });
+          await model.getUserWeeklyGoalByDate((e) {});
 
           await model.getPartner(
             partnerId: 9,
@@ -72,15 +70,8 @@ class _HomePageState extends State<HomePage> {
             ),
             child: RefreshIndicator(
               onRefresh: () async {
-                await model.getUserWeeklyGoalByDate((e) {
-                  AppFlushBar().showError(message: e, context: context);
-                });
-                await model.getPartner(
-                  partnerId: 9,
-                  onError: (e) {
-                    AppFlushBar().showError(message: e, context: context);
-                  },
-                );
+                await model.getUserWeeklyGoalByDate((e) {});
+                await model.getPartner(partnerId: 9, onError: (e) {});
               },
               child: SizedBox(
                 height: size.height,
@@ -95,14 +86,15 @@ class _HomePageState extends State<HomePage> {
                         child: ClipOval(
                           child: CachedNetworkImage(
                             imageUrl:
-                                user.profilePhoto ?? StringConstants.sampleProfileImage,
+                                user.profilePhoto ??
+                                StringConstants.sampleProfileImage,
                             placeholder:
                                 (context, url) => SizedBox(
                                   width: size.width * .09,
                                   height: size.width * .09,
                                   child: CircularProgressIndicator(),
                                 ),
-                                fit: BoxFit.cover,
+                            fit: BoxFit.cover,
                             errorWidget:
                                 (context, url, error) => Icon(Icons.error),
                             width: size.width * .11,
