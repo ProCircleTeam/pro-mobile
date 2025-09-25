@@ -153,7 +153,6 @@ class AuthViewModel extends BaseViewModel {
         password: password,
       );
 
-      print("The master ========================> ${res?.data["data"]}");
       isSigninIn = false;
       if (res != null && res.data != null) {
         UserModel user = UserModel.fromJson(res.data["data"]);
