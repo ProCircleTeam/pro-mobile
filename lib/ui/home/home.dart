@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
@@ -18,7 +19,6 @@ import 'package:pro_mobile/ui/home/widget.dart/streak_card.dart';
 import 'package:pro_mobile/ui/utils/enum/goals_enum.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
-import 'package:pro_mobile/ui/widgets/circular_image_widget.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 import 'package:provider/provider.dart';
@@ -92,11 +92,22 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           Navigator.pushNamed(context, AppRouter.profile);
                         },
-                        child: CircularNetworkImageWidget(
-                          imageUrl:
-                              user.profilePhoto ??
-                              StringConstants.sampleProfileImage,
-                          size: size.width * .11,
+                        child: ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                user.profilePhoto ?? StringConstants.sampleProfileImage,
+                            placeholder:
+                                (context, url) => SizedBox(
+                                  width: size.width * .09,
+                                  height: size.width * .09,
+                                  child: CircularProgressIndicator(),
+                                ),
+                                fit: BoxFit.cover,
+                            errorWidget:
+                                (context, url, error) => Icon(Icons.error),
+                            width: size.width * .11,
+                            height: size.width * .11,
+                          ),
                         ),
                       ),
                       title: Column(
