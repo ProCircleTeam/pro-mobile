@@ -6,10 +6,12 @@ import 'package:pro_mobile/ui/widgets/progress_bar.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 
 class AccountabilityPartnerCard extends StatelessWidget {
+  final bool hasAccountabilityPartner;
   final int noOfGoalsSet;
   final int completedGoals;
   final Function onTap;
   const AccountabilityPartnerCard({
+    required this.hasAccountabilityPartner,
     required this.onTap,
     required this.noOfGoalsSet,
     required this.completedGoals,
@@ -34,48 +36,61 @@ class AccountabilityPartnerCard extends StatelessWidget {
           children: [
             CustomText("Accountability Partner", weight: FontWeight.bold),
             SpacingWidget(degree: .01),
-            Row(
+            hasAccountabilityPartner
+            ?  Column(
               children: [
-                Container(
-                  height: size.width * .09,
-                  width: size.width * .09,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(size.width * .045),
-                    image: DecorationImage(
-                      image: AssetImage(PNGImageUrl.sampleProfilePix),
-                    ),
-                  ),
-                ),
-      
-                SpacingWidget(degree: .03, isVertical: false),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    CustomText("@spark", size: 15),
+                    Container(
+                      height: size.width * .09,
+                      width: size.width * .09,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(size.width * .045),
+                        image: DecorationImage(
+                          image: AssetImage(PNGImageUrl.sampleProfilePix),
+                        ),
+                      ),
+                    ),
+
+                    SpacingWidget(degree: .03, isVertical: false),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText("@spark", size: 15),
+                        CustomText(
+                          "Medical Doctor ",
+                          size: 14,
+                          color: AppColors.appBlack,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                SpacingWidget(degree: .02),
+                ProgressBar(
+                  progressBarLength: progressBarLength,
+                  percentageCompletion: completedGoals / noOfGoalsSet,
+                ),
+                SpacingWidget(degree: .01),
+                Row(
+                  children: [
                     CustomText(
-                      "Medical Doctor ",
-                      size: 14,
-                      color: AppColors.appBlack,
+                      "$completedGoals out of $noOfGoalsSet goals",
+                      space: 1.5,
                     ),
                   ],
                 ),
               ],
-            ),
-            SpacingWidget(degree: .02),
-            ProgressBar(
-              progressBarLength: progressBarLength,
-              percentageCompletion: completedGoals / noOfGoalsSet,
-            ),
-            SpacingWidget(degree: .01),
-            Row(
+            )
+            : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomText(
-                  "$completedGoals out of $noOfGoalsSet goals",
-                  space: 1.5,
-                ),
-              ],
-            ),
+                SpacingWidget(degree: .035),
+              CustomText("Waiting to be paired")
+            ],)
+            ,
           ],
         ),
       ),
