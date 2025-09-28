@@ -1,5 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/app/core/integrations/firebase_service.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/providers/goal_provider.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
@@ -10,6 +13,12 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setUpServiceLocator();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(
+    FirebaseService().firebaseMessagingBackgroundHandler,
+  );
+
+  FirebaseService().listenForNotification();
 
   runApp(
     MultiProvider(
