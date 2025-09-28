@@ -45,13 +45,14 @@ class _EngagementPageState extends State<EngagementPage> {
         body: BaseView<ProfileViewModel>(
           model: ProfileViewModel(sl.get<UserService>()),
           onModelReady: (model) {
+            List<String> availabilityDays = user?.availabilityDays ?? [];
             String availability() {
-              if (user?.availabilityDays != null &&
+              if (availabilityDays.isNotEmpty &&
                   user?.availabilityDays?[0] != null &&
                   user!.availabilityDays![0].isNotEmpty) {
                 return user.availabilityDays![0];
-              }else {
-              return "";
+              } else {
+                return "";
               }
             }
 
