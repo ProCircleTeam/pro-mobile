@@ -263,6 +263,9 @@ class AuthViewModel extends BaseViewModel {
       onError(e.errorMessage);
     } catch (e) {
       isResettingPassword = false;
+    }
+  }
+
   Future<void> signInWithGoogle({
     required Function(String successMessage) onSuccess,
     required Function(String errorMessage) onError,
