@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage> {
     UserModel user = userProvider.user!;
     final size = MediaQuery.of(context).size;
 
-    final bool hasAccountabilityPartner = false;
     final bool hasReminder = false;
     final bool hasCommunityHighlight = false;
 
@@ -60,7 +59,7 @@ class _HomePageState extends State<HomePage> {
 
     List<String> uploadedGoals =
         goalProvider.goals?.goals ??
-        ["You have no goal set for this week, Kindly create goal to continue"];
+        [];
     GoalStatusEnum status = GoalStatusEnum.inProgress;
 
     return Scaffold(
@@ -74,14 +73,17 @@ class _HomePageState extends State<HomePage> {
         onModelReady: (model) async {
           await model.getUserWeeklyGoalByDate((e) {});
 
-          await model.getPartner(
-            partnerId: 9,
-            onError: (e) {
-              AppFlushBar().showError(message: e, context: context);
-            },
-          );
+          if (model.partnerId > 0) {
+            await model.getPartner(
+              partnerId: model.partnerId,
+              onError: (e) {
+                AppFlushBar().showError(message: e, context: context);
+              },
+            );
+          }
         },
         builder: (context, model, _) {
+
           return Container(
             padding: EdgeInsets.only(
               top: size.height * .03,
@@ -91,7 +93,7 @@ class _HomePageState extends State<HomePage> {
             child: RefreshIndicator(
               onRefresh: () async {
                 await model.getUserWeeklyGoalByDate((e) {});
-                await model.getPartner(partnerId: 9, onError: (e) {});
+                await model.getPartner(partnerId: model.partnerId, onError: (e) {});
               },
               child: SizedBox(
                 height: size.height,
@@ -292,12 +294,11 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisSpacing: 10,
                                 children: [
                                   AccountabilityPartnerCard(
-                                    hasAccountabilityPartner:
-                                        hasAccountabilityPartner,
+                                    partner: model.accountabilityPartner,
                                     noOfGoalsSet: 3,
                                     completedGoals: 2,
                                     onTap: () {
-                                      if (hasAccountabilityPartner == true) {
+                                      if (model.accountabilityPartner != null) {
                                         Navigator.pushNamed(
                                           context,
                                           AppRouter.partnerProfilePage,

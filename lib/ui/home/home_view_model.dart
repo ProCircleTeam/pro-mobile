@@ -41,6 +41,20 @@ class HomeViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  int _partnerId = -1;
+  int get partnerId => _partnerId;
+  set partnerId(int val) {
+    _partnerId = val;
+    notifyListeners();
+  }
+
+  UserModel? _accountabilityPartner;
+  UserModel? get accountabilityPartner => _accountabilityPartner;
+  set accountabilityPartner(UserModel? val) {
+    _accountabilityPartner = val;
+    notifyListeners();
+  }
+
   Future<void> getPartner({
     required int partnerId,
     required Function(String e) onError,
@@ -48,6 +62,7 @@ class HomeViewModel extends BaseViewModel {
     try {
       isGettingPartner = true;
       UserModel? partner = await userService.getUserById(partnerId);
+      accountabilityPartner = partner;
 
       if (partner != null) {
         userProvider.partner = partner;
@@ -92,8 +107,10 @@ class HomeViewModel extends BaseViewModel {
       String dateToPass = date.toString().split(" ")[0];
 
       GoalModel? goal = await goalService.getWeeklyGoalByDate(dateToPass);
+
       if (goal != null) {
         goalProvider.goals = goal;
+        partnerId = goal.pairedWith;
       } else {
         throw Failure("Unable to fetch goals");
       }

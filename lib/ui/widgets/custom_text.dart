@@ -10,6 +10,7 @@ class CustomText extends StatelessWidget {
   final TextAlign? textAlign;
   final TextOverflow? overflow;
   final TextDecoration? underline;
+  final bool? softWrap;
   const CustomText(
     this.title, {
     super.key,
@@ -22,12 +23,14 @@ class CustomText extends StatelessWidget {
     this.overflow,
     this.fontFamily,
     this.underline,
+    this.softWrap,
   });
   @override
   Widget build(BuildContext context) {
     return Text(
       title!,
       textAlign: textAlign ?? TextAlign.left,
+      softWrap: softWrap,
       style: TextStyle(
         color: color ?? Colors.black,
         fontFamily: 'SourceSan3',

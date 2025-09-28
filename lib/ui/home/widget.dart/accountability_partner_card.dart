@@ -1,17 +1,19 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
-import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/domain/models/user_model.dart';
+import 'package:pro_mobile/ui/utils/helper.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/progress_bar.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 
 class AccountabilityPartnerCard extends StatelessWidget {
-  final bool hasAccountabilityPartner;
+  final UserModel? partner;
   final int noOfGoalsSet;
   final int completedGoals;
   final Function onTap;
   const AccountabilityPartnerCard({
-    required this.hasAccountabilityPartner,
+    required this.partner,
     required this.onTap,
     required this.noOfGoalsSet,
     required this.completedGoals,
@@ -36,61 +38,72 @@ class AccountabilityPartnerCard extends StatelessWidget {
           children: [
             CustomText("Accountability Partner", weight: FontWeight.bold),
             SpacingWidget(degree: .01),
-            hasAccountabilityPartner
-            ?  Column(
-              children: [
-                Row(
+            partner != null
+                ? Column(
                   children: [
-                    Container(
-                      height: size.width * .09,
-                      width: size.width * .09,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(size.width * .045),
-                        image: DecorationImage(
-                          image: AssetImage(PNGImageUrl.sampleProfilePix),
+                    Row(
+                      children: [
+                        ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl:
+                               partner!.profilePhoto!,
+                            placeholder:
+                                (context, url) => SizedBox(
+                                  width: size.width * .07,
+                                  height: size.width * .07,
+                                  child: CircularProgressIndicator(),
+                                ),
+                            fit: BoxFit.cover,
+                            errorWidget:
+                                (context, url, error) => Icon(Icons.error),
+                            width: size.width * .09,
+                            height: size.width * .09,
+                          ),
                         ),
-                      ),
+
+                        SpacingWidget(degree: .03, isVertical: false),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText("@${partner!.username}", size: 15),
+                            CustomText(
+                              Helper().truncateWithEllipsis(
+                                13,
+                                partner!.jobTitle!,
+                              ),
+                              size: 14,
+                              color: AppColors.appBlack,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
 
-                    SpacingWidget(degree: .03, isVertical: false),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    SpacingWidget(degree: .02),
+                    ProgressBar(
+                      progressBarLength: progressBarLength,
+                      percentageCompletion: completedGoals / noOfGoalsSet,
+                    ),
+                    SpacingWidget(degree: .01),
+                    Row(
                       children: [
-                        CustomText("@spark", size: 15),
                         CustomText(
-                          "Medical Doctor ",
-                          size: 14,
-                          color: AppColors.appBlack,
+                          "$completedGoals out of $noOfGoalsSet goals",
+                          space: 1.5,
                         ),
                       ],
                     ),
                   ],
-                ),
-
-                SpacingWidget(degree: .02),
-                ProgressBar(
-                  progressBarLength: progressBarLength,
-                  percentageCompletion: completedGoals / noOfGoalsSet,
-                ),
-                SpacingWidget(degree: .01),
-                Row(
+                )
+                : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CustomText(
-                      "$completedGoals out of $noOfGoalsSet goals",
-                      space: 1.5,
-                    ),
+                    SpacingWidget(degree: .035),
+                    CustomText("Waiting to be paired"),
                   ],
                 ),
-              ],
-            )
-            : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SpacingWidget(degree: .035),
-              CustomText("Waiting to be paired")
-            ],)
-            ,
           ],
         ),
       ),

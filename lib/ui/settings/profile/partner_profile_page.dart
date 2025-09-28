@@ -18,8 +18,6 @@ class PartnerProfilePage extends StatefulWidget {
 class _PartnerProfilePageState extends State<PartnerProfilePage> {
   @override
   Widget build(BuildContext context) {
-    String samplePartnerImage =
-        "https://media.istockphoto.com/id/1386479313/photo/happy-millennial-afro-american-business-woman-posing-isolated-on-white.jpg?s=612x612&w=0&k=20&c=8ssXDNTp1XAPan8Bg6mJRwG7EXHshFO5o0v9SIj96nY=";
     UserProvider userProvider = Provider.of<UserProvider>(context);
     UserModel? partner = userProvider.partner;
 
@@ -28,15 +26,10 @@ class _PartnerProfilePageState extends State<PartnerProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true, // This is KEY to go under the status bar
-      // appBar: AppBar(
-      //   title: const Text('Profile'),
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      // ),
       body: Stack(
         children: [
           TopImageSection(
-            imageUrl: samplePartnerImage,
+            imageUrl: partner!.profilePhoto!,
             height: size.height * 0.375,
           ),
 

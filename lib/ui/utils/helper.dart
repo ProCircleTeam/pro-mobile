@@ -8,7 +8,7 @@ class Helper {
     return await storage.read(StringConstants.authToken);
   }
 
-   void printFull(String text) {
+  void printFull(String text) {
     const chunkSize = 800; // smaller than the cutoff
     for (var i = 0; i < text.length; i += chunkSize) {
       debugPrint(
@@ -18,5 +18,9 @@ class Helper {
         ),
       );
     }
+  }
+
+  String truncateWithEllipsis(int cutoff, String text) {
+    return (text.length <= cutoff) ? text : '${text.substring(0, cutoff)}...';
   }
 }

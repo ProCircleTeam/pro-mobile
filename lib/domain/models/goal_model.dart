@@ -2,7 +2,7 @@ class GoalModel {
   final int id;
   final int userId;
   final List<String> goals;
-  final String? pairedWith;
+  final int pairedWith;
   final String status;
   final DateTime weekStart;
   final DateTime weekEnd;
@@ -13,7 +13,7 @@ class GoalModel {
     required this.id,
     required this.userId,
     required this.goals,
-    this.pairedWith,
+    required this.pairedWith,
     required this.status,
     required this.weekStart,
     required this.weekEnd,
@@ -26,7 +26,7 @@ class GoalModel {
       id: json['id'] as int,
       userId: json['user_id'] as int,
       goals: List<String>.from(json['goals']),
-      pairedWith: json['paired_with'],
+      pairedWith: json['paired_with'] as int,
       status: json['status'] as String,
       weekStart: DateTime.parse(json['week_start']),
       weekEnd: DateTime.parse(json['week_end']),
@@ -47,5 +47,12 @@ class GoalModel {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
+  }
+
+  @override
+  String toString() {
+    return 'GoalModel(id: $id, userId: $userId, goals: $goals, pairedWith: $pairedWith, '
+        'status: $status, weekStart: $weekStart, weekEnd: $weekEnd, '
+        'createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
