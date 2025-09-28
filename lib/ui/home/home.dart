@@ -13,7 +13,9 @@ import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/home/goal_modal_content.dart';
 import 'package:pro_mobile/ui/home/home_view_model.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
+import 'package:pro_mobile/ui/home/widget.dart/goal_empty_state.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_listing.dart';
+import 'package:pro_mobile/ui/home/widget.dart/prev_partner_tile.dart';
 import 'package:pro_mobile/ui/home/widget.dart/reminders_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/streak_card.dart';
 import 'package:pro_mobile/ui/utils/enum/goals_enum.dart';
@@ -37,6 +39,24 @@ class _HomePageState extends State<HomePage> {
     GoalProvider goalProvider = Provider.of<GoalProvider>(context);
     UserModel user = userProvider.user!;
     final size = MediaQuery.of(context).size;
+
+    final bool hasAccountabilityPartner = false;
+    final bool hasReminder = false;
+    final bool hasCommunityHighlight = false;
+
+    List<String> previousPartners = [
+      "Nature Okeosis",
+      "Rita Malizzy",
+      "Akeem Balogun",
+      "Theo Fortune",
+    ];
+
+    List<String> sampleProfileImages = [
+      StringConstants.sampleProfileImage2,
+      StringConstants.sampleProfileImage5,
+      StringConstants.sampleProfileImage4,
+      StringConstants.sampleProfileImage3,
+    ];
 
     List<String> uploadedGoals =
         goalProvider.goals?.goals ??
@@ -199,62 +219,68 @@ class _HomePageState extends State<HomePage> {
                                 CustomText(
                                   "This Week's Goal",
                                   weight: FontWeight.bold,
-                                  size: 16,
+                                  size: size.height * .019,
                                 ),
                                 SizedBox(),
                               ],
                             ),
                             SpacingWidget(degree: .01),
-                            GoalListing(
-                              isFetchingGoals: model.isGettingGoal,
-                              goals:
-                                  uploadedGoals.length > 2
-                                      ? uploadedGoals.take(2).toList()
-                                      : uploadedGoals,
-                              onSeeAllTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    final size = MediaQuery.of(context).size;
+                            uploadedGoals.isEmpty
+                                ? GoalEmptyState()
+                                : GoalListing(
+                                  isFetchingGoals: model.isGettingGoal,
+                                  goals:
+                                      uploadedGoals.length > 2
+                                          ? uploadedGoals.take(2).toList()
+                                          : uploadedGoals,
+                                  onSeeAllTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        final size =
+                                            MediaQuery.of(context).size;
 
-                                    return AlertDialog(
-                                      contentPadding: EdgeInsets.all(
-                                        size.width * .035,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(size.height * .01),
-                                        ),
-                                      ),
-                                      content: ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                          maxHeight: size.height * 0.7,
-                                          maxWidth: size.width * 0.9,
-                                        ),
-                                        child: GoalModalContent(
-                                          status: status,
-                                          goals: uploadedGoals,
-                                          title:
-                                              status ==
-                                                      GoalStatusEnum.inProgress
-                                                  ? "This Week's Goal"
-                                                  : "Goal 01",
-                                          onEditGoal: () {
-                                            Navigator.pop(context);
-                                            Navigator.pushNamed(
-                                              context,
-                                              AppRouter.goalsHomePage,
-                                              arguments:
-                                                  "Data is from database",
-                                            );
-                                          },
-                                        ),
-                                      ),
+                                        return AlertDialog(
+                                          contentPadding: EdgeInsets.all(
+                                            size.width * .035,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(
+                                                size.height * .01,
+                                              ),
+                                            ),
+                                          ),
+                                          content: ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxHeight: size.height * 0.7,
+                                              maxWidth: size.width * 0.9,
+                                            ),
+                                            child: GoalModalContent(
+                                              status: status,
+                                              goals: uploadedGoals,
+                                              title:
+                                                  status ==
+                                                          GoalStatusEnum
+                                                              .inProgress
+                                                      ? "This Week's Goal"
+                                                      : "Goal 01",
+                                              onEditGoal: () {
+                                                Navigator.pop(context);
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  AppRouter.goalsHomePage,
+                                                  arguments:
+                                                      "Data is from database",
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
-                                );
-                              },
-                            ),
+                                ),
                             SpacingWidget(degree: .01),
                             SizedBox(
                               height: size.height * .175,
@@ -266,59 +292,68 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisSpacing: 10,
                                 children: [
                                   AccountabilityPartnerCard(
+                                    hasAccountabilityPartner:
+                                        hasAccountabilityPartner,
                                     noOfGoalsSet: 3,
                                     completedGoals: 2,
-                                    onTap:
-                                        () => Navigator.pushNamed(
+                                    onTap: () {
+                                      if (hasAccountabilityPartner == true) {
+                                        Navigator.pushNamed(
                                           context,
                                           AppRouter.partnerProfilePage,
-                                        ),
+                                        );
+                                      }
+                                    },
                                   ),
-                                  StreakCard(),
+                                  StreakCard(hasStreak: false),
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: size.height * .175,
-                              child: GridView.count(
-                                crossAxisCount: 2,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.all(size.width * .02),
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                children: [
-                                  RemindersCard(onTap: () {}),
-                                  RemindersCard(onTap: () {}),
-                                ],
+                            if (hasCommunityHighlight == true ||
+                                hasReminder == true)
+                              SizedBox(
+                                height: size.height * .175,
+                                child: GridView.count(
+                                  crossAxisCount: 2,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.all(size.width * .02),
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  children: [
+                                    RemindersCard(onTap: () {}),
+                                    RemindersCard(onTap: () {}),
+                                  ],
+                                ),
                               ),
+                            SpacingWidget(degree: .04),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomText(
+                                  "Previous Partners",
+                                  weight: FontWeight.bold,
+                                  size: size.height * .017,
+                                ),
+                                CustomText("See all", size: size.height * .016),
+                              ],
                             ),
-                            SizedBox(
-                              height: size.height * .175,
-                              child: GridView.count(
-                                crossAxisCount: 2,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.all(size.width * .02),
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                children: [
-                                  RemindersCard(onTap: () {}),
-                                  RemindersCard(onTap: () {}),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: size.height * .175,
-                              child: GridView.count(
-                                crossAxisCount: 2,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.all(size.width * .02),
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                children: [
-                                  RemindersCard(onTap: () {}),
-                                  RemindersCard(onTap: () {}),
-                                ],
-                              ),
+                            SpacingWidget(degree: .02),
+                            ListView.builder(
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: previousPartners.length,
+                              itemBuilder: (context, i) {
+                                return Column(
+                                  children: [
+                                    PrevPartnerTile(
+                                      name: previousPartners[i],
+                                      imageUrl: sampleProfileImages[i],
+                                    ),
+                                    SpacingWidget(degree: .02),
+                                  ],
+                                );
+                              },
                             ),
                           ],
                         ),
