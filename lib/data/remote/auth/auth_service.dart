@@ -9,6 +9,14 @@ abstract class AuthService {
   });
   Future<Response?> login({
     required String emailOrUsername,
+     required String password
+});
+  Future<Response?> requestOtp(
+     String email,
+  );
+  Future<Response?> resetPassword({
+    required String email,
+    required String otp,
     required String password,
   });
   Future<Response?> signInWithGoogle();

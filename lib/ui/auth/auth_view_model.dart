@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pro_mobile/app/core/failure/failure.dart';
@@ -20,10 +22,31 @@ class AuthViewModel extends BaseViewModel {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  int _countDownTimer = 60;
+  int get countDownTimer => _countDownTimer;
+  set countDownTimer(int val) {
+    _countDownTimer = val;
+    notifyListeners();
+  }
+
+  String _resetPasswordOtp = "";
+  String get resetPasswordOtp => _resetPasswordOtp;
+  set resetPasswordOtp(String val) {
+    _resetPasswordOtp = val;
+    notifyListeners();
+  }
+
   bool _isSigningUp = false;
   bool get isSigningUp => _isSigningUp;
   set isSigninUp(bool val) {
     _isSigningUp = val;
+    notifyListeners();
+  }
+
+  bool _isCanResendCode = false;
+  bool get isCanResendCode => _isCanResendCode;
+  set isCanResendCode(bool val) {
+    _isCanResendCode = val;
     notifyListeners();
   }
 
@@ -45,6 +68,20 @@ class AuthViewModel extends BaseViewModel {
   bool get obscurePassword => _obscurePassword;
   set obscurePassword(bool val) {
     _obscurePassword = val;
+    notifyListeners();
+  }
+
+  bool _initiatingForgotPasswordProcess = false;
+  bool get initiatingForgotPasswordProcess => _initiatingForgotPasswordProcess;
+  set initiatingForgotPasswordProcess(bool val) {
+    _initiatingForgotPasswordProcess = val;
+    notifyListeners();
+  }
+
+  bool _isResettingPassword = false;
+  bool get isResettingPassword => _isResettingPassword;
+  set isResettingPassword(bool val) {
+    _isResettingPassword = val;
     notifyListeners();
   }
 
@@ -173,6 +210,59 @@ class AuthViewModel extends BaseViewModel {
       isSigninIn = false;
       onError(ErrorText.generic);
       AppLogger.log("Error ==================> $e");
+    }
+  }
+
+  Future<void> initiateForgotPasswordProcess({
+    required String email,
+    required Function(String successMessage) onSuccess,
+    required Function(String errorMessage) onError,
+  }) async {
+    try {
+      String? validateEmailError = FormHelper().validateEmail(email);
+
+      if (validateEmailError != null) {
+        onError(validateEmailError);
+        return;
+      }
+
+      initiatingForgotPasswordProcess = true;
+      await authService.requestOtp(email);
+      initiatingForgotPasswordProcess = false;
+      onSuccess("Password Request successful");
+    } on Failure catch (e) {
+      initiatingForgotPasswordProcess = false;
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+      onError(e.errorMessage);
+    } catch (e) {
+      initiatingForgotPasswordProcess = false;
+      onError(ErrorText.generic);
+      AppLogger.log("Error ==================> $e");
+    }
+  }
+
+  Future<void> resetPassword({
+    required String email,
+    required String password,
+    required String otp,
+    required Function(String successMessage) onSuccess,
+    required Function(String errorMessage) onError,
+  }) async {
+    try {
+      isResettingPassword = true;
+      await authService.resetPassword(
+        otp: otp,
+        email: email,
+        password: password,
+      );
+      isResettingPassword = false;
+      onSuccess("Reset password success");
+    } on Failure catch (e) {
+      isResettingPassword = false;
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+      onError(e.errorMessage);
+    } catch (e) {
+      isResettingPassword = false;
     }
   }
 

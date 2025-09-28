@@ -73,4 +73,34 @@ class AuthServiceImpl implements AuthService {
 
     return res;
   }
+
+  @override
+  Future<Response?> requestOtp(String email) async {
+    String url = Endpoints.requestOtp;
+    Map<String, dynamic> data = {"email": email};
+
+    Response res = await appClient.post(url, data);
+    AppLogger.log("===========================> signup result ==> $res");
+
+    return res;
+  }
+
+  @override
+  Future<Response?> resetPassword({
+    required String email,
+    required String otp,
+    required String password,
+  }) async {
+    String url = Endpoints.resetPassword;
+    Map<String, dynamic> data = {
+      "email": email,
+      "password": password,
+      "otp": otp,
+    };
+
+    Response res = await appClient.put(url, data);
+    AppLogger.log("===========================> signup result ==> $res");
+
+    return res;
+  }
 }

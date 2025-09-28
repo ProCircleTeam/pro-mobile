@@ -16,4 +16,6 @@ class Endpoints {
   static String updateEngagementInfo =
       "$baseUrl/user/profile/engagement-info/update";
   static String getSupportedTimeZones = "$baseUrl/user/search/timezone";
+  static String requestOtp = "$baseUrl/generic/request-otp";
+  static String resetPassword = "$baseUrl/auth/reset-password";
 }
