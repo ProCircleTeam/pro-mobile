@@ -10,6 +10,7 @@ class SVGImageUrl {
   static const warningIcon = "assets/images/svg/warning_icon.svg";
   static const emptyHome = "assets/images/svg/empty-home.svg";
   static const emptyNotification = "assets/images/svg/empty-notification.svg";
+  static const emptyDirectory = "assets/images/svg/open_folder.svg";
 }
 
 class PNGImageUrl {

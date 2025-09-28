@@ -13,6 +13,7 @@ import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/home/goal_modal_content.dart';
 import 'package:pro_mobile/ui/home/home_view_model.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
+import 'package:pro_mobile/ui/home/widget.dart/goal_empty_state.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_listing.dart';
 import 'package:pro_mobile/ui/home/widget.dart/reminders_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/streak_card.dart';
@@ -205,56 +206,62 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                             SpacingWidget(degree: .01),
-                            GoalListing(
-                              isFetchingGoals: model.isGettingGoal,
-                              goals:
-                                  uploadedGoals.length > 2
-                                      ? uploadedGoals.take(2).toList()
-                                      : uploadedGoals,
-                              onSeeAllTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    final size = MediaQuery.of(context).size;
+                            uploadedGoals.isEmpty
+                                ? GoalEmptyState()
+                                : GoalListing(
+                                  isFetchingGoals: model.isGettingGoal,
+                                  goals:
+                                      uploadedGoals.length > 2
+                                          ? uploadedGoals.take(2).toList()
+                                          : uploadedGoals,
+                                  onSeeAllTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        final size =
+                                            MediaQuery.of(context).size;
 
-                                    return AlertDialog(
-                                      contentPadding: EdgeInsets.all(
-                                        size.width * .035,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(size.height * .01),
-                                        ),
-                                      ),
-                                      content: ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                          maxHeight: size.height * 0.7,
-                                          maxWidth: size.width * 0.9,
-                                        ),
-                                        child: GoalModalContent(
-                                          status: status,
-                                          goals: uploadedGoals,
-                                          title:
-                                              status ==
-                                                      GoalStatusEnum.inProgress
-                                                  ? "This Week's Goal"
-                                                  : "Goal 01",
-                                          onEditGoal: () {
-                                            Navigator.pop(context);
-                                            Navigator.pushNamed(
-                                              context,
-                                              AppRouter.goalsHomePage,
-                                              arguments:
-                                                  "Data is from database",
-                                            );
-                                          },
-                                        ),
-                                      ),
+                                        return AlertDialog(
+                                          contentPadding: EdgeInsets.all(
+                                            size.width * .035,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(
+                                                size.height * .01,
+                                              ),
+                                            ),
+                                          ),
+                                          content: ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxHeight: size.height * 0.7,
+                                              maxWidth: size.width * 0.9,
+                                            ),
+                                            child: GoalModalContent(
+                                              status: status,
+                                              goals: uploadedGoals,
+                                              title:
+                                                  status ==
+                                                          GoalStatusEnum
+                                                              .inProgress
+                                                      ? "This Week's Goal"
+                                                      : "Goal 01",
+                                              onEditGoal: () {
+                                                Navigator.pop(context);
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  AppRouter.goalsHomePage,
+                                                  arguments:
+                                                      "Data is from database",
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
-                                );
-                              },
-                            ),
+                                ),
                             SpacingWidget(degree: .01),
                             SizedBox(
                               height: size.height * .175,
