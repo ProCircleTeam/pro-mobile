@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
-import 'package:pro_mobile/ui/widgets/circular_image_widget.dart';
+
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:provider/provider.dart';
@@ -41,9 +42,22 @@ class _ProfilePageState extends State<ProfilePage> {
             Center(
               child: Column(
                 children: [
-                  CircularNetworkImageWidget(
-                    imageUrl: user?.profilePhoto ?? StringConstants.sampleProfileImage,
-                    size: size.width * .4,
+                  ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          user?.profilePhoto ??
+                          StringConstants.sampleProfileImage,
+                      placeholder:
+                          (context, url) => SizedBox(
+                            width: size.width * .2,
+                            height: size.width * .2,
+                            child: CircularProgressIndicator(),
+                          ),
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      width: size.width * .4,
+                      height: size.width * .4,
+                    ),
                   ),
                   SizedBox(height: size.height * .01),
                   CustomText(

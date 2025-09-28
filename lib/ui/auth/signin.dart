@@ -135,7 +135,7 @@ class _SignInPageState extends State<SignInPage> {
                                 spaceFormItems(),
                                 ActionButton(
                                   title: "LOGIN",
-                                  isLoading: model.isSigningIn,
+                                  isLoading: model.isSigningIn || model.isSigningInWithGoogle,
                                   onTap: () {
                                     model.login(
                                       emailOrUsername:
@@ -198,10 +198,24 @@ class _SignInPageState extends State<SignInPage> {
                                     SVGImageUrl.googleLogo,
                                     height: 18,
                                   ),
-                                  onTap: () {
-                                    Navigator.pushReplacementNamed(
-                                      context,
-                                      AppRouter.onboarding,
+                                  onTap: () async {
+                                    await model.signInWithGoogle(
+                                      onSuccess: (successMessage) {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRouter.dashboard,
+                                        );
+                                        AppFlushBar().showSuccess(
+                                          message: successMessage,
+                                          context: context,
+                                        );
+                                      },
+                                      onError: (e) {
+                                        AppFlushBar().showError(
+                                          message: e,
+                                          context: context,
+                                        );
+                                      }
                                     );
                                   },
                                   bgColor: AppColors.veryLightGrey,

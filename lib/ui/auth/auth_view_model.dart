@@ -57,6 +57,13 @@ class AuthViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  bool _isSigningInWithGoogle = false;
+  bool get isSigningInWithGoogle => _isSigningInWithGoogle;
+  set isSigningInWithGoogle(bool val) {
+    _isSigningInWithGoogle = val;
+    notifyListeners();
+  }
+
   bool _obscurePassword = true;
   bool get obscurePassword => _obscurePassword;
   set obscurePassword(bool val) {
@@ -129,6 +136,7 @@ class AuthViewModel extends BaseViewModel {
     required String username,
     required String email,
     required String password,
+    required bool agreeToTermsAndConditions,
     required Function(String message) onSuccess,
     required Function(String errorMessage) onError,
   }) async {
@@ -141,6 +149,7 @@ class AuthViewModel extends BaseViewModel {
         username: username,
         email: email,
         password: password,
+        agreeToTermsAndConditions: agreeToTermsAndConditions,
       );
 
       isSigninUp = false;
@@ -181,7 +190,6 @@ class AuthViewModel extends BaseViewModel {
         password: password,
       );
 
-      print("The master ========================> ${res?.data["data"]}");
       isSigninIn = false;
       if (res != null && res.data != null) {
         UserModel user = UserModel.fromJson(res.data["data"]);
@@ -255,6 +263,35 @@ class AuthViewModel extends BaseViewModel {
       onError(e.errorMessage);
     } catch (e) {
       isResettingPassword = false;
+  Future<void> signInWithGoogle({
+    required Function(String successMessage) onSuccess,
+    required Function(String errorMessage) onError,
+  }) async {
+    SecureStorageService storage = SecureStorageService();
+
+    try {
+      isSigningInWithGoogle = true;
+      final res = await authService.signInWithGoogle();
+      isSigningInWithGoogle = false;
+
+      isSigninIn = false;
+      if (res != null && res.data != null) {
+        UserModel user = UserModel.fromJson(res.data["data"]);
+        userProvider.user = user;
+
+        String token = res.data["data"]["token"];
+        String message = res.data["message"];
+        await storage.write(key: StringConstants.authToken, val: token);
+        await storage.setUser(user);
+
+        onSuccess(message);
+      }
+    } on Failure catch (e) {
+      isSigningInWithGoogle = false;
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+      onError(e.errorMessage);
+    } catch (e) {
+      isSigningInWithGoogle = false;
       onError(ErrorText.generic);
       AppLogger.log("Error ==================> $e");
     }

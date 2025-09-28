@@ -45,10 +45,19 @@ class _EngagementPageState extends State<EngagementPage> {
         body: BaseView<ProfileViewModel>(
           model: ProfileViewModel(sl.get<UserService>()),
           onModelReady: (model) {
-            model.availabilityDaysController.text =
-                user?.availabilityDays?[0] ?? "";
-            model.funFactController.text =
-                user?.funFact ?? "";
+            List<String> availabilityDays = user?.availabilityDays ?? [];
+            String availability() {
+              if (availabilityDays.isNotEmpty &&
+                  user?.availabilityDays?[0] != null &&
+                  user!.availabilityDays![0].isNotEmpty) {
+                return user.availabilityDays![0];
+              } else {
+                return "";
+              }
+            }
+
+            model.availabilityDaysController.text = availability();
+            model.funFactController.text = user?.funFact ?? "";
             model.getSupportedTimeZones((e) {
               AppFlushBar().showError(message: e, context: context);
             });

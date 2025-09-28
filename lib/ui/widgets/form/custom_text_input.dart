@@ -11,14 +11,14 @@ class CustomTextInput extends StatelessWidget {
   final void Function(String)? onChanged;
 
   const CustomTextInput({
-    Key? key,
+    super.key,
     this.controller,
     this.hintText = '',
     this.onChanged,
     this.trailingIcon,
     this.obscureText = false,
     required this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

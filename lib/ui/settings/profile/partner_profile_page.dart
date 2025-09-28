@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
-import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/settings/profile/profile.dart';
-import 'package:pro_mobile/ui/widgets/circular_image_widget.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/top_quarter_image_container.dart';
