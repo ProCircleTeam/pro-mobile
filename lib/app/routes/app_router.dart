@@ -5,6 +5,7 @@ import 'package:pro_mobile/ui/dashboard/dashboard.dart';
 import 'package:pro_mobile/ui/goals/create_and_update_goal.dart';
 import 'package:pro_mobile/ui/home/home.dart';
 import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
+import 'package:pro_mobile/ui/settings/change_password/change_password_page.dart';
 import 'package:pro_mobile/ui/settings/notification/notification_page.dart';
 import 'package:pro_mobile/ui/settings/profile/engagement_page.dart';
 import 'package:pro_mobile/ui/settings/profile/goals_and_interest_page.dart';
@@ -31,6 +32,7 @@ class AppRouter {
       goalsAndInterest: (context) => GoalsAndInterestPage(),
       engagementPage: (context) => EngagementPage(),
       partnerProfilePage: (context) => PartnerProfilePage(),
+      changePasswordPage: (context) => ChangePasswordScreen()
     };
   }
 
@@ -49,5 +51,6 @@ class AppRouter {
   static const goalsAndInterest = "/goals_and_interest_page";
   static const engagementPage = "/engagement_page";
   static const partnerProfilePage = "/partner_page";
+  static const changePasswordPage = "/change_password_page";
 }
 
