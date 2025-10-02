@@ -18,4 +18,5 @@ class Endpoints {
   static String getSupportedTimeZones = "$baseUrl/user/search/timezone";
   static String requestOtp = "$baseUrl/generic/request-otp";
   static String resetPassword = "$baseUrl/auth/reset-password";
+  static String registerFcmToken = "$baseUrl/user/register-fcm-token";
 }

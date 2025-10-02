@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pro_mobile/app/core/client/app_client.dart';
 import 'package:pro_mobile/app/core/endpoints/endpoints.dart';
@@ -41,8 +42,7 @@ class AuthServiceImpl implements AuthService {
       scopeHint: ['email'],
     );
     String idToken = account.authentication.idToken ?? "";
-      Helper().printFull("idToken =========================> $idToken");
-
+    Helper().printFull("idToken =========================> $idToken");
 
     Map<String, dynamic> data = {"idToken": idToken};
 
@@ -102,5 +102,19 @@ class AuthServiceImpl implements AuthService {
     AppLogger.log("===========================> signup result ==> $res");
 
     return res;
+  }
+
+  @override
+  Future<Response?> registerFcmToken(String fcmToken) async {
+    String url = Endpoints.registerFcmToken;
+
+    try {
+      var res = await appClient.put(url, {"fcmToken": fcmToken});
+      debugPrint("Token registered successfuly ==============>");
+      return res;
+    } catch (e) {
+      debugPrint("Error registering token =====================> $e");
+      return null;
+    }
   }
 }
