@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/integrations/local_notification_service.dart';
+import 'package:pro_mobile/data/remote/auth/auth_service.dart';
 
 class FirebaseService {
   Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -35,5 +36,17 @@ class FirebaseService {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       debugPrint("App opened from background: ${message.data}");
     });
+  }
+
+  Future<void> registerToken(AuthService authService) async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Get token
+    final token = await messaging.getToken();
+    debugPrint("FCM Token: $token");
+
+    if (token != null && token.isNotEmpty) {
+      await authService.registerFcmToken(token);
+    }
   }
 }

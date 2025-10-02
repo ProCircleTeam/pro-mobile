@@ -20,4 +20,5 @@ abstract class AuthService {
     required String password,
   });
   Future<Response?> signInWithGoogle();
+  Future<Response?> registerFcmToken(String fcmToken);
 }
