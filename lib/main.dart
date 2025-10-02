@@ -5,6 +5,7 @@ import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/core/integrations/firebase_service.dart';
 import 'package:pro_mobile/app/core/integrations/local_notification_service.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
+import 'package:pro_mobile/data/remote/auth/auth_service.dart';
 import 'package:pro_mobile/providers/goal_provider.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/onboarding_screen/onboarding_screens.dart';
@@ -24,7 +25,6 @@ void main() async {
   // init once
   await LocalNotificationService().init();
   await FirebaseService().listenForNotification();
-
 
   runApp(
     MultiProvider(
