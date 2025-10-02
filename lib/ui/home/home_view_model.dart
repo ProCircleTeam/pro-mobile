@@ -110,7 +110,7 @@ class HomeViewModel extends BaseViewModel {
 
       if (goal != null) {
         goalProvider.goals = goal;
-        partnerId = goal.pairedWith;
+        partnerId = goal.pairedWith ?? -1;
       } else {
         throw Failure("Unable to fetch goals");
       }

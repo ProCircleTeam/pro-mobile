@@ -2,7 +2,7 @@ class GoalModel {
   final int id;
   final int userId;
   final List<String> goals;
-  final int pairedWith;
+  final int? pairedWith; // 👈 made nullable
   final String status;
   final DateTime weekStart;
   final DateTime weekEnd;
@@ -26,7 +26,7 @@ class GoalModel {
       id: json['id'] as int,
       userId: json['user_id'] as int,
       goals: List<String>.from(json['goals']),
-      pairedWith: json['paired_with'] as int,
+      pairedWith: json['paired_with'] as int?,
       status: json['status'] as String,
       weekStart: DateTime.parse(json['week_start']),
       weekEnd: DateTime.parse(json['week_end']),
