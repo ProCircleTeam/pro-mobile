@@ -17,12 +17,10 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
+    NotificationProvider = MediaQuery.of<Notificank>(context);
     final size = MediaQuery.of(context).size;
     List<NotificationItemModel> notifications =
-        sampleNotifications.map((e) {
-          return NotificationItemModel.fromJson(e);
-        }).toList();
-
+        
     return Scaffold(
       appBar: AppBar(
         title: CustomText("Notification", weight: FontWeight.bold),

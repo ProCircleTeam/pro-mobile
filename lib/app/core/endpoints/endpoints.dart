@@ -19,4 +19,5 @@ class Endpoints {
   static String requestOtp = "$baseUrl/generic/request-otp";
   static String resetPassword = "$baseUrl/auth/reset-password";
   static String registerFcmToken = "$baseUrl/user/register-fcm-token";
+  static String getUserNotifications = "$baseUrl/notification";
 }
