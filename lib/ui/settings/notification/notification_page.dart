@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/domain/models/notification_item_model.dart';
+import 'package:pro_mobile/providers/notification_provider.dart';
 import 'package:pro_mobile/ui/settings/widgets/notification_item.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
+import 'package:provider/provider.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -17,10 +19,12 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
-    NotificationProvider = MediaQuery.of<Notificank>(context);
+    NotificationProvider notificationProvider =
+        Provider.of<NotificationProvider>(context);
     final size = MediaQuery.of(context).size;
     List<NotificationItemModel> notifications =
-        
+        notificationProvider.notifications;
+
     return Scaffold(
       appBar: AppBar(
         title: CustomText("Notification", weight: FontWeight.bold),
@@ -42,7 +46,11 @@ class _NotificationPageState extends State<NotificationPage> {
                               Row(
                                 children: [
                                   SpacingWidget(degree: .02),
-                                  CustomText("Today", weight: FontWeight.w400, size: size.height * .018,),
+                                  CustomText(
+                                    "Today",
+                                    weight: FontWeight.w400,
+                                    size: size.height * .018,
+                                  ),
                                 ],
                               ),
                               SpacingWidget(degree: .01),
@@ -58,7 +66,11 @@ class _NotificationPageState extends State<NotificationPage> {
                             children: [
                               Row(
                                 children: [
-                                  CustomText("Yesterday", weight: FontWeight.w400, size: size.height * .018,),
+                                  CustomText(
+                                    "Yesterday",
+                                    weight: FontWeight.w400,
+                                    size: size.height * .018,
+                                  ),
                                 ],
                               ),
                               SpacingWidget(degree: .01),
@@ -74,7 +86,11 @@ class _NotificationPageState extends State<NotificationPage> {
                             children: [
                               Row(
                                 children: [
-                                  CustomText("Older", weight: FontWeight.w400, size: size.height * .018,),
+                                  CustomText(
+                                    "Older",
+                                    weight: FontWeight.w400,
+                                    size: size.height * .018,
+                                  ),
                                 ],
                               ),
                               SpacingWidget(degree: .01),
