@@ -136,3 +136,7 @@ List<Map<String, dynamic>> sampleTimeZones = [
   {"id": 2, "name": "Central European Time", "abbreviation": "CET"},
   {"id": 3, "name": "Africa/Brazzaville", "abbreviation": "WAT"},
 ];
+
+class CachingKeys {
+  static String fcmToken = "fcmToken";
+}

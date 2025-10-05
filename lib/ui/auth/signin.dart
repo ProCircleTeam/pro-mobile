@@ -136,7 +136,9 @@ class _SignInPageState extends State<SignInPage> {
                                 spaceFormItems(),
                                 ActionButton(
                                   title: "LOGIN",
-                                  isLoading: model.isSigningIn || model.isSigningInWithGoogle,
+                                  isLoading:
+                                      model.isSigningIn ||
+                                      model.isSigningInWithGoogle,
                                   onTap: () {
                                     model.login(
                                       emailOrUsername:
@@ -145,11 +147,13 @@ class _SignInPageState extends State<SignInPage> {
                                           model.passwordController.text
                                               .toString(),
                                       onSuccess: (successMessage) {
-                                        Navigator.pushReplacementNamed(
+                                        Navigator.pushNamedAndRemoveUntil(
                                           context,
                                           AppRouter.dashboard,
+                                          (route) => false,
                                         );
-                                         Helper().registerFcmToken();
+
+                                        Helper().registerFcmToken();
                                         AppFlushBar().showSuccess(
                                           message: successMessage,
                                           context: context,
@@ -207,7 +211,7 @@ class _SignInPageState extends State<SignInPage> {
                                           context,
                                           AppRouter.dashboard,
                                         );
-                                         Helper().registerFcmToken();
+                                        Helper().registerFcmToken();
                                         AppFlushBar().showSuccess(
                                           message: successMessage,
                                           context: context,
@@ -218,7 +222,7 @@ class _SignInPageState extends State<SignInPage> {
                                           message: e,
                                           context: context,
                                         );
-                                      }
+                                      },
                                     );
                                   },
                                   bgColor: AppColors.veryLightGrey,

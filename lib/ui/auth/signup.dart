@@ -248,10 +248,12 @@ class _SignUpPageState extends State<SignUpPage> {
                                       agreeToTermsAndConditions:
                                           model.hasAgreedWithTermsAndConditions,
                                       onSuccess: (successMessage) {
-                                        Navigator.pushReplacementNamed(
+                                        Navigator.pushNamedAndRemoveUntil(
                                           context,
                                           AppRouter.dashboard,
+                                          (route) => false,
                                         );
+
                                         Helper().registerFcmToken();
                                         AppFlushBar().showSuccess(
                                           message: successMessage,
@@ -307,11 +309,12 @@ class _SignUpPageState extends State<SignUpPage> {
                                 onTap: () async {
                                   await model.signInWithGoogle(
                                     onSuccess: (successMessage) {
-                                      Navigator.pushReplacementNamed(
+                                      Navigator.pushNamedAndRemoveUntil(
                                         context,
                                         AppRouter.dashboard,
+                                        (route) => false,
                                       );
-                                       Helper().registerFcmToken();
+                                      Helper().registerFcmToken();
                                       AppFlushBar().showSuccess(
                                         message: successMessage,
                                         context: context,

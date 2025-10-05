@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/integrations/local_notification_service.dart';
+import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/local/secure_storage.dart';
 import 'package:pro_mobile/data/remote/auth/auth_service.dart';
 
 class FirebaseService {
@@ -12,9 +14,11 @@ class FirebaseService {
 
   Future<void> listenForNotification() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
+    SecureStorageService storage = SecureStorageService();
 
     // Get token
     final token = await messaging.getToken();
+    await storage.write(key: CachingKeys.fcmToken, val: token ?? "");
     debugPrint("FCM Token: $token");
 
     // Foreground messages
