@@ -143,12 +143,14 @@ class AuthViewModel extends BaseViewModel {
     SecureStorageService storage = SecureStorageService();
 
     try {
+      String? fcmToken = await storage.read(CachingKeys.fcmToken);
       isSigninUp = true;
 
       Response? res = await authService.signUp(
         username: username,
         email: email,
         password: password,
+        fcmToken: fcmToken,
         agreeToTermsAndConditions: agreeToTermsAndConditions,
       );
 
@@ -273,8 +275,9 @@ class AuthViewModel extends BaseViewModel {
     SecureStorageService storage = SecureStorageService();
 
     try {
+      String? fcmToken = await storage.read(CachingKeys.fcmToken);
       isSigningInWithGoogle = true;
-      final res = await authService.signInWithGoogle();
+      final res = await authService.signInWithGoogle(fcmToken);
       isSigningInWithGoogle = false;
 
       isSigninIn = false;

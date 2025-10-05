@@ -33,7 +33,7 @@ class AuthServiceImpl implements AuthService {
   }
 
   @override
-  Future<Response?> signInWithGoogle() async {
+  Future<Response?> signInWithGoogle(String? fcmToken) async {
     String serverClientId =
         "668739069836-gbdack0q2hdisf17q8i5rqhua42qtems.apps.googleusercontent.com";
     String url = Endpoints.signInWithGoogle;
@@ -46,7 +46,7 @@ class AuthServiceImpl implements AuthService {
     String idToken = account.authentication.idToken ?? "";
     Helper().printFull("idToken =========================> $idToken");
 
-    Map<String, dynamic> data = {"idToken": idToken};
+    Map<String, dynamic> data = {"idToken": idToken, "fcmToken": fcmToken};
 
     Response res = await appClient.post(url, data);
     AppLogger.log(
@@ -61,12 +61,14 @@ class AuthServiceImpl implements AuthService {
     required String email,
     required String password,
     required bool agreeToTermsAndConditions,
+    required String? fcmToken,
   }) async {
     const String url = Endpoints.signUp;
     Map<String, dynamic> data = {
       "username": username,
       "email": email,
       "password": password,
+      "fcmToken": fcmToken,
       "agreeToTermsAndConditions": agreeToTermsAndConditions,
     };
 
@@ -108,16 +110,19 @@ class AuthServiceImpl implements AuthService {
 
   @override
   Future<Response?> registerFcmToken(String fcmToken) async {
-
     try {
-    String url = Endpoints.registerFcmToken;
+      String url = Endpoints.registerFcmToken;
       final header = await getAppHeader(isTokenRequired: true);
-      var res = await appClient.put(url, {"fcmToken": fcmToken}, headers: header);
-      
+      var res = await appClient.put(url, {
+        "fcmToken": fcmToken,
+      }, headers: header);
+
       debugPrint("Token registered successfuly ==============>");
       return res;
-    } on Failure catch(e){
-      debugPrint("Error registering token =====================> ${e.errorMessage}");
+    } on Failure catch (e) {
+      debugPrint(
+        "Error registering token =====================> ${e.errorMessage}",
+      );
       return null;
     } catch (e) {
       debugPrint("Error registering token =====================> $e");
