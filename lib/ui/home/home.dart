@@ -5,9 +5,11 @@ import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
+import 'package:pro_mobile/data/remote/notification/notification_service.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/goal_provider.dart';
+import 'package:pro_mobile/providers/notification_provider.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/home/goal_modal_content.dart';
@@ -37,6 +39,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     GoalProvider goalProvider = Provider.of<GoalProvider>(context);
+    NotificationProvider notificationProvider =
+        Provider.of<NotificationProvider>(context);
     UserModel user = userProvider.user!;
     final size = MediaQuery.of(context).size;
 
@@ -57,9 +61,7 @@ class _HomePageState extends State<HomePage> {
       StringConstants.sampleProfileImage3,
     ];
 
-    List<String> uploadedGoals =
-        goalProvider.goals?.goals ??
-        [];
+    List<String> uploadedGoals = goalProvider.goals?.goals ?? [];
     GoalStatusEnum status = GoalStatusEnum.inProgress;
 
     return Scaffold(
@@ -67,6 +69,7 @@ class _HomePageState extends State<HomePage> {
         model: HomeViewModel(
           goalService: sl.get<GoalService>(),
           userService: sl.get<UserService>(),
+          notificationService: sl.get<NotificationService>(),
           goalProvider: goalProvider,
           userProvider: userProvider,
         ),
@@ -81,9 +84,10 @@ class _HomePageState extends State<HomePage> {
               },
             );
           }
+
+          await model.fetchUserNotifications(notificationProvider);
         },
         builder: (context, model, _) {
-
           return Container(
             padding: EdgeInsets.only(
               top: size.height * .03,
@@ -93,7 +97,11 @@ class _HomePageState extends State<HomePage> {
             child: RefreshIndicator(
               onRefresh: () async {
                 await model.getUserWeeklyGoalByDate((e) {});
-                await model.getPartner(partnerId: model.partnerId, onError: (e) {});
+                await model.getPartner(
+                  partnerId: model.partnerId,
+                  onError: (e) {},
+                );
+                await model.fetchUserNotifications(notificationProvider);
               },
               child: SizedBox(
                 height: size.height,

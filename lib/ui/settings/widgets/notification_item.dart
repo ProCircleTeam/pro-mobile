@@ -6,10 +6,7 @@ import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 
 class NotificationItemWidget extends StatelessWidget {
   final NotificationItemModel notification;
-  const NotificationItemWidget({
-    required this.notification,
-    super.key,
-  });
+  const NotificationItemWidget({required this.notification, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +40,10 @@ class NotificationItemWidget extends StatelessWidget {
                   size: size.height * .017,
                 ),
                 SpacingWidget(degree: .001),
-                CustomText( notification.body, size: size.height * .017),
+                CustomText(notification.body, size: size.height * .017),
                 SpacingWidget(degree: .005),
                 CustomText(
-                   notification.timestamp.toString(),
+                  notification.createdAt.toString(),
                   size: size.height * .015,
                   color: AppColors.captionColor,
                 ),
