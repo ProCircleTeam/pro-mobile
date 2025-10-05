@@ -75,6 +75,7 @@ class _HomePageState extends State<HomePage> {
         ),
         onModelReady: (model) async {
           await model.getUserWeeklyGoalByDate((e) {});
+          await model.fetchUserNotifications(notificationProvider);
 
           if (model.partnerId > 0) {
             await model.getPartner(
@@ -85,7 +86,6 @@ class _HomePageState extends State<HomePage> {
             );
           }
 
-          await model.fetchUserNotifications(notificationProvider);
         },
         builder: (context, model, _) {
           return Container(
