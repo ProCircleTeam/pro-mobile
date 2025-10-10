@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pro_mobile/ui/settings/change_password/password_success_screen.dart';
+import 'package:pro_mobile/app/core/failure/failure.dart';
+import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/ui/base/base_view_model.dart';
+import 'package:pro_mobile/ui/utils/app_logger.dart';
+import 'package:pro_mobile/ui/utils/form_helper.dart';
 
-class ChangePasswordModalView extends ChangeNotifier {
+class ChangePasswordModalView extends BaseViewModel {
   final TextEditingController oldPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
@@ -9,53 +13,77 @@ class ChangePasswordModalView extends ChangeNotifier {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-
-  void _setLoading(bool val) {
+  set isLoading(bool val) {
     _isLoading = val;
     notifyListeners();
   }
 
-  Future<void> savePassword(BuildContext context) async {
-    final oldPass = oldPasswordController.text.trim();
-    final newPass = newPasswordController.text.trim();
-    final confirmPass = confirmPasswordController.text.trim();
-
-    if (oldPass.isEmpty) {
-      _showError(context, "Please enter your old password");
-      return;
+  bool validateChangePassword({
+    required String oldPassword,
+    required String newPassword,
+    required String confirmPassword,
+    required Function(String e) onValidationFail,
+  }) {
+    if (oldPassword.isEmpty) {
+      onValidationFail("Please enter your old password");
+      return false;
     }
-    if (newPass.isEmpty) {
-      _showError(context, "Please enter a new password");
-      return;
+    
+    String? validatePasswordError = FormHelper().checkLength(
+      txt: newPassword,
+      fieldname: "New Password",
+      len: 6,
+    );
+    
+    if (validatePasswordError != null) {
+      onValidationFail(validatePasswordError);
+      return false;
     }
-    if (newPass.length < 6) {
-      _showError(context, "Password must be at least 6 characters");
-      return;
+    
+    if (newPassword != confirmPassword) {
+      onValidationFail("Passwords do not match");
+      return false;
     }
-    if (newPass != confirmPass) {
-      _showError(context, "Passwords do not match");
-      return;
-    }
-
-    _setLoading(true);
-    try {
-      // TODO: call your real API here
-      await Future.delayed(const Duration(seconds: 2));
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (c) => const PasswordSuccessScreen()),
-      );
-    } catch (e) {
-      _showError(context, "Something went wrong");
-    } finally {
-      _setLoading(false);
-    }
+    
+    return true;
   }
 
-  void _showError(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
-    );
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+    required String confirmPassword,
+    required Function(String message) onSuccess,
+    required Function(String errorMessage) onError,
+  }) async {
+    try {
+      isLoading = true;
+
+      // TODO: Replace with actual API call
+      // Response? res = await userService.changePassword(
+      //   oldPassword: oldPassword,
+      //   newPassword: newPassword,
+      // );
+
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 2));
+
+      isLoading = false;
+      
+      // Clear form fields
+      oldPasswordController.clear();
+      newPasswordController.clear();
+      confirmPasswordController.clear();
+      
+      onSuccess("Your password has been changed successfully");
+    } on Failure catch (e) {
+      isLoading = false;
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+      onError(e.errorMessage);
+    } catch (e) {
+      isLoading = false;
+      onError(ErrorText.generic);
+      AppLogger.log("Error ==================> $e");
+    }
   }
 
   @override
