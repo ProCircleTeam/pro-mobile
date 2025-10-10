@@ -122,11 +122,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                       SecureStorageService storage =
                                           SecureStorageService();
                                       await storage.clearAll();
-                                      Navigator.push(
+                                      Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => SignInPage(),
                                         ),
+                                        (Route<dynamic> route) => false,
                                       );
                                     },
                                   ),

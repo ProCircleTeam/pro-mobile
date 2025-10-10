@@ -1,23 +1,30 @@
+import 'package:flutter/cupertino.dart';
 import 'package:pro_mobile/app/core/failure/failure.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
+import 'package:pro_mobile/data/remote/notification/notification_service.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/goal_model.dart';
+import 'package:pro_mobile/domain/models/notification_item_model.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/goal_provider.dart';
+import 'package:pro_mobile/providers/notification_provider.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view_model.dart';
+import 'package:pro_mobile/ui/utils/app_logger.dart' show AppLogger;
 
 class HomeViewModel extends BaseViewModel {
   final GoalService goalService;
   final UserService userService;
   final GoalProvider goalProvider;
   final UserProvider userProvider;
+  final NotificationService notificationService;
   HomeViewModel({
     required this.goalService,
     required this.userService,
     required this.userProvider,
     required this.goalProvider,
+    required this.notificationService,
   });
 
   bool _isGettingGoal = false;
@@ -41,6 +48,27 @@ class HomeViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  int _partnerId = -1;
+  int get partnerId => _partnerId;
+  set partnerId(int val) {
+    _partnerId = val;
+    notifyListeners();
+  }
+
+  UserModel? _accountabilityPartner;
+  UserModel? get accountabilityPartner => _accountabilityPartner;
+  set accountabilityPartner(UserModel? val) {
+    _accountabilityPartner = val;
+    notifyListeners();
+  }
+
+  List<NotificationItemModel> _notifications = [];
+  List<NotificationItemModel> get notifications => _notifications;
+  set notifications(List<NotificationItemModel> val) {
+    _notifications = val;
+    notifyListeners();
+  }
+
   Future<void> getPartner({
     required int partnerId,
     required Function(String e) onError,
@@ -48,6 +76,7 @@ class HomeViewModel extends BaseViewModel {
     try {
       isGettingPartner = true;
       UserModel? partner = await userService.getUserById(partnerId);
+      accountabilityPartner = partner;
 
       if (partner != null) {
         userProvider.partner = partner;
@@ -92,8 +121,10 @@ class HomeViewModel extends BaseViewModel {
       String dateToPass = date.toString().split(" ")[0];
 
       GoalModel? goal = await goalService.getWeeklyGoalByDate(dateToPass);
+
       if (goal != null) {
         goalProvider.goals = goal;
+        partnerId = goal.pairedWith ?? -1;
       } else {
         throw Failure("Unable to fetch goals");
       }
@@ -104,6 +135,24 @@ class HomeViewModel extends BaseViewModel {
     } catch (e) {
       isGettingGoalsByDate = false;
       onError(ErrorText.generic);
+    }
+  }
+
+  Future<void> fetchUserNotifications(NotificationProvider notificationProvider) async {
+    try {
+      var res = await notificationService.fetchUserNotifications();
+      List rawNotifications = res?.data?["data"];
+      List<NotificationItemModel> notificationList =
+          rawNotifications.map((e) {
+            return NotificationItemModel.fromJson(e);
+          }).toList();
+
+      notifications = notificationList;
+      notificationProvider.notifications = notificationList;
+    } on Failure catch (e) {
+      AppLogger.log("Error ==================> ${e.errorMessage}");
+    } catch (e) {
+      AppLogger.log("Error ==================> $e");
     }
   }
 }

@@ -10,6 +10,7 @@ import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/auth/auth_view_model.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
+import 'package:pro_mobile/ui/utils/helper.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/form/custom_text_input.dart';
@@ -150,8 +151,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ),
                                     child: Checkbox(
                                       value:
-                                          model
-                                              .hasAgreedWithTermsAndConditions,
+                                          model.hasAgreedWithTermsAndConditions,
                                       onChanged: (e) {
                                         model.hasAgreedWithTermsAndConditions =
                                             !model
@@ -226,7 +226,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                           .trim();
                                   final String email =
                                       model.emailController.text.trim();
-                
+
                                   if (model.validateSignUp(
                                     name: userName,
                                     email: email,
@@ -245,12 +245,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                       email: email,
                                       password: password,
                                       username: userName,
-                                      agreeToTermsAndConditions: model.hasAgreedWithTermsAndConditions,
+                                      agreeToTermsAndConditions:
+                                          model.hasAgreedWithTermsAndConditions,
                                       onSuccess: (successMessage) {
-                                        Navigator.pushReplacementNamed(
+                                        Navigator.pushNamedAndRemoveUntil(
                                           context,
                                           AppRouter.dashboard,
+                                          (route) => false,
                                         );
+
+                                        Helper().registerFcmToken();
                                         AppFlushBar().showSuccess(
                                           message: successMessage,
                                           context: context,
@@ -303,24 +307,26 @@ class _SignUpPageState extends State<SignUpPage> {
                                   height: 18,
                                 ),
                                 onTap: () async {
-                                    await model.signInWithGoogle(
-                                      onSuccess: (successMessage) {
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          AppRouter.dashboard,
-                                        );
-                                        AppFlushBar().showSuccess(
-                                          message: successMessage,
-                                          context: context,
-                                        );
-                                      },
-                                      onError: (e) {
-                                        AppFlushBar().showError(
-                                          message: e,
-                                          context: context,
-                                        );
-                                      }
-                                    );
+                                  await model.signInWithGoogle(
+                                    onSuccess: (successMessage) {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        AppRouter.dashboard,
+                                        (route) => false,
+                                      );
+                                      Helper().registerFcmToken();
+                                      AppFlushBar().showSuccess(
+                                        message: successMessage,
+                                        context: context,
+                                      );
+                                    },
+                                    onError: (e) {
+                                      AppFlushBar().showError(
+                                        message: e,
+                                        context: context,
+                                      );
+                                    },
+                                  );
                                 },
                                 bgColor: AppColors.veryLightGrey,
                               ),

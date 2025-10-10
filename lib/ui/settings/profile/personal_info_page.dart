@@ -70,16 +70,40 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 child: Stack(
                                   children: [
                                     model.pickedProfileImage != null
-                                        ? CircularImageWidget(
-                                          image: model.pickedProfileImage!,
-                                          size: size.width * .3,
+                                        ? InkWell(
+                                          onTap: () async {
+                                            File? pickedFile =
+                                                await ImagePickerHelper()
+                                                    .pickImageFromGallery();
+                                            if (pickedFile != null) {
+                                              model.pickedProfileImage =
+                                                  pickedFile;
+                                            }
+                                          },
+                                          child: CircularImageWidget(
+                                            image: model.pickedProfileImage!,
+                                            size: size.width * .3,
+                                          ),
                                         )
-                                        : CircularNetworkImageWidget(
-                                          imageUrl:
-                                              userProvider.user?.profilePhoto ??
-                                              StringConstants
-                                                  .sampleProfileImage,
-                                          size: size.width * .3,
+                                        : InkWell(
+                                          onTap: () async {
+                                            File? pickedFile =
+                                                await ImagePickerHelper()
+                                                    .pickImageFromGallery();
+                                            if (pickedFile != null) {
+                                              model.pickedProfileImage =
+                                                  pickedFile;
+                                            }
+                                          },
+                                          child: CircularNetworkImageWidget(
+                                            imageUrl:
+                                                userProvider
+                                                    .user
+                                                    ?.profilePhoto ??
+                                                StringConstants
+                                                    .sampleProfileImage,
+                                            size: size.width * .3,
+                                          ),
                                         ),
                                     Positioned(
                                       left: size.width * .22,
@@ -186,7 +210,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             );
 
                             if (canSubmit) {
-                            
                               model.updatePersonalInfo(
                                 username: username,
                                 firstName: firstName,

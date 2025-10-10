@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/ui/auth/forgot_password.dart';
+import 'package:pro_mobile/ui/auth/reset_password_page.dart';
 import 'package:pro_mobile/ui/auth/signup.dart';
 import 'package:pro_mobile/ui/auth/signin.dart';
+import 'package:pro_mobile/ui/auth/success_page.dart';
+import 'package:pro_mobile/ui/auth/verify_otp_page.dart';
 import 'package:pro_mobile/ui/dashboard/dashboard.dart';
 import 'package:pro_mobile/ui/goals/create_and_update_goal.dart';
 import 'package:pro_mobile/ui/home/home.dart';
@@ -32,7 +36,11 @@ class AppRouter {
       goalsAndInterest: (context) => GoalsAndInterestPage(),
       engagementPage: (context) => EngagementPage(),
       partnerProfilePage: (context) => PartnerProfilePage(),
-      changePasswordPage: (context) => ChangePasswordScreen()
+      changePasswordPage: (context) => ChangePasswordScreen(),
+      forgotPasswordPage: (context) => ForgotPasswordPage(),
+      otpVerificationPage: (context) => VerifyOtpPage(),
+      resetPasswordPage: (context) => ResetPasswordPage(),
+      successPage: (context) => SuccessPage(),
     };
   }
 
@@ -52,5 +60,9 @@ class AppRouter {
   static const engagementPage = "/engagement_page";
   static const partnerProfilePage = "/partner_page";
   static const changePasswordPage = "/change_password_page";
+  static const forgotPasswordPage = "/forgot_password_page";
+  static const otpVerificationPage = "/otp_verification_page";
+  static const resetPasswordPage = "/reset_password_page";
+  static const successPage = "/success_page";
 }
 
