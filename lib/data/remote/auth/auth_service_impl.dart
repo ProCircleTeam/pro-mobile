@@ -41,7 +41,11 @@ class AuthServiceImpl implements AuthService {
     await googleSignIn.initialize(serverClientId: serverClientId);
 
     GoogleSignInAccount account = await googleSignIn.authenticate(
-      scopeHint: ['email'],
+      scopeHint: [
+        'email',
+        'https://www.googleapis.com/auth/calendar',
+        'https://www.googleapis.com/auth/calendar.events',
+      ],
     );
     String idToken = account.authentication.idToken ?? "";
     Helper().printFull("idToken =========================> $idToken");

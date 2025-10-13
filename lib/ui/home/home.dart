@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
 import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
@@ -14,6 +16,7 @@ import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/home/goal_modal_content.dart';
 import 'package:pro_mobile/ui/home/home_view_model.dart';
+import 'package:pro_mobile/ui/home/schedule_page.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_empty_state.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_listing.dart';
@@ -85,7 +88,6 @@ class _HomePageState extends State<HomePage> {
               },
             );
           }
-
         },
         builder: (context, model, _) {
           return Container(
@@ -205,12 +207,8 @@ class _HomePageState extends State<HomePage> {
                                 Icons.task_alt_outlined,
                                 color: Colors.white,
                               ),
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRouter.goalsHomePage,
-                                  arguments: "Data is from database",
-                                );
+                              onTap: () async {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => WeeklySchedulePage()));
                               },
                             ),
                           ),
