@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:pro_mobile/app/core/failure/failure.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/calendar/calendar_service.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
 import 'package:pro_mobile/data/remote/notification/notification_service.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
@@ -18,6 +18,7 @@ class HomeViewModel extends BaseViewModel {
   final UserService userService;
   final GoalProvider goalProvider;
   final UserProvider userProvider;
+  final CalendarService calendarService;
   final NotificationService notificationService;
   HomeViewModel({
     required this.goalService,
@@ -25,6 +26,7 @@ class HomeViewModel extends BaseViewModel {
     required this.userProvider,
     required this.goalProvider,
     required this.notificationService,
+    required this.calendarService,
   });
 
   bool _isGettingGoal = false;
@@ -66,6 +68,13 @@ class HomeViewModel extends BaseViewModel {
   List<NotificationItemModel> get notifications => _notifications;
   set notifications(List<NotificationItemModel> val) {
     _notifications = val;
+    notifyListeners();
+  }
+
+  bool _isSynchingCalendar = false;
+  bool get isSynchingCalendar => _isSynchingCalendar;
+  set isSynchingCalendar(bool val) {
+    _isSynchingCalendar = val;
     notifyListeners();
   }
 
@@ -138,7 +147,9 @@ class HomeViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> fetchUserNotifications(NotificationProvider notificationProvider) async {
+  Future<void> fetchUserNotifications(
+    NotificationProvider notificationProvider,
+  ) async {
     try {
       var res = await notificationService.fetchUserNotifications();
       List rawNotifications = res?.data?["data"];
@@ -153,6 +164,30 @@ class HomeViewModel extends BaseViewModel {
       AppLogger.log("Error ==================> ${e.errorMessage}");
     } catch (e) {
       AppLogger.log("Error ==================> $e");
+    }
+  }
+
+  Future<void> syncGoogleCalendar({
+    required Function(String e) appUrlLauncher,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isSynchingCalendar = true;
+      String url = await calendarService.getGoogleCalendarUrl();
+      await appUrlLauncher(url);
+      isSynchingCalendar = false;
+      onSuccess("You have successfuly connected your calendar");
+    } on Failure catch (e) {
+      isSynchingCalendar = false;
+      onError(e.errorMessage);
+      AppLogger.log(
+        "Error synching calender ==================> ${e.errorMessage}",
+      );
+    } catch (e) {
+      isSynchingCalendar = false;
+      onError(ErrorText.generic);
+      AppLogger.log("Error synching calendar ==================> $e");
     }
   }
 }

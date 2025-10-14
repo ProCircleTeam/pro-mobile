@@ -20,4 +20,5 @@ class Endpoints {
   static String resetPassword = "$baseUrl/auth/reset-password";
   static String registerFcmToken = "$baseUrl/user/register-fcm-token";
   static String getUserNotifications = "$baseUrl/notification";
+  static String getGoogleCalendarUrl = "$baseUrl/calendar/calendar-url";
 }

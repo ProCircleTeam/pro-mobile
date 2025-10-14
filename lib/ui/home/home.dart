@@ -1,11 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
-    as picker;
 import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/calendar/calendar_service.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
 import 'package:pro_mobile/data/remote/notification/notification_service.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
@@ -16,7 +15,6 @@ import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/home/goal_modal_content.dart';
 import 'package:pro_mobile/ui/home/home_view_model.dart';
-import 'package:pro_mobile/ui/home/schedule_page.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_empty_state.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_listing.dart';
@@ -25,7 +23,9 @@ import 'package:pro_mobile/ui/home/widget.dart/reminders_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/streak_card.dart';
 import 'package:pro_mobile/ui/utils/enum/goals_enum.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
+import 'package:pro_mobile/ui/utils/helper.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
+import 'package:pro_mobile/ui/widgets/custom_bottom_modal.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 import 'package:provider/provider.dart';
@@ -72,6 +72,7 @@ class _HomePageState extends State<HomePage> {
         model: HomeViewModel(
           goalService: sl.get<GoalService>(),
           userService: sl.get<UserService>(),
+          calendarService: sl.get<CalendarService>(),
           notificationService: sl.get<NotificationService>(),
           goalProvider: goalProvider,
           userProvider: userProvider,
@@ -208,7 +209,44 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.white,
                               ),
                               onTap: () async {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => WeeklySchedulePage()));
+                                // Navigator.push(context, MaterialPageRoute(builder: (context) => WeeklySchedulePage()));
+                                CustomBottomModal.show(
+                                  context: context,
+                                  child: SizedBox(
+                                    width: size.width,
+                                    height: size.height * .35,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: size.width * .02,
+                                        vertical: size.height * .02,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CustomText(
+                                            "You are about to Schedule your 5th accountability call with Andrea Bremna",
+                                          ),
+                                          ActionButton(
+                                            title: "Schedule Call",
+                                            isLoading: model.isSynchingCalendar,
+                                            onTap: () async {
+                                              await model.syncGoogleCalendar(
+                                                appUrlLauncher:
+                                                    (url) =>
+                                                        Helper.appUrlLauncher(
+                                                          url,
+                                                        ),
+                                                onSuccess: (url) {},
+                                                onError: (error) {},
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                           ),
