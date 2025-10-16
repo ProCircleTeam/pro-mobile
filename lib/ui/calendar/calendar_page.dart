@@ -26,16 +26,13 @@ class _CalenderPageState extends State<CalenderPage> {
   DateTime? _selectedDay;
   late DateTime _monday;
   late DateTime _friday;
-
-  List<Map<String, dynamic>> _slots = [];
-  Map<String, dynamic>? _selectedSlot;
+  TimeSlot? selectedSlot;
   List<TimeSlot> selectedDateTimeSlots = [];
 
   @override
   void initState() {
     super.initState();
     _calculateWeekRange();
-    _generateSlotsFor(DateTime.now());
   }
 
   void _calculateWeekRange() {
@@ -44,25 +41,7 @@ class _CalenderPageState extends State<CalenderPage> {
     _friday = _monday.add(const Duration(days: 4));
   }
 
-  void _generateSlotsFor(DateTime date) {
-    final random = Random();
-    final slots = <Map<String, dynamic>>[];
 
-    // Mock hourly slots between 9AM–5PM
-    for (int hour = 10; hour < 20; hour++) {
-      bool isAvailable = random.nextBool();
-      slots.add({
-        'start': DateTime(date.year, date.month, date.day, hour, 0),
-        'end': DateTime(date.year, date.month, date.day, hour + 1, 0),
-        'available': isAvailable,
-      });
-    }
-
-    setState(() {
-      _slots = slots;
-      _selectedSlot = null;
-    });
-  }
 
   String _formatTimeRange(DateTime start, DateTime end) {
     String formatTime(DateTime t) =>
@@ -120,13 +99,17 @@ class _CalenderPageState extends State<CalenderPage> {
                             busyPeriods: model.partnerBusyPeriods,
                             dateString: selectedDay.toString(),
                           );
-                      print("Here is the period ==============> $periods");
+                      List<TimeSlot> slots =
+                          Helper.getDailyTimeSlotsWithAvailability(
+                            busyPeriods: periods,
+                            date: selectedDay,
+                          );
                       setState(() {
                         _selectedDay = selectedDay;
                         _focusedDay = focusedDay;
+                        selectedDateTimeSlots = slots;
                       });
 
-                      _generateSlotsFor(selectedDay);
                     },
                   ),
               const SizedBox(height: 16),
@@ -143,7 +126,8 @@ class _CalenderPageState extends State<CalenderPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: GridView.builder(
-                      itemCount: _slots.length,
+                      itemCount: selectedDateTimeSlots.length,
+                      // itemCount: _slots.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -152,16 +136,19 @@ class _CalenderPageState extends State<CalenderPage> {
                             mainAxisSpacing: 12,
                           ),
                       itemBuilder: (context, index) {
-                        final slot = _slots[index];
-                        final available = slot['available'] as bool;
-                        final isSelected = _selectedSlot == slot;
+                        // final slot = _slots[index];
+                        final slot = selectedDateTimeSlots[index];
+                        final available = slot.available;
+                        final isSelected = selectedSlot == slot;
+                        // final isSelected = _selectedSlot == slot;
 
                         return GestureDetector(
                           onTap:
                               available
                                   ? () {
                                     setState(() {
-                                      _selectedSlot = slot;
+                                      // _selectedSlot = slot;
+                                      selectedSlot = slot;
                                     });
                                   }
                                   : null,
@@ -185,7 +172,7 @@ class _CalenderPageState extends State<CalenderPage> {
                             ),
                             child: Center(
                               child: Text(
-                                _formatTimeRange(slot['start'], slot['end']),
+                                _formatTimeRange(slot.start, slot.end),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color:
@@ -199,18 +186,14 @@ class _CalenderPageState extends State<CalenderPage> {
                     ),
                   ),
                 ),
-              if (_selectedSlot != null)
+              if (selectedSlot != null)
                 PaddedContainer(
                   child: ActionButton(
                     title: "Schedule",
                     onTap: () {
-                      final start = _selectedSlot!['start'];
-                      final end = _selectedSlot!['end'];
+                      final start = selectedSlot?.start;
+                      final end = selectedSlot?.end;
 
-                      print(" selected start ======================> $start");
-                      print(" selected end ======================> $end");
-
-                      // Navigator.pushNamed(context, AppRouter.successPage);
                     },
                   ),
                 ),
