@@ -21,4 +21,6 @@ class Endpoints {
   static String registerFcmToken = "$baseUrl/user/register-fcm-token";
   static String getUserNotifications = "$baseUrl/notification";
   static String getGoogleCalendarUrl = "$baseUrl/calendar/calendar-url";
+  static String scheduleCalendarEvent = "$baseUrl/calendar/accountability-call";
+  static String getCalendarAvailability = "$baseUrl/calendar/busy?startDate=2025-10-20T00:00:00.000Z&endDate=2025-10-27T23:59:59.999Z";
 }

@@ -156,6 +156,31 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                     }
                   },
                 ),
+                SettingsTile(
+                  title: "Connect Google Calendar",
+                  icon: Icons.interests_outlined,
+                  trailingWidget:
+                      isGettingProfileInfoRead
+                          ? SizedBox(
+                            width: iconWidth,
+                            height: iconWidth,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.richBlue,
+                            ),
+                          )
+                          : model.isGoalInfoCompleted
+                          ? Icon(
+                            Icons.check_circle,
+                            color: AppColors.richBlue.withValues(alpha: .8),
+                          )
+                          : null,
+                  onTap: () {
+                    if (!isGettingProfileInfoRead) {
+                      Navigator.pushNamed(context, AppRouter.goalsAndInterest);
+                    }
+                  },
+                ),
               ],
             ),
           );

@@ -15,7 +15,7 @@ import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/home/goal_modal_content.dart';
 import 'package:pro_mobile/ui/home/home_view_model.dart';
-import 'package:pro_mobile/ui/home/calendar_page.dart';
+import 'package:pro_mobile/ui/calendar/calendar_page.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/call_booking_widget.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_empty_state.dart';
@@ -74,7 +74,6 @@ class _HomePageState extends State<HomePage> {
         model: HomeViewModel(
           goalService: sl.get<GoalService>(),
           userService: sl.get<UserService>(),
-          calendarService: sl.get<CalendarService>(),
           notificationService: sl.get<NotificationService>(),
           goalProvider: goalProvider,
           userProvider: userProvider,
