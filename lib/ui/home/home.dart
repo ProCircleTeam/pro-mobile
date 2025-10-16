@@ -15,7 +15,9 @@ import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/home/goal_modal_content.dart';
 import 'package:pro_mobile/ui/home/home_view_model.dart';
+import 'package:pro_mobile/ui/home/schedule_page.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
+import 'package:pro_mobile/ui/home/widget.dart/call_booking_widget.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_empty_state.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_listing.dart';
 import 'package:pro_mobile/ui/home/widget.dart/prev_partner_tile.dart';
@@ -204,49 +206,48 @@ class _HomePageState extends State<HomePage> {
                               verticalPadding: size.height * .013,
                               bgColor: AppColors.secondary,
                               title: "",
-                              title2: Icon(
-                                Icons.task_alt_outlined,
-                                color: Colors.white,
-                              ),
+                              title2: Icon(Icons.phone, color: Colors.white),
                               onTap: () async {
-                                // Navigator.push(context, MaterialPageRoute(builder: (context) => WeeklySchedulePage()));
-                                CustomBottomModal.show(
-                                  context: context,
-                                  child: SizedBox(
-                                    width: size.width,
-                                    height: size.height * .35,
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: size.width * .02,
-                                        vertical: size.height * .02,
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          CustomText(
-                                            "You are about to Schedule your 5th accountability call with Andrea Bremna",
-                                          ),
-                                          ActionButton(
-                                            title: "Schedule Call",
-                                            isLoading: model.isSynchingCalendar,
-                                            onTap: () async {
-                                              await model.syncGoogleCalendar(
-                                                appUrlLauncher:
-                                                    (url) =>
-                                                        Helper.appUrlLauncher(
-                                                          url,
-                                                        ),
-                                                onSuccess: (url) {},
-                                                onError: (error) {},
-                                              );
-                                            },
-                                          ),
-                                        ],
+                                if (uploadedGoals.isEmpty) {
+                                  Helper().showInfoMessage(
+                                    "You will be paired with an accountability partner once you set your gaol for the week. Once paired, you will be able to schedule a call",
+                                    context,
+                                  );
+                                } else if (uploadedGoals.isEmpty &&
+                                    model.accountabilityPartner?.id == null) {
+                                  Helper().showInfoMessage(
+                                    "You will be able to schedule a call once you are paired with an accountability partner",
+                                    context,
+                                  );
+                                } else {
+                                  CustomBottomModal.show(
+                                    context: context,
+                                    child: SizedBox(
+                                      width: size.width,
+                                      child: CallBookingWidget(
+                                        imageUrl:
+                                            model
+                                                .accountabilityPartner!
+                                                .profilePhoto!,
+                                        partnerUserName:
+                                            model
+                                                .accountabilityPartner!
+                                                .username!
+                                                .toLowerCase(),
+                                        onTap: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) =>
+                                                      WeeklySchedulePage(),
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                }
                               },
                             ),
                           ),

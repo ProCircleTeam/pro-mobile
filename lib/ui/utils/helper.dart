@@ -32,6 +32,20 @@ class Helper {
     await FirebaseService().registerToken(sl.get<AuthService>());
   }
 
+  void showInfoMessage(String message, BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        action: SnackBarAction(
+          label: 'Close',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
   static Future<void> appUrlLauncher(String url, {bool inApp = false}) async {
     try {
       final Uri uri = Uri.parse(url);
