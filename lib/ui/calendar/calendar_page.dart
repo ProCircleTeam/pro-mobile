@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
@@ -15,7 +14,8 @@ import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalenderPage extends StatefulWidget {
-  const CalenderPage({super.key});
+  final String partnerEmail;
+  const CalenderPage({required this.partnerEmail, super.key});
 
   @override
   State<CalenderPage> createState() => _CalenderPageState();
@@ -40,8 +40,6 @@ class _CalenderPageState extends State<CalenderPage> {
     _monday = now.subtract(Duration(days: now.weekday - 1));
     _friday = _monday.add(const Duration(days: 4));
   }
-
-
 
   String _formatTimeRange(DateTime start, DateTime end) {
     String formatTime(DateTime t) =>
@@ -109,7 +107,6 @@ class _CalenderPageState extends State<CalenderPage> {
                         _focusedDay = focusedDay;
                         selectedDateTimeSlots = slots;
                       });
-
                     },
                   ),
               const SizedBox(height: 16),
@@ -127,7 +124,6 @@ class _CalenderPageState extends State<CalenderPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: GridView.builder(
                       itemCount: selectedDateTimeSlots.length,
-                      // itemCount: _slots.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -136,18 +132,15 @@ class _CalenderPageState extends State<CalenderPage> {
                             mainAxisSpacing: 12,
                           ),
                       itemBuilder: (context, index) {
-                        // final slot = _slots[index];
                         final slot = selectedDateTimeSlots[index];
                         final available = slot.available;
                         final isSelected = selectedSlot == slot;
-                        // final isSelected = _selectedSlot == slot;
 
                         return GestureDetector(
                           onTap:
                               available
                                   ? () {
                                     setState(() {
-                                      // _selectedSlot = slot;
                                       selectedSlot = slot;
                                     });
                                   }
@@ -190,10 +183,32 @@ class _CalenderPageState extends State<CalenderPage> {
                 PaddedContainer(
                   child: ActionButton(
                     title: "Schedule",
-                    onTap: () {
-                      final start = selectedSlot?.start;
-                      final end = selectedSlot?.end;
+                    isLoading: model.isSchedulingCall,
+                    onTap: () async {
+                      if (!model.isSchedulingCall) {
+                        final start = selectedSlot?.start;
+                        final end = selectedSlot?.end;
 
+                        await model.scheduleAccountabilityCall(
+                          onSuccess: (message) {
+                            Navigator.pop(context);
+                            AppFlushBar().showSuccess(
+                              message: message,
+                              context: context,
+                            );
+                          },
+                          onError: (e) {
+                            AppFlushBar().showError(
+                              message: e,
+                              context: context,
+                            );
+                          },
+                          startTime: start!.toIso8601String(),
+                          endTime: end!.toIso8601String(),
+                          partnerEmail: widget.partnerEmail,
+                          timeZone: "UTC",
+                        );
+                      }
                     },
                   ),
                 ),
