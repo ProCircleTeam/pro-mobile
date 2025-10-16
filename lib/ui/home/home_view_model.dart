@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:pro_mobile/app/core/failure/failure.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
@@ -138,7 +137,9 @@ class HomeViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> fetchUserNotifications(NotificationProvider notificationProvider) async {
+  Future<void> fetchUserNotifications(
+    NotificationProvider notificationProvider,
+  ) async {
     try {
       var res = await notificationService.fetchUserNotifications();
       List rawNotifications = res?.data?["data"];

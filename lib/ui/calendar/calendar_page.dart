@@ -1,0 +1,225 @@
+import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/core/di/service_locator.dart';
+import 'package:pro_mobile/constants/app_colors.dart';
+import 'package:pro_mobile/data/remote/calendar/calendar_service.dart';
+import 'package:pro_mobile/domain/models/busy_time_model.dart';
+import 'package:pro_mobile/domain/models/time_slot.dart';
+import 'package:pro_mobile/ui/base/base_view.dart';
+import 'package:pro_mobile/ui/calendar/calendar_view_model.dart';
+import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
+import 'package:pro_mobile/ui/utils/helper.dart';
+import 'package:pro_mobile/ui/widgets/action_button.dart';
+import 'package:pro_mobile/ui/widgets/custom_app_bar.dart';
+import 'package:pro_mobile/ui/widgets/padded_container.dart';
+import 'package:table_calendar/table_calendar.dart';
+
+class CalenderPage extends StatefulWidget {
+  final String partnerEmail;
+  final String partnerId;
+  const CalenderPage({required this.partnerEmail, required this.partnerId, super.key});
+
+  @override
+  State<CalenderPage> createState() => _CalenderPageState();
+}
+
+class _CalenderPageState extends State<CalenderPage> {
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  late DateTime _monday;
+  late DateTime _friday;
+  TimeSlot? selectedSlot;
+  List<TimeSlot> selectedDateTimeSlots = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _calculateWeekRange();
+  }
+
+  void _calculateWeekRange() {
+    final now = DateTime.now();
+    _monday = now.subtract(Duration(days: now.weekday - 1));
+    _friday = _monday.add(const Duration(days: 4));
+  }
+
+  String _formatTimeRange(DateTime start, DateTime end) {
+    String formatTime(DateTime t) =>
+        "${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}";
+    return "${formatTime(start)} - ${formatTime(end)}";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: customAppBer("Schedule Accountability Call"),
+      body: BaseView<CalendarViewModel>(
+        model: CalendarViewModel(sl.get<CalendarService>()),
+        onModelReady: (model) async {
+          final weekDates = Helper.getCurrentWeekDates();
+          await model.getPartnerCalendarAvailability(
+            weekStart: weekDates.startDate,
+            weekEnd: weekDates.endDate,
+            partnerId: widget.partnerId,
+            onError: (e) {
+              AppFlushBar().showError(message: e, context: context);
+            },
+            onSuccess: (e) {},
+          );
+        },
+        builder: (context, model, _) {
+          return Column(
+            children: [
+              model.isGettingPartnerAvailabilityTime
+                  ? PaddedContainer(child: LinearProgressIndicator())
+                  : TableCalendar(
+                    focusedDay: _focusedDay,
+                    firstDay: _monday,
+                    lastDay: _friday,
+                    calendarFormat: CalendarFormat.week,
+                    headerStyle: const HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                      leftChevronVisible: false,
+                      rightChevronVisible: false,
+                    ),
+                    calendarStyle: CalendarStyle(
+                      todayDecoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      selectedDecoration: BoxDecoration(
+                        color: AppColors.secondary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+                    onDaySelected: (selectedDay, focusedDay) {
+                      List<BusyTimePeriodModel> periods =
+                          Helper.filterBusyPeriodsForDate(
+                            busyPeriods: model.partnerBusyPeriods,
+                            dateString: selectedDay.toString(),
+                          );
+                      List<TimeSlot> slots =
+                          Helper.getDailyTimeSlotsWithAvailability(
+                            busyPeriods: periods,
+                            date: selectedDay,
+                          );
+                      setState(() {
+                        _selectedDay = selectedDay;
+                        _focusedDay = focusedDay;
+                        selectedDateTimeSlots = slots;
+                      });
+                    },
+                  ),
+              const SizedBox(height: 16),
+              if (_selectedDay == null)
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    "Select a day (Mon–Fri) to view available slots",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                )
+              else
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: GridView.builder(
+                      itemCount: selectedDateTimeSlots.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 2.8,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                      itemBuilder: (context, index) {
+                        final slot = selectedDateTimeSlots[index];
+                        final available = slot.available;
+                        final isSelected = selectedSlot == slot;
+
+                        return GestureDetector(
+                          onTap:
+                              available
+                                  ? () {
+                                    setState(() {
+                                      selectedSlot = slot;
+                                    });
+                                  }
+                                  : null,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            decoration: BoxDecoration(
+                              color:
+                                  available
+                                      ? (isSelected
+                                          ? Colors.orangeAccent
+                                          : Colors.greenAccent.shade100)
+                                      : Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color:
+                                    isSelected
+                                        ? Colors.deepOrange
+                                        : Colors.transparent,
+                                width: 2,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _formatTimeRange(slot.start, slot.end),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      available ? Colors.black87 : Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              if (selectedSlot != null)
+                PaddedContainer(
+                  child: ActionButton(
+                    title: "Schedule",
+                    isLoading: model.isSchedulingCall,
+                    onTap: () async {
+                      if (!model.isSchedulingCall) {
+                        final start = selectedSlot?.start;
+                        final end = selectedSlot?.end;
+
+                        await model.scheduleAccountabilityCall(
+                          onSuccess: (message) {
+                            Navigator.pop(context);
+                            AppFlushBar().showSuccess(
+                              message: message,
+                              context: context,
+                            );
+                          },
+                          onError: (e) {
+                            AppFlushBar().showError(
+                              message: e,
+                              context: context,
+                            );
+                          },
+                          startTime: start!.toIso8601String(),
+                          endTime: end!.toIso8601String(),
+                          partnerEmail: widget.partnerEmail,
+                          timeZone: "UTC",
+                        );
+                      }
+                    },
+                  ),
+                ),
+
+              const SizedBox(height: 12),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}

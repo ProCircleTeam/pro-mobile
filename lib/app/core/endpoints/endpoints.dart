@@ -20,4 +20,7 @@ class Endpoints {
   static String resetPassword = "$baseUrl/auth/reset-password";
   static String registerFcmToken = "$baseUrl/user/register-fcm-token";
   static String getUserNotifications = "$baseUrl/notification";
+  static String getGoogleCalendarUrl = "$baseUrl/calendar/calendar-url";
+  static String scheduleCalendarEvent = "$baseUrl/calendar/accountability-call";
+  static String getCalendarAvailability({required String partnerId, required String start, required String end}) => "$baseUrl/calendar/busy?userId=$partnerId&startDate=$start&endDate=$end";
 }

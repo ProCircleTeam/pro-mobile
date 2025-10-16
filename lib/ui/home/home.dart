@@ -4,6 +4,7 @@ import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/calendar/calendar_service.dart';
 import 'package:pro_mobile/data/remote/goal/goal_service.dart';
 import 'package:pro_mobile/data/remote/notification/notification_service.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
@@ -14,7 +15,9 @@ import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/home/goal_modal_content.dart';
 import 'package:pro_mobile/ui/home/home_view_model.dart';
+import 'package:pro_mobile/ui/calendar/calendar_page.dart';
 import 'package:pro_mobile/ui/home/widget.dart/accountability_partner_card.dart';
+import 'package:pro_mobile/ui/home/widget.dart/call_booking_widget.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_empty_state.dart';
 import 'package:pro_mobile/ui/home/widget.dart/goal_listing.dart';
 import 'package:pro_mobile/ui/home/widget.dart/prev_partner_tile.dart';
@@ -22,7 +25,9 @@ import 'package:pro_mobile/ui/home/widget.dart/reminders_card.dart';
 import 'package:pro_mobile/ui/home/widget.dart/streak_card.dart';
 import 'package:pro_mobile/ui/utils/enum/goals_enum.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
+import 'package:pro_mobile/ui/utils/helper.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
+import 'package:pro_mobile/ui/widgets/custom_bottom_modal.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/spacing_widget.dart';
 import 'package:provider/provider.dart';
@@ -85,7 +90,6 @@ class _HomePageState extends State<HomePage> {
               },
             );
           }
-
         },
         builder: (context, model, _) {
           return Container(
@@ -201,16 +205,48 @@ class _HomePageState extends State<HomePage> {
                               verticalPadding: size.height * .013,
                               bgColor: AppColors.secondary,
                               title: "",
-                              title2: Icon(
-                                Icons.task_alt_outlined,
-                                color: Colors.white,
-                              ),
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRouter.goalsHomePage,
-                                  arguments: "Data is from database",
-                                );
+                              title2: Icon(Icons.phone, color: Colors.white),
+                              onTap: () async {
+                                if (uploadedGoals.isEmpty) {
+                                  Helper().showInfoMessage(
+                                    "You will be paired with an accountability partner once you set your gaol for the week. Once paired, you will be able to schedule a call",
+                                    context,
+                                  );
+                                } else if (uploadedGoals.isEmpty &&
+                                    model.accountabilityPartner?.id == null) {
+                                  Helper().showInfoMessage(
+                                    "You will be able to schedule a call once you are paired with an accountability partner",
+                                    context,
+                                  );
+                                } else {
+                                  CustomBottomModal.show(
+                                    context: context,
+                                    child: SizedBox(
+                                      width: size.width,
+                                      child: CallBookingWidget(
+                                        imageUrl:
+                                            model
+                                                .accountabilityPartner!
+                                                .profilePhoto!,
+                                        partnerUserName:
+                                            model
+                                                .accountabilityPartner!
+                                                .username!
+                                                .toLowerCase(),
+                                        onTap: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) =>
+                                                      CalenderPage(partnerEmail: model.accountabilityPartner!.email, partnerId: model.accountabilityPartner!.id.toString(),),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                }
                               },
                             ),
                           ),

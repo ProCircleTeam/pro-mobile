@@ -24,6 +24,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
+
+
     final viewInsets = MediaQuery.of(context).viewInsets;
     Widget formItemSpace = SizedBox(height: size.height * .02);
     UserProvider userProvider = Provider.of<UserProvider>(context);
@@ -86,7 +89,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                 Navigator.pushNamed(
                                   context,
                                   AppRouter.otpVerificationPage,
-                                  arguments: {"email": model.emailController.text}
+                                  arguments: {
+                                    "email": model.emailController.text,
+                                  },
                                 );
                                 AppFlushBar().showSuccess(
                                   message: e,
