@@ -1,15 +1,20 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/routes/app_router.dart';
+import 'package:pro_mobile/constants/app_colors.dart';
+import 'package:pro_mobile/ui/widgets/action_button.dart';
+import 'package:pro_mobile/ui/widgets/custom_app_bar.dart';
+import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class WeeklySchedulePage extends StatefulWidget {
-  const WeeklySchedulePage({super.key});
+class CalenderPage extends StatefulWidget {
+  const CalenderPage({super.key});
 
   @override
-  State<WeeklySchedulePage> createState() => _WeeklySchedulePageState();
+  State<CalenderPage> createState() => _CalenderPageState();
 }
 
-class _WeeklySchedulePageState extends State<WeeklySchedulePage> {
+class _CalenderPageState extends State<CalenderPage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   late DateTime _monday;
@@ -27,8 +32,8 @@ class _WeeklySchedulePageState extends State<WeeklySchedulePage> {
 
   void _calculateWeekRange() {
     final now = DateTime.now();
-    _monday = now.subtract(Duration(days: now.weekday - 1)); // Monday
-    _friday = _monday.add(const Duration(days: 4)); // Friday
+    _monday = now.subtract(Duration(days: now.weekday - 1));
+    _friday = _monday.add(const Duration(days: 4));
   }
 
   void _generateSlotsFor(DateTime date) {
@@ -36,7 +41,7 @@ class _WeeklySchedulePageState extends State<WeeklySchedulePage> {
     final slots = <Map<String, dynamic>>[];
 
     // Mock hourly slots between 9AM–5PM
-    for (int hour = 9; hour < 17; hour++) {
+    for (int hour = 10; hour < 20; hour++) {
       bool isAvailable = random.nextBool();
       slots.add({
         'start': DateTime(date.year, date.month, date.day, hour, 0),
@@ -60,29 +65,27 @@ class _WeeklySchedulePageState extends State<WeeklySchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Schedule Meeting"),
-        centerTitle: true,
-        backgroundColor: Colors.indigoAccent,
-      ),
+      appBar: customAppBer("Schedule Accountability Call"),
       body: Column(
         children: [
           TableCalendar(
             focusedDay: _focusedDay,
             firstDay: _monday,
             lastDay: _friday,
-            calendarFormat: CalendarFormat.week, // Show only week view
+            calendarFormat: CalendarFormat.week,
             headerStyle: const HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
+              leftChevronVisible: false,
+              rightChevronVisible: false,
             ),
-            calendarStyle: const CalendarStyle(
+            calendarStyle: CalendarStyle(
               todayDecoration: BoxDecoration(
-                color: Colors.indigoAccent,
+                color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
               selectedDecoration: BoxDecoration(
-                color: Colors.orange,
+                color: AppColors.secondary,
                 shape: BoxShape.circle,
               ),
             ),
@@ -122,26 +125,29 @@ class _WeeklySchedulePageState extends State<WeeklySchedulePage> {
                     final isSelected = _selectedSlot == slot;
 
                     return GestureDetector(
-                      onTap: available
-                          ? () {
-                              setState(() {
-                                _selectedSlot = slot;
-                              });
-                            }
-                          : null,
+                      onTap:
+                          available
+                              ? () {
+                                setState(() {
+                                  _selectedSlot = slot;
+                                });
+                              }
+                              : null,
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
                         decoration: BoxDecoration(
-                          color: available
-                              ? (isSelected
-                                  ? Colors.orangeAccent
-                                  : Colors.greenAccent.shade100)
-                              : Colors.grey.shade300,
+                          color:
+                              available
+                                  ? (isSelected
+                                      ? Colors.orangeAccent
+                                      : Colors.greenAccent.shade100)
+                                  : Colors.grey.shade300,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isSelected
-                                ? Colors.deepOrange
-                                : Colors.transparent,
+                            color:
+                                isSelected
+                                    ? Colors.deepOrange
+                                    : Colors.transparent,
                             width: 2,
                           ),
                         ),
@@ -161,26 +167,21 @@ class _WeeklySchedulePageState extends State<WeeklySchedulePage> {
               ),
             ),
           if (_selectedSlot != null)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton.icon(
-                onPressed: () {
+            PaddedContainer(
+              child: ActionButton(
+                title: "Schedule",
+                onTap: () {
                   final start = _selectedSlot!['start'];
                   final end = _selectedSlot!['end'];
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                        "Meeting scheduled from ${_formatTimeRange(start, end)} on ${_selectedDay!.toLocal().toString().split(' ')[0]}"),
-                  ));
+
+                  print(" selected start ======================> $start");
+                  print(" selected end ======================> $end");
+
+                  // Navigator.pushNamed(context, AppRouter.successPage);
                 },
-                icon: const Icon(Icons.calendar_today),
-                label: const Text("Confirm Meeting"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigoAccent,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                ),
               ),
             ),
+
           const SizedBox(height: 12),
         ],
       ),
