@@ -6,6 +6,7 @@ abstract class CalendarService {
   Future<List<BusyTimePeriodModel>?>? getPartnerCalendarAvailability({
     required String weekStart,
     required String weekEnd,
+    required String partnerId,
   });
   Future<CalendarEventModel?>? scheduleAccountabilityCall({
     required String partnerFullName,

@@ -23,8 +23,9 @@ class CalendarServiceImpl implements CalendarService {
   Future<List<BusyTimePeriodModel>?>? getPartnerCalendarAvailability({
      required String weekStart,
     required String weekEnd,
+    required String partnerId,
   }) async {
-    String url = Endpoints.getCalendarAvailability(start: weekStart, end: weekEnd);
+    String url = Endpoints.getCalendarAvailability(partnerId: partnerId, start: weekStart, end: weekEnd);
     final header = await getAppHeader(isTokenRequired: true);
     final res = await appClient.get(url, headers: header);
 

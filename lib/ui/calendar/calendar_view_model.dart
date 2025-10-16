@@ -36,15 +36,17 @@ class CalendarViewModel extends BaseViewModel {
     required Function(String e) onError,
     required String weekStart,
     required String weekEnd,
+    required String partnerId,
   }) async {
     try {
       isGettingPartnerAvailabilityTime = true;
       var res = await calendarService.getPartnerCalendarAvailability(
         weekStart: weekStart,
         weekEnd: weekEnd,
+        partnerId: partnerId,
       );
-      if(res != null){
-      partnerBusyPeriods = res!;
+      if (res != null) {
+        partnerBusyPeriods = res;
       }
       isGettingPartnerAvailabilityTime = false;
       onSuccess("Availability time fetched successfully");

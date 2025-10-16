@@ -239,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                                             MaterialPageRoute(
                                               builder:
                                                   (context) =>
-                                                      CalenderPage(partnerEmail: model.accountabilityPartner!.email),
+                                                      CalenderPage(partnerEmail: model.accountabilityPartner!.email, partnerId: model.accountabilityPartner!.id.toString(),),
                                             ),
                                           );
                                         },

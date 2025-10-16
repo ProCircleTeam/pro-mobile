@@ -22,5 +22,5 @@ class Endpoints {
   static String getUserNotifications = "$baseUrl/notification";
   static String getGoogleCalendarUrl = "$baseUrl/calendar/calendar-url";
   static String scheduleCalendarEvent = "$baseUrl/calendar/accountability-call";
-  static String getCalendarAvailability({required String start, required String end}) => "$baseUrl/calendar/busy?startDate=$start&endDate=$end";
+  static String getCalendarAvailability({required String partnerId, required String start, required String end}) => "$baseUrl/calendar/busy?userId=$partnerId&startDate=$start&endDate=$end";
 }

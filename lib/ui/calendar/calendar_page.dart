@@ -15,7 +15,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 class CalenderPage extends StatefulWidget {
   final String partnerEmail;
-  const CalenderPage({required this.partnerEmail, super.key});
+  final String partnerId;
+  const CalenderPage({required this.partnerEmail, required this.partnerId, super.key});
 
   @override
   State<CalenderPage> createState() => _CalenderPageState();
@@ -58,6 +59,7 @@ class _CalenderPageState extends State<CalenderPage> {
           await model.getPartnerCalendarAvailability(
             weekStart: weekDates.startDate,
             weekEnd: weekDates.endDate,
+            partnerId: widget.partnerId,
             onError: (e) {
               AppFlushBar().showError(message: e, context: context);
             },
