@@ -4,14 +4,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pro_mobile/app/core/failure/failure.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/calendar/calendar_service.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/time_zone.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/ui/base/base_view_model.dart';
+import 'package:pro_mobile/ui/utils/app_logger.dart';
 
 class ProfileViewModel extends BaseViewModel {
   final UserService userService;
-  ProfileViewModel(this.userService);
+  final CalendarService calendarService;
+  ProfileViewModel({required this.userService, required this.calendarService});
 
   final personalInfoFormKey = GlobalKey<FormState>();
   TextEditingController phoneNumberController = TextEditingController();
@@ -135,6 +138,13 @@ class ProfileViewModel extends BaseViewModel {
   bool get isSyncingUserProfile => _isSyncingUserProfile;
   set isSyncingUserProfile(bool val) {
     _isSyncingUserProfile = val;
+    notifyListeners();
+  }
+
+  bool _isSynchingCalendar = false;
+  bool get isSynchingCalendar => _isSynchingCalendar;
+  set isSynchingCalendar(bool val) {
+    _isSynchingCalendar = val;
     notifyListeners();
   }
 
@@ -419,18 +429,42 @@ class ProfileViewModel extends BaseViewModel {
         userProvider.user = user;
         print("This is success ============================> ");
       } else {
-         print("Error here ============================> ");
+        print("Error here ============================> ");
         throw Failure("Unable to sync user profile");
       }
       isSyncingUserProfile = false;
     } on Failure catch (e) {
       isSyncingUserProfile = false;
       onError(e.errorMessage);
-       print("Another Error ============================> ");
+      print("Another Error ============================> ");
     } catch (e) {
       isSyncingUserProfile = false;
       onError(ErrorText.generic);
-       print("Final Error ============================> $e");
+      print("Final Error ============================> $e");
+    }
+  }
+
+  Future<void> connectGoogleCalendar({
+    required Function(String e) appUrlLauncher,
+    required Function(String e) onSuccess,
+    required Function(String e) onError,
+  }) async {
+    try {
+      isSynchingCalendar = true;
+      String url = await calendarService.getGoogleCalendarUrl();
+      await appUrlLauncher(url);
+      isSynchingCalendar = false;
+      onSuccess("You have successfuly connected your calendar");
+    } on Failure catch (e) {
+      isSynchingCalendar = false;
+      onError(e.errorMessage);
+      AppLogger.log(
+        "Error synching calender ==================> ${e.errorMessage}",
+      );
+    } catch (e) {
+      isSynchingCalendar = false;
+      onError(ErrorText.generic);
+      AppLogger.log("Error synching calendar ==================> $e");
     }
   }
 }

@@ -3,7 +3,10 @@ import 'package:pro_mobile/domain/models/calendar_event_model.dart';
 
 abstract class CalendarService {
   Future<String> getGoogleCalendarUrl();
-  Future<List<BusyTimePeriodModel>?>? getPartnerCalendarAvailability();
+  Future<List<BusyTimePeriodModel>?>? getPartnerCalendarAvailability({
+    required String weekStart,
+    required String weekEnd,
+  });
   Future<CalendarEventModel?>? scheduleAccountabilityCall({
     required String partnerFullName,
     required String startTime,

@@ -20,13 +20,18 @@ class CalendarServiceImpl implements CalendarService {
   }
 
   @override
-  Future<List<BusyTimePeriodModel>?>? getPartnerCalendarAvailability() async {
-    String url = Endpoints.getCalendarAvailability;
-
+  Future<List<BusyTimePeriodModel>?>? getPartnerCalendarAvailability({
+     required String weekStart,
+    required String weekEnd,
+  }) async {
+    String url = Endpoints.getCalendarAvailability(start: weekStart, end: weekEnd);
     final header = await getAppHeader(isTokenRequired: true);
-    Response? res = await appClient.get(url, headers: header);
-    print("This is the data ========> ${res?.data["data"]["url"]}");
-    return [];
+    final res = await appClient.get(url, headers: header);
+
+    List busyPeriods =
+        res?.data["data"]["busyPeriods"];
+        
+    return busyPeriods.isNotEmpty ? busyPeriods.map((period) => BusyTimePeriodModel.fromJson(period)).toList() : [];
   }
 
   @override

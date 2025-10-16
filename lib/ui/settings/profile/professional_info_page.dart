@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/constants.dart';
+import 'package:pro_mobile/data/remote/calendar/calendar_service.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/domain/models/user_model.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
@@ -43,7 +44,7 @@ class _ProfessionalInfoUpdatePageState
         ),
         resizeToAvoidBottomInset: true,
         body: BaseView<ProfileViewModel>(
-          model: ProfileViewModel(sl.get<UserService>()),
+          model: ProfileViewModel(userService:  sl.get<UserService>(), calendarService: sl.get<CalendarService>()),
           onModelReady: (model) {
             model.jobTitleController.text = user?.jobTitle ?? "";
             model.yearsOfExperienceController.text =

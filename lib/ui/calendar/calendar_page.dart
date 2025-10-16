@@ -1,6 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
+import 'package:pro_mobile/data/remote/calendar/calendar_service.dart';
+import 'package:pro_mobile/domain/models/busy_time_model.dart';
+import 'package:pro_mobile/domain/models/time_slot.dart';
+import 'package:pro_mobile/ui/base/base_view.dart';
+import 'package:pro_mobile/ui/calendar/calendar_view_model.dart';
+import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
+import 'package:pro_mobile/ui/utils/helper.dart';
 import 'package:pro_mobile/ui/widgets/action_button.dart';
 import 'package:pro_mobile/ui/widgets/custom_app_bar.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
@@ -21,6 +29,7 @@ class _CalenderPageState extends State<CalenderPage> {
 
   List<Map<String, dynamic>> _slots = [];
   Map<String, dynamic>? _selectedSlot;
+  List<TimeSlot> selectedDateTimeSlots = [];
 
   @override
   void initState() {
@@ -65,124 +74,151 @@ class _CalenderPageState extends State<CalenderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBer("Schedule Accountability Call"),
-      body: Column(
-        children: [
-          TableCalendar(
-            focusedDay: _focusedDay,
-            firstDay: _monday,
-            lastDay: _friday,
-            calendarFormat: CalendarFormat.week,
-            headerStyle: const HeaderStyle(
-              formatButtonVisible: false,
-              titleCentered: true,
-              leftChevronVisible: false,
-              rightChevronVisible: false,
-            ),
-            calendarStyle: CalendarStyle(
-              todayDecoration: BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
-              selectedDecoration: BoxDecoration(
-                color: AppColors.secondary,
-                shape: BoxShape.circle,
-              ),
-            ),
-            selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-              _generateSlotsFor(selectedDay);
+      body: BaseView<CalendarViewModel>(
+        model: CalendarViewModel(sl.get<CalendarService>()),
+        onModelReady: (model) async {
+          final weekDates = Helper.getCurrentWeekDates();
+          await model.getPartnerCalendarAvailability(
+            weekStart: weekDates.startDate,
+            weekEnd: weekDates.endDate,
+            onError: (e) {
+              AppFlushBar().showError(message: e, context: context);
             },
-          ),
-          const SizedBox(height: 16),
-          if (_selectedDay == null)
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                "Select a day (Mon–Fri) to view available slots",
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-            )
-          else
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: GridView.builder(
-                  itemCount: _slots.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 2.8,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemBuilder: (context, index) {
-                    final slot = _slots[index];
-                    final available = slot['available'] as bool;
-                    final isSelected = _selectedSlot == slot;
+            onSuccess: (e) {},
+          );
+        },
+        builder: (context, model, _) {
+          return Column(
+            children: [
+              model.isGettingPartnerAvailabilityTime
+                  ? PaddedContainer(child: LinearProgressIndicator())
+                  : TableCalendar(
+                    focusedDay: _focusedDay,
+                    firstDay: _monday,
+                    lastDay: _friday,
+                    calendarFormat: CalendarFormat.week,
+                    headerStyle: const HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                      leftChevronVisible: false,
+                      rightChevronVisible: false,
+                    ),
+                    calendarStyle: CalendarStyle(
+                      todayDecoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      selectedDecoration: BoxDecoration(
+                        color: AppColors.secondary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+                    onDaySelected: (selectedDay, focusedDay) {
+                      List<BusyTimePeriodModel> periods =
+                          Helper.filterBusyPeriodsForDate(
+                            busyPeriods: model.partnerBusyPeriods,
+                            dateString: selectedDay.toString(),
+                          );
+                      print("Here is the period ==============> $periods");
+                      setState(() {
+                        _selectedDay = selectedDay;
+                        _focusedDay = focusedDay;
+                      });
 
-                    return GestureDetector(
-                      onTap:
-                          available
-                              ? () {
-                                setState(() {
-                                  _selectedSlot = slot;
-                                });
-                              }
-                              : null,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 250),
-                        decoration: BoxDecoration(
-                          color:
-                              available
-                                  ? (isSelected
-                                      ? Colors.orangeAccent
-                                      : Colors.greenAccent.shade100)
-                                  : Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color:
-                                isSelected
-                                    ? Colors.deepOrange
-                                    : Colors.transparent,
-                            width: 2,
+                      _generateSlotsFor(selectedDay);
+                    },
+                  ),
+              const SizedBox(height: 16),
+              if (_selectedDay == null)
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    "Select a day (Mon–Fri) to view available slots",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                )
+              else
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: GridView.builder(
+                      itemCount: _slots.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 2.8,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            _formatTimeRange(slot['start'], slot['end']),
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: available ? Colors.black87 : Colors.grey,
+                      itemBuilder: (context, index) {
+                        final slot = _slots[index];
+                        final available = slot['available'] as bool;
+                        final isSelected = _selectedSlot == slot;
+
+                        return GestureDetector(
+                          onTap:
+                              available
+                                  ? () {
+                                    setState(() {
+                                      _selectedSlot = slot;
+                                    });
+                                  }
+                                  : null,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            decoration: BoxDecoration(
+                              color:
+                                  available
+                                      ? (isSelected
+                                          ? Colors.orangeAccent
+                                          : Colors.greenAccent.shade100)
+                                      : Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color:
+                                    isSelected
+                                        ? Colors.deepOrange
+                                        : Colors.transparent,
+                                width: 2,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _formatTimeRange(slot['start'], slot['end']),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      available ? Colors.black87 : Colors.grey,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          if (_selectedSlot != null)
-            PaddedContainer(
-              child: ActionButton(
-                title: "Schedule",
-                onTap: () {
-                  final start = _selectedSlot!['start'];
-                  final end = _selectedSlot!['end'];
+              if (_selectedSlot != null)
+                PaddedContainer(
+                  child: ActionButton(
+                    title: "Schedule",
+                    onTap: () {
+                      final start = _selectedSlot!['start'];
+                      final end = _selectedSlot!['end'];
 
-                  print(" selected start ======================> $start");
-                  print(" selected end ======================> $end");
+                      print(" selected start ======================> $start");
+                      print(" selected end ======================> $end");
 
-                  // Navigator.pushNamed(context, AppRouter.successPage);
-                },
-              ),
-            ),
+                      // Navigator.pushNamed(context, AppRouter.successPage);
+                    },
+                  ),
+                ),
 
-          const SizedBox(height: 12),
-        ],
+              const SizedBox(height: 12),
+            ],
+          );
+        },
       ),
     );
   }

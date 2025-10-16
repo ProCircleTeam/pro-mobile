@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:pro_mobile/app/core/di/service_locator.dart';
 import 'package:pro_mobile/app/routes/app_router.dart';
 import 'package:pro_mobile/constants/app_colors.dart';
+import 'package:pro_mobile/data/remote/calendar/calendar_service.dart';
 import 'package:pro_mobile/data/remote/user/user_service.dart';
 import 'package:pro_mobile/providers/user_provider.dart';
 import 'package:pro_mobile/ui/base/base_view.dart';
 import 'package:pro_mobile/ui/settings/profile/profile_view_model.dart';
 import 'package:pro_mobile/ui/settings/widgets/settings_tile.dart';
 import 'package:pro_mobile/ui/utils/flush_bar/app_flush_bar.dart';
+import 'package:pro_mobile/ui/utils/helper.dart';
 import 'package:pro_mobile/ui/widgets/custom_text.dart';
 import 'package:pro_mobile/ui/widgets/padded_container.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +33,10 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
         title: CustomText("Update Profile", weight: FontWeight.bold),
       ),
       body: BaseView<ProfileViewModel>(
-        model: ProfileViewModel(sl.get<UserService>()),
+        model: ProfileViewModel(
+          userService: sl.get<UserService>(),
+          calendarService: sl.get<CalendarService>(),
+        ),
         onModelReady: (model) async {
           await model.getUserProfileCompletionStatus((e) {
             AppFlushBar().showError(message: e, context: context);
@@ -44,7 +49,10 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
           );
         },
         builder: (context, model, _) {
-          bool isGettingProfileInfoRead = model.isFetchingProfileStatus || model.isSyncingUserProfile ? true :false;
+          bool isGettingProfileInfoRead =
+              model.isFetchingProfileStatus || model.isSyncingUserProfile
+                  ? true
+                  : false;
 
           return PaddedContainer(
             child: Column(
@@ -158,7 +166,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                 ),
                 SettingsTile(
                   title: "Connect Google Calendar",
-                  icon: Icons.interests_outlined,
+                  icon: Icons.calendar_month,
                   trailingWidget:
                       isGettingProfileInfoRead
                           ? SizedBox(
@@ -175,10 +183,12 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                             color: AppColors.richBlue.withValues(alpha: .8),
                           )
                           : null,
-                  onTap: () {
-                    if (!isGettingProfileInfoRead) {
-                      Navigator.pushNamed(context, AppRouter.goalsAndInterest);
-                    }
+                  onTap: () async {
+                    model.connectGoogleCalendar(
+                      appUrlLauncher: Helper.appUrlLauncher,
+                      onSuccess: (e) {},
+                      onError: (e) {},
+                    );
                   },
                 ),
               ],

@@ -1,6 +1,7 @@
 import 'package:pro_mobile/app/core/failure/failure.dart';
 import 'package:pro_mobile/constants/constants.dart';
 import 'package:pro_mobile/data/remote/calendar/calendar_service.dart';
+import 'package:pro_mobile/domain/models/busy_time_model.dart';
 import 'package:pro_mobile/ui/base/base_view_model.dart';
 import 'package:pro_mobile/ui/utils/app_logger.dart' show AppLogger;
 
@@ -8,10 +9,10 @@ class CalendarViewModel extends BaseViewModel {
   final CalendarService calendarService;
   CalendarViewModel(this.calendarService);
 
-  bool _isSynchingCalendar = false;
-  bool get isSynchingCalendar => _isSynchingCalendar;
-  set isSynchingCalendar(bool val) {
-    _isSynchingCalendar = val;
+  List<BusyTimePeriodModel> _partnerBusyPeriods = [];
+  List<BusyTimePeriodModel> get partnerBusyPeriods => _partnerBusyPeriods;
+  set partnerBusyPeriods(List<BusyTimePeriodModel> val) {
+    _partnerBusyPeriods = val;
     notifyListeners();
   }
 
@@ -33,46 +34,32 @@ class CalendarViewModel extends BaseViewModel {
   Future<void> getPartnerCalendarAvailability({
     required Function(String e) onSuccess,
     required Function(String e) onError,
+    required String weekStart,
+    required String weekEnd,
   }) async {
     try {
       isGettingPartnerAvailabilityTime = true;
-      await calendarService.getGoogleCalendarUrl();
+      var res = await calendarService.getPartnerCalendarAvailability(
+        weekStart: weekStart,
+        weekEnd: weekEnd,
+      );
+      if(res != null){
+      partnerBusyPeriods = res!;
+      }
       isGettingPartnerAvailabilityTime = false;
       onSuccess("Availability time fetched successfully");
     } on Failure catch (e) {
       isGettingPartnerAvailabilityTime = false;
       onError(e.errorMessage);
       AppLogger.log(
-        "Error synching calender ==================> ${e.errorMessage}",
+        "Error getting partner availability ==================> ${e.errorMessage}",
       );
     } catch (e) {
       isGettingPartnerAvailabilityTime = false;
       onError(ErrorText.generic);
-      AppLogger.log("Error synching calendar ==================> $e");
-    }
-  }
-
-  Future<void> connectGoogleCalendar({
-    required Function(String e) appUrlLauncher,
-    required Function(String e) onSuccess,
-    required Function(String e) onError,
-  }) async {
-    try {
-      isSynchingCalendar = true;
-      String url = await calendarService.getGoogleCalendarUrl();
-      await appUrlLauncher(url);
-      isSynchingCalendar = false;
-      onSuccess("You have successfuly connected your calendar");
-    } on Failure catch (e) {
-      isSynchingCalendar = false;
-      onError(e.errorMessage);
       AppLogger.log(
-        "Error synching calender ==================> ${e.errorMessage}",
+        "Error getting partner availability ==================> $e",
       );
-    } catch (e) {
-      isSynchingCalendar = false;
-      onError(ErrorText.generic);
-      AppLogger.log("Error synching calendar ==================> $e");
     }
   }
 
