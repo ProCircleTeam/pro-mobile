@@ -45,7 +45,9 @@ class _SettingsPageState extends State<SettingsPage> {
             SettingsTile(
               title: "Change Password",
               icon: Icons.key_sharp,
-              onTap: () {},
+              onTap: () {
+                 Navigator.pushNamed(context, AppRouter.changePasswordPage);
+              },
             ),
             SettingsTile(
               title: "Help & FAQ",
